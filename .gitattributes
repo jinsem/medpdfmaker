@@ -1,0 +1,16 @@
+# by default use heuristics
+* text=auto
+
+# standard text files
+*.java		text
+*.properties	text
+*.cfg		text
+*.xml		text
+
+# binary file
+*.pdf		-text
+*.xlsx		-text
+
+# special text files
+# NB: we must undo effect of "* text=auto" here
+*.sh		!text eol=lf
