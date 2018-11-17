@@ -23,7 +23,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
     private String origin;
     private String destination;
     private boolean wheelChairYesNo;
-    private int totalPassengers;
+    private Integer totalPassengers;
     private String notes;
     private String telephone;
     private String coordinatorInitials;
@@ -129,11 +129,11 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         this.wheelChairYesNo = wheelChairYesNo;
     }
 
-    public int getTotalPassengers() {
+    public Integer getTotalPassengers() {
         return this.totalPassengers;
     }
 
-    public void setTotalPassengers(int totalPassengers) {
+    public void setTotalPassengers(Integer totalPassengers) {
         this.totalPassengers = totalPassengers;
     }
 

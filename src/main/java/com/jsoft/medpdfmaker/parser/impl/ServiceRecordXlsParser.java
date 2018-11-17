@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +80,17 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
         }    
     }
 
-    private Map<String, Object> processRow(Row currentRow) {
-        return null;
+    private Map<String, Cell> processRow(Row currentRow) {
+        final Map<String, Cell> result = new LinkedHashMap<>();
+        Iterator<Cell> cellIterator = currentRow.iterator();
+        Iterator<String> fieldNamesIterator = fieldNames.iterator();
+        while (fieldNamesIterator.hasNext()) {
+            String fieldName = fieldNamesIterator.next();
+            if (cellIterator.hasNext()) {
+                Cell currentCell = cellIterator.next();
+                result.put(fieldName, currentCell);
+            }
+        }    
+        return result;
     }
 }
