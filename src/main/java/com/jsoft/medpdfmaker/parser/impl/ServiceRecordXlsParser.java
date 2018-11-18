@@ -27,28 +27,6 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServiceRecordXlsParser.class);
 
-    private static final String REF_ID_FIELD = "REF_ID";
-    private static final String CANCELLED_FIELD = "CANCELLED";
-    private static final String LNAME_FIELD = "LNAME";
-    private static final String FNAME_FIELD = "FNAME";
-    private static final String MEMBERID_FIELD = "MEMBERID";
-    private static final String DOB_FIELD = "DOB";
-    private static final String PICKUP_DATE_FIELD = "PICKUP_DATE";
-    private static final String PICKUP_TIME_FIELD = "PICKUP_TIME";
-    private static final String APPT_TIME_FIELD = "APPT_TIME";
-    private static final String ORIGIN_FIELD = "ORIGIN";
-    private static final String DESTINATION_FIELD = "DESTINATION";
-    private static final String WHEELCHAIR_YESNO_FIELD = "WHEELCHAIR_YESNO";
-    private static final String TOTAL_PASSENGERS_FIELD = "TOTAL_PASSENGERS";
-    private static final String NOTES_FIELD = "NOTES";
-    private static final String TELEPHONE_FIELD = "TELEPHONE";
-    private static final String COORDINATOR_INITIALS_FIELD = "COORDINATOR_INITIALS";
-    private static final String CITY_FIELD = "CITY";
-    private static final String STATE_FIELD = "STATE";
-    private static final String ZIPCODE_FIELD = "ZIPCODE";
-    private static final String AREACODE_FIELD = "AREACODE";
-    private static final String PHONE_FIELD = "PHONE";
-
     private final List<String> fieldNames = new ArrayList<>();
 
     @Override

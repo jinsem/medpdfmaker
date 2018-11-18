@@ -37,6 +37,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.refId;
     }
 
+    @ExternalField("REF_ID")
     public void setRefId(String refId) {
         this.refId = refId;
     }
@@ -45,6 +46,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.cancelled;
     }
 
+    @ExternalField(value = "CANCELLED", fieldType = FieldType.BOOLEAN)
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
@@ -53,6 +55,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.lName;
     }
 
+    @ExternalField("LNAME")
     public void setLName(String lName) {
         this.lName = lName;
     }
@@ -61,6 +64,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.fName;
     }
 
+    @ExternalField("FNAME")
     public void setFName(String fName) {
         this.fName = fName;
     }
@@ -69,6 +73,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.memberId;
     }
 
+    @ExternalField("MEMBERID")
     public void setMemberId(String memberId) {
         this.memberId = memberId;
     }
@@ -77,6 +82,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.dob;
     }
 
+    @ExternalField(value = "DOB", fieldType = FieldType.DATE)
     public void setDob(LocalDate dob) {
         this.dob = dob;
     }
@@ -85,6 +91,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.pickupDate;
     }
 
+    @ExternalField(value = "PICKUP_DATE", fieldType = FieldType.DATE)
     public void setPickupDate(LocalDate pickupDate) {
         this.pickupDate = pickupDate;
     }
@@ -93,6 +100,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.pickupTime;
     }
 
+    @ExternalField(value = "PICKUP_TIME", fieldType = FieldType.TIME)
     public void setPickupTime(LocalTime pickupTime) {
         this.pickupTime = pickupTime;
     }
@@ -101,6 +109,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.apptTime;
     }
 
+    @ExternalField(value = "APPT_TIME", fieldType = FieldType.TIME)
     public void setApptTime(LocalTime apptTime) {
         this.apptTime = apptTime;
     }
@@ -109,6 +118,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.origin;
     }
 
+    @ExternalField("ORIGIN")
     public void setOrigin(String origin) {
         this.origin = origin;
     }
@@ -117,6 +127,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.destination;
     }
 
+    @ExternalField("DESTINATION")
     public void setDestination(String destination) {
         this.destination = destination;
     }
@@ -125,6 +136,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.wheelChairYesNo;
     }
 
+    @ExternalField(value = "WHEELCHAIR_YESNO", fieldType = FieldType.BOOLEAN)
     public void setWheelChairYesNo(boolean wheelChairYesNo) {
         this.wheelChairYesNo = wheelChairYesNo;
     }
@@ -133,6 +145,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.totalPassengers;
     }
 
+    @ExternalField(value = "TOTAL_PASSENGERS", fieldType = FieldType.INTEGER)
     public void setTotalPassengers(Integer totalPassengers) {
         this.totalPassengers = totalPassengers;
     }
@@ -141,6 +154,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.notes;
     }
 
+    @ExternalField("NOTES")
     public void setNotes(String notes) {
         this.notes = notes;
     }
@@ -149,6 +163,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.telephone;
     }
 
+    @ExternalField("TELEPHONE")
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
@@ -157,6 +172,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.coordinatorInitials;
     }
 
+    @ExternalField("COORDINATOR_INITIALS")
     public void setCoordinatorInitials(String coordinatorInitials) {
         this.coordinatorInitials = coordinatorInitials;
     }
@@ -165,6 +181,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.city;
     }
 
+    @ExternalField("CITY")
     public void setCity(String city) {
         this.city = city;
     }
@@ -173,6 +190,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.state;
     }
 
+    @ExternalField("STATE")
     public void setState(String state) {
         this.state = state;
     }
@@ -181,6 +199,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.zipCode;
     }
 
+    @ExternalField("ZIPCODE")
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
@@ -189,6 +208,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.areaCode;
     }
 
+    @ExternalField("AREACODE")
     public void setAreaCode(String areaCode) {
         this.areaCode = areaCode;
     }
@@ -197,6 +217,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.phone;
     }
 
+    @ExternalField("PHONE")
     public void setPhone(String phone) {
         this.phone = phone;
     }
