@@ -112,7 +112,16 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
     }
 
     private String extractStringValue(Cell cell) {
-        return cell == null ? null : cell.getStringCellValue();
+        if (cell == null) {
+            return null;
+        }
+        String result;
+        if (CellType.NUMERIC.equals(cell.getCellType())) {
+            result = String.valueOf(cell.getNumericCellValue());    
+        } else {
+            result = cell.getStringCellValue();
+        }   
+        return result;
     }
 
     private LocalDate extractDateValue(Cell cell) {

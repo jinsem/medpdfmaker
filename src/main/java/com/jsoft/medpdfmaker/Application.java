@@ -1,5 +1,15 @@
 package com.jsoft.medpdfmaker;
 
+import java.io.File;
+
+import com.jsoft.medpdfmaker.domain.ServiceRecord;
+import com.jsoft.medpdfmaker.parser.ObjectBuilder;
+import com.jsoft.medpdfmaker.parser.RowCallback;
+import com.jsoft.medpdfmaker.parser.TableFileParser;
+import com.jsoft.medpdfmaker.parser.impl.ServiceRecordBuilder;
+import com.jsoft.medpdfmaker.parser.impl.ServiceRecordXlsParser;
+import com.jsoft.medpdfmaker.repository.impl.ServiceRecordRepository;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -39,21 +49,26 @@ public class Application implements CommandLineRunner {
     public void run(String... args) throws Exception {
         final CommandLineParser parser = new DefaultParser();
         try {
-            CommandLine cmd = parser.parse(cliOptions, args);
-            if (cmd.hasOption(HELP_OPTION)) {
-                printHelpAndExit();
-            }
-            if (!cmd.hasOption(INPUT_FILE_OPTION)) {
-                logMissingOption(INPUT_FILE_OPTION);
-                printHelpAndExit();
-            }
-            if (!cmd.hasOption(OUTPUT_FOLDER_OPTION)) {
-                logMissingOption(OUTPUT_FOLDER_OPTION);
-                printHelpAndExit();
-            }
+            final CommandLine cmd = parser.parse(cliOptions, args);
+            verifyCommandLine(cmd);
+            generatePdf(cmd);
         } catch (ParseException e) {
            LOG.error("Failed to parse comand line properties", e);
            printHelpAndExit();
+        }
+    }
+
+    private void verifyCommandLine(CommandLine cmd) {
+		if (cmd.hasOption(HELP_OPTION)) {
+		    printHelpAndExit();
+		}
+		if (!cmd.hasOption(INPUT_FILE_OPTION)) {
+		    logMissingOption(INPUT_FILE_OPTION);
+		    printHelpAndExit();
+		}
+		if (!cmd.hasOption(OUTPUT_FOLDER_OPTION)) {
+            logMissingOption(OUTPUT_FOLDER_OPTION);
+            printHelpAndExit();
         }
     }
 
@@ -65,5 +80,21 @@ public class Application implements CommandLineRunner {
         final HelpFormatter formater = new HelpFormatter();
         formater.printHelp("Main", cliOptions);
         System.exit(0);
+    }
+
+	private void generatePdf(CommandLine cmd) {
+        //TODO refactor this method!
+        String inputFileName = cmd.getOptionValue(INPUT_FILE_OPTION);
+        String outputFolderName = cmd.getOptionValue(OUTPUT_FOLDER_OPTION);
+        final ObjectBuilder<ServiceRecord> builder = new ServiceRecordBuilder();
+        final TableFileParser<ServiceRecord> parser = new ServiceRecordXlsParser(builder);
+        File inputFile = new File(inputFileName);
+        final ServiceRecordRepository repository = new ServiceRecordRepository();
+        parser.parse(inputFile, new RowCallback<ServiceRecord>() {
+            @Override
+            public void onRow(final ServiceRecord rowObj) {
+                repository.put(rowObj.getMemberId(), rowObj);
+            }
+        });
     }
 }

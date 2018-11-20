@@ -3,6 +3,7 @@ package com.jsoft.medpdfmaker.repository.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
@@ -14,13 +15,21 @@ public class ServiceRecordRepository implements EntityGroupRepository<String, Se
 
     @Override
     public void put(String key, ServiceRecord value) {
-        repository.computeIfAbsent(key, k -> new ArrayList<>()).add(value);        
+        repository.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
     }
 
     @Override
     public List<ServiceRecord> getGroupByKey(String key) {
-        return null;
+        return repository.get(key);
     }
 
+    @Override
+    public boolean isEmpty() {
+        return repository.isEmpty();
+    }
 
+    @Override
+    public Set<String> getKeys() {
+        return repository.keySet();
+	}
 }

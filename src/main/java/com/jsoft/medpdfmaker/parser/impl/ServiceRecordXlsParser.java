@@ -7,11 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
+import com.jsoft.medpdfmaker.parser.ObjectBuilder;
 import com.jsoft.medpdfmaker.parser.RowCallback;
 import com.jsoft.medpdfmaker.parser.TableFileParser;
 
@@ -27,7 +26,13 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServiceRecordXlsParser.class);
 
+    final ObjectBuilder<ServiceRecord> serviceRecordBuilder;
+
     private final List<String> fieldNames = new ArrayList<>();
+
+    public ServiceRecordXlsParser(ObjectBuilder<ServiceRecord> serviceRecordBuilder) {
+        this.serviceRecordBuilder = serviceRecordBuilder;
+    }
 
     @Override
 	public void parse(File srcFile, RowCallback<ServiceRecord> rowCallBack) {
@@ -40,7 +45,7 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
                 if (fieldNames.isEmpty()) {
                     tryToInitFieldNames(currentRow);
                 } else {
-                    processRow(currentRow);
+                    processRow(currentRow, rowCallBack);
                 }
             }    
         } catch (FileNotFoundException e) {
@@ -50,25 +55,24 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
         }
 	}
 
-    private void tryToInitFieldNames(Row currentRow) {
-        Iterator<Cell> cellIterator = currentRow.iterator();
-        while (cellIterator.hasNext()) {
-            Cell currentCell = cellIterator.next();
-            fieldNames.add(currentCell.getStringCellValue());    
-        }    
+    private void tryToInitFieldNames(final Row currentRow) {
+        short minColIx = currentRow.getFirstCellNum();
+        short maxColIx = currentRow.getLastCellNum();
+        for(short colIx=minColIx; colIx<maxColIx; colIx++) {
+            final Cell cell = currentRow.getCell(colIx);
+            fieldNames.add((cell == null) ? null : cell.getStringCellValue().toUpperCase());    
+        }
     }
 
-    private Map<String, Cell> processRow(Row currentRow) {
-        final Map<String, Cell> result = new LinkedHashMap<>();
-        Iterator<Cell> cellIterator = currentRow.iterator();
-        Iterator<String> fieldNamesIterator = fieldNames.iterator();
-        while (fieldNamesIterator.hasNext()) {
-            String fieldName = fieldNamesIterator.next();
-            if (cellIterator.hasNext()) {
-                Cell currentCell = cellIterator.next();
-                result.put(fieldName, currentCell);
+    private void processRow(Row currentRow, RowCallback<ServiceRecord> rowCallBack) {
+        short colIx = currentRow.getFirstCellNum();
+        final short maxColIx = currentRow.getLastCellNum();
+        for (String fieldName : fieldNames) {
+            if (colIx <= maxColIx) {
+                Cell curCell = currentRow.getCell(colIx++);
+                serviceRecordBuilder.setAttributeValue(fieldName, curCell);
             }
-        }    
-        return result;
+        } 
+        rowCallBack.onRow(serviceRecordBuilder.build());   
     }
 }
