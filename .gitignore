@@ -7,4 +7,5 @@ localwork/
 *.iml
 *.iws
 .~lock*
+*.log
 
