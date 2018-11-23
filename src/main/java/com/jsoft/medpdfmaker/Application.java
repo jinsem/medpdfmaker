@@ -7,7 +7,6 @@ import java.util.Date;
 
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
 import com.jsoft.medpdfmaker.parser.ObjectBuilder;
-import com.jsoft.medpdfmaker.parser.RowCallback;
 import com.jsoft.medpdfmaker.parser.TableFileParser;
 import com.jsoft.medpdfmaker.parser.impl.ServiceRecordBuilder;
 import com.jsoft.medpdfmaker.parser.impl.ServiceRecordXlsParser;
@@ -30,6 +29,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 
+import static com.jsoft.medpdfmaker.util.FileUtil.stripLastSlashIfNeeded;
+
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
@@ -41,11 +42,11 @@ public class Application implements CommandLineRunner {
 
     private static Options cliOptions = buildOptions();
 
-    private Environment environment;
+    private AppProperties appProperties;
 
     @Autowired
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
+    public void setAppProperties(AppProperties appProperties) {
+        this.appProperties = appProperties;
     }
 
     public static void main(String... args) {
@@ -56,7 +57,8 @@ public class Application implements CommandLineRunner {
         final Options result = new Options();
         result.addOption(HELP_OPTION, "help", false, "Print usage help");
         result.addRequiredOption(INPUT_FILE_OPTION, "input-file", true, "Defines path to input file that needs to be processed");
-        result.addRequiredOption(OUTPUT_FOLDER_OPTION, "output-folder", true, "Defines path to folder that will contain generated PDF files");
+        result.addOption(OUTPUT_FOLDER_OPTION, "output-folder", true,
+                "(Optional) Defines path to folder were the generated PDF file should be placed. If not set, PDF file will be placed in the folder where input file is located");
         return result;
     }
 
@@ -68,7 +70,7 @@ public class Application implements CommandLineRunner {
             verifyCommandLine(cmd);
             generatePdf(cmd);
         } catch (ParseException e) {
-           LOG.error("Failed to parse comand line properties", e);
+           LOG.error("Failed to parse command line properties", e);
            printHelpAndExit();
         }
     }
@@ -81,10 +83,6 @@ public class Application implements CommandLineRunner {
 		    logMissingOption(INPUT_FILE_OPTION);
 		    printHelpAndExit();
 		}
-		if (!cmd.hasOption(OUTPUT_FOLDER_OPTION)) {
-            logMissingOption(OUTPUT_FOLDER_OPTION);
-            printHelpAndExit();
-        }
     }
 
     private void logMissingOption(String name) {
@@ -99,24 +97,30 @@ public class Application implements CommandLineRunner {
 
 	private void generatePdf(CommandLine cmd) throws IOException {
         //TODO refactor this method!
-        String inputFileName = cmd.getOptionValue(INPUT_FILE_OPTION);
-        String outputFolderName = cmd.getOptionValue(OUTPUT_FOLDER_OPTION);
+        final String inputFileName = cmd.getOptionValue(INPUT_FILE_OPTION);
+        final String outputFolderName = getOutputFolder(cmd);
         final ObjectBuilder<ServiceRecord> builder = new ServiceRecordBuilder();
         final TableFileParser<ServiceRecord> parser = new ServiceRecordXlsParser(builder);
         File inputFile = new File(inputFileName);
         final ServiceRecordRepository repository = new ServiceRecordRepository();
         parser.parse(inputFile, rowObj -> repository.put(rowObj.getMemberId(), rowObj));
-        MemberPdfGenerator memberPdfGenerator = new MemberPdfGenerator(environment);
+        MemberPdfGenerator memberPdfGenerator = new MemberPdfGenerator(appProperties);
         PdfFileGenerator pdfFileGenerator = new PdfFileGenerator(memberPdfGenerator);
         final String outFileName = makeOutFileName(inputFileName, outputFolderName);
         pdfFileGenerator.generate(outFileName, repository);
     }
 
+    private String getOutputFolder(CommandLine cmd) {
+        if (cmd.hasOption(OUTPUT_FOLDER_OPTION)) {
+            return stripLastSlashIfNeeded(cmd.getOptionValue(OUTPUT_FOLDER_OPTION));
+        }
+        final String inputFile = cmd.getOptionValue(INPUT_FILE_OPTION);
+        return new File(inputFile).getParent();
+    }
+
     private String makeOutFileName(String inputFileName, String outputFolderName) {
         final String baseName = FilenameUtils.getBaseName(inputFileName);
-        return FilenameUtils.getFullPathNoEndSeparator(outputFolderName) +
-               File.separator +
-               baseName + "-" + makeCurrentDateString() + ".pdf";
+        return outputFolderName + File.separator + baseName + "-" + makeCurrentDateString() + ".pdf";
     }
 
     private String makeCurrentDateString() {

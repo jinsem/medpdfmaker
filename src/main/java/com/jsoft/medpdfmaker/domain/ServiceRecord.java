@@ -69,6 +69,11 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         this.fName = fName;
     }
 
+
+    public String getFAndLName() {
+        return String.format("%s %s", fName, lName);
+    }
+
     public String getMemberId() {
         return this.memberId;
     }
