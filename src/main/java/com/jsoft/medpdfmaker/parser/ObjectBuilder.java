@@ -6,5 +6,7 @@ public interface ObjectBuilder<T> {
 
     void setAttributeValue(String attrName, Cell value);
 
+    boolean canBeBuilt();
+
     T build();
 }

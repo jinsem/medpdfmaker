@@ -64,7 +64,7 @@ public class ServiceRecord implements Comparable<ServiceRecord> {
         return this.fName;
     }
 
-    @ExternalField("FNAME")
+    @ExternalField(value = "FNAME", required = true)
     public void setFName(String fName) {
         this.fName = fName;
     }

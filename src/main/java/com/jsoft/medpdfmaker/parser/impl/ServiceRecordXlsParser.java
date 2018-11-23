@@ -26,7 +26,7 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServiceRecordXlsParser.class);
 
-    final ObjectBuilder<ServiceRecord> serviceRecordBuilder;
+    private final ObjectBuilder<ServiceRecord> serviceRecordBuilder;
 
     private final List<String> fieldNames = new ArrayList<>();
 
@@ -39,17 +39,13 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
         try (final InputStream excelFile = new FileInputStream(srcFile);
              final Workbook workbook = new XSSFWorkbook(excelFile)) {
             final Sheet datatypeSheet = workbook.getSheetAt(0);
-            final Iterator<Row> iterator = datatypeSheet.iterator();
-            while (iterator.hasNext()) {
-                final Row currentRow = iterator.next();
+            for (Row currentRow : datatypeSheet) {
                 if (fieldNames.isEmpty()) {
                     tryToInitFieldNames(currentRow);
                 } else {
                     processRow(currentRow, rowCallBack);
                 }
             }    
-        } catch (FileNotFoundException e) {
-            LOG.error("Cannot open file", e);
         } catch (IOException e) {
             LOG.error("Cannot open file", e);
         }
@@ -72,7 +68,9 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
                 Cell curCell = currentRow.getCell(colIx++);
                 serviceRecordBuilder.setAttributeValue(fieldName, curCell);
             }
-        } 
-        rowCallBack.onRow(serviceRecordBuilder.build());   
+        }
+        if (serviceRecordBuilder.canBeBuilt()) {
+            rowCallBack.onRow(serviceRecordBuilder.build());
+        }
     }
 }

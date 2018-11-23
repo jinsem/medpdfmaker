@@ -5,3 +5,7 @@
 settings.json
 target/
 localwork/
+*.ipr
+*.iml
+.~lock*
+

@@ -9,5 +9,6 @@ import java.lang.annotation.ElementType;
 @Target(ElementType.METHOD)
 public @interface ExternalField {
     public String value() default "";
+    public boolean required() default false;
     public FieldType fieldType() default FieldType.STRING;
 }

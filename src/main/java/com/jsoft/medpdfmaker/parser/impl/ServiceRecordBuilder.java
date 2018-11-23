@@ -23,16 +23,22 @@ import org.apache.poi.ss.usermodel.DateUtil;
 
 public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
 
+    private static Set<String> REQUIRED_FIELDS = new HashSet<>();
     private static final Map<String, FieldMetaData> METADATA = buildMetaData();
 
     private ServiceRecord resultRecord = new ServiceRecord();
-    
+    private Set<String> requiredFieldsWithValues = new HashSet<>();
+
     private static Map<String, FieldMetaData> buildMetaData() {
         Map<String, FieldMetaData> result = new HashMap<>();
         for (Method method: ServiceRecord.class.getDeclaredMethods()) {
             if (method.isAnnotationPresent(ExternalField.class)) {
-                final String fieldName = method.getAnnotation(ExternalField.class).value();
-                final FieldType fieldType = method.getAnnotation(ExternalField.class).fieldType();
+                final ExternalField ann = method.getAnnotation(ExternalField.class);
+                final String fieldName = ann.value();
+                final FieldType fieldType = ann.fieldType();
+                if (ann.required()) {
+                    REQUIRED_FIELDS.add(fieldName);
+                }
                 final FieldMetaData newMd = new FieldMetaData(method, fieldType);
                 result.put(fieldName, newMd);
             }
@@ -45,7 +51,12 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
         final FieldMetaData fieldMetaData = METADATA.get(attrName);
         if (fieldMetaData == null) {
             return;
-        }   
+        }
+        if (REQUIRED_FIELDS.contains(attrName)) {
+            if (cellHasValue(valueCell)) {
+                requiredFieldsWithValues.add(attrName);
+            }
+        }
         Method methodToCall = fieldMetaData.method;
         try {
             if (fieldMetaData.fieldType.equals(FieldType.BOOLEAN)) {
@@ -69,6 +80,15 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             //TODO implement error processing
         }
+    }
+
+    private boolean cellHasValue(Cell valueCell) {
+        return valueCell != null && !CellType.BLANK.equals(valueCell.getCellType());
+    }
+
+    @Override
+    public boolean canBeBuilt() {
+        return REQUIRED_FIELDS.equals(requiredFieldsWithValues);
     }
 
     private Boolean extractBooleanValue(Cell cell) {
@@ -144,6 +164,7 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
     public ServiceRecord build() {
         final ServiceRecord result = resultRecord;
         resultRecord = new ServiceRecord();
+        requiredFieldsWithValues = new HashSet<>();
         return result;
 	}
 
