@@ -9,7 +9,8 @@ import java.util.Objects;
 /**
  * Domain entity for medial service record loaded from input file.
  */
-public class ServiceRecord implements Comparable<ServiceRecord> {
+@SuppressWarnings("unused")
+public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
     
     private String refId;
     private boolean cancelled;

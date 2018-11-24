@@ -5,11 +5,11 @@ import org.springframework.core.env.Environment;
 
 public class AppProperties {
 
-    private static final String PLACE_OF_SERVICE = "PlaceOfService";
-    private static final String PROCEDURES = "Procedures";
-    private static final String CHARGES = "Charges";
-    private static final String FEDERAL_TAX_ID = "FederalTaxID";
-    private static final String PROVIDER = "Provider";
+    private static final String PLACE_OF_SERVICE_PROP = "PlaceOfService";
+    private static final String PROCEDURES_PROP = "Procedures";
+    private static final String CHARGES_PROP = "Charges";
+    private static final String FEDERAL_TAX_ID_PROP = "FederalTaxID";
+    private static final String PROVIDER_PROP = "Provider";
 
     private final String placeOfService;
     private final String procedures;
@@ -21,19 +21,19 @@ public class AppProperties {
         if (environment == null) {
             throw new IllegalArgumentException("environment must not be null");
         }
-        placeOfService = environment.getProperty(PLACE_OF_SERVICE);
-        procedures = environment.getProperty(PROCEDURES);
-        String chargesStr = environment.getProperty(CHARGES);
+        placeOfService = environment.getProperty(PLACE_OF_SERVICE_PROP);
+        procedures = environment.getProperty(PROCEDURES_PROP);
+        String chargesStr = environment.getProperty(CHARGES_PROP);
         if (StringUtils.isBlank(chargesStr)) {
-            throw new IllegalArgumentException(CHARGES + " property value must be set");
+            throw new IllegalArgumentException(CHARGES_PROP + " property value must be set");
         }
         try {
             charges = Double.valueOf(chargesStr);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(CHARGES + " property value is not a number");
+            throw new IllegalArgumentException(CHARGES_PROP + " property value is not a number");
         }
-        federalTaxID = environment.getProperty(FEDERAL_TAX_ID);
-        provider = environment.getProperty(PROVIDER);
+        federalTaxID = environment.getProperty(FEDERAL_TAX_ID_PROP);
+        provider = environment.getProperty(PROVIDER_PROP);
     }
 
     public String getPlaceOfService() {

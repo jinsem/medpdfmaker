@@ -1,6 +1,8 @@
 package com.jsoft.medpdfmaker.parser;
 
-public interface RowCallback<T> {
+import com.jsoft.medpdfmaker.domain.DomainEntity;
+
+public interface RowCallback<T extends DomainEntity> {
 
     void onRow(T rowObj);
 }

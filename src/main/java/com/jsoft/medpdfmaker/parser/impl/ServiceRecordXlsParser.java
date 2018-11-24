@@ -36,7 +36,7 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
         try (final InputStream excelFile = new FileInputStream(srcFile);
              final Workbook workbook = new XSSFWorkbook(excelFile)) {
             final Sheet datatypeSheet = workbook.getSheetAt(0);
-            for (Row currentRow : datatypeSheet) {
+            for (final Row currentRow : datatypeSheet) {
                 if (fieldNames.isEmpty()) {
                     tryToInitFieldNames(currentRow);
                 } else {

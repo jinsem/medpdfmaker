@@ -18,7 +18,7 @@ import java.util.*;
 
 public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
 
-    private static Set<String> REQUIRED_FIELDS = new HashSet<>();
+    private static final Set<String> REQUIRED_FIELDS = new HashSet<>();
     private static final Map<String, FieldMetaData> METADATA = buildMetaData();
 
     private ServiceRecord resultRecord = new ServiceRecord();
@@ -47,10 +47,8 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
         if (fieldMetaData == null) {
             return;
         }
-        if (REQUIRED_FIELDS.contains(attrName)) {
-            if (cellHasValue(valueCell)) {
-                requiredFieldsWithValues.add(attrName);
-            }
+        if (REQUIRED_FIELDS.contains(attrName) && cellHasValue(valueCell)) {
+            requiredFieldsWithValues.add(attrName);
         }
         Method methodToCall = fieldMetaData.method;
         try {
@@ -113,8 +111,6 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
         } else if (CellType.BOOLEAN.equals(cell.getCellType())) {
             boolean boolVal = cell.getBooleanCellValue();
             result = boolVal ? 0 : 1;
-        } else if (CellType.BLANK.equals(cell.getCellType())) {
-            result = null;
         } else if (CellType.STRING.equals(cell.getCellType())) {
             String strVal = StringUtils.trim(cell.getStringCellValue());
             try {
@@ -165,10 +161,10 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
 
     private static class FieldMetaData {
 
-        private Method method;
-        private FieldType fieldType;
+        private final Method method;
+        private final FieldType fieldType;
 
-        public FieldMetaData(Method method, FieldType fieldType) {
+        FieldMetaData(Method method, FieldType fieldType) {
             this.method = method;
             this.fieldType = fieldType;
         }

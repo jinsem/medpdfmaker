@@ -15,7 +15,7 @@ import static org.apache.pdfbox.io.MemoryUsageSetting.setupTempFileOnly;
 
 public class PdfFileGenerator {
 
-    private MemberPdfGenerator memberPdfGenerator;
+    private final MemberPdfGenerator memberPdfGenerator;
 
     public PdfFileGenerator(final MemberPdfGenerator memberPdfGenerator) {
         this.memberPdfGenerator = memberPdfGenerator;

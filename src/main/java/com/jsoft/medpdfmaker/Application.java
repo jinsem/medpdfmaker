@@ -31,9 +31,9 @@ public class Application implements CommandLineRunner {
     private static final String INPUT_FILE_OPTION = "i";
     private static final String OUTPUT_FOLDER_OPTION = "o";
 
-    private static Logger LOG = LoggerFactory.getLogger(Application.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
-    private static Options cliOptions = buildOptions();
+    private static final Options cliOptions = buildOptions();
 
     private AppProperties appProperties;
 
@@ -73,18 +73,13 @@ public class Application implements CommandLineRunner {
 		    printHelpAndExit();
 		}
 		if (!cmd.hasOption(INPUT_FILE_OPTION)) {
-		    logMissingOption(INPUT_FILE_OPTION);
+            LOG.error("Missing {} option", INPUT_FILE_OPTION);
 		    printHelpAndExit();
 		}
     }
 
-    private void logMissingOption(String name) {
-        LOG.error("Missing {} option", name);
-    }
-
     private void printHelpAndExit() {
-        final HelpFormatter formater = new HelpFormatter();
-        formater.printHelp("Main", cliOptions);
+        new HelpFormatter().printHelp("Main", cliOptions);
         System.exit(0);
     }
 

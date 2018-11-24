@@ -28,7 +28,7 @@ public class MemberPdfGenerator {
 
     private static final int ROWS_COUNT = 6;
 
-    private AppProperties appProperties;
+    private final AppProperties appProperties;
 
     private final DateTimeFormatter formatYearCentury = DateTimeFormatter.ofPattern("yy");
     private final DateTimeFormatter formatDay = DateTimeFormatter.ofPattern("dd");
@@ -46,7 +46,7 @@ public class MemberPdfGenerator {
         final List<Path> result = new LinkedList<>();
         final ServiceRecord headerRecord = memberServiceRecords.get(0);
         List<ServiceRecord> pageRecords = new LinkedList<>();
-        final PageInfo pageInfo = new PageInfo(memberServiceRecords.size(), ROWS_COUNT);
+        final PageInfo pageInfo = new PageInfo(memberServiceRecords.size());
         for (final ServiceRecord memberServiceRecord : memberServiceRecords) {
             pageRecords.add(memberServiceRecord);
             if (pageRecords.size() == ROWS_COUNT) {
@@ -68,7 +68,7 @@ public class MemberPdfGenerator {
         try (InputStream templateStream = getTemplateStream()) {
             pdDocument = PDDocument.load(templateStream);
             fillPageHeader(pdDocument, headerRecord, pageInfo);
-            fillPageTable(pdDocument, pageRecords, pageInfo);
+            fillPageTable(pdDocument, pageRecords);
             fillPageFooter(pdDocument, pageInfo);
             pdDocument.save(pageFileName);
         } finally {
@@ -84,7 +84,7 @@ public class MemberPdfGenerator {
         setField(pdDocument, "Text1", memberIdPage);
         setField(pdDocument, "Text2", headerRecord.getFAndLName());
         String origin = headerRecord.getOrigin();
-        int originSlashPos = origin.indexOf("/");
+        int originSlashPos = origin.indexOf('/');
         if (originSlashPos > -1) {
             setField(pdDocument,"Text3", origin.substring(0, originSlashPos));
         } else {
@@ -113,19 +113,19 @@ public class MemberPdfGenerator {
         setField(pdDocument,"Text57", appProperties.getProvider());
     }
 
-    private void fillPageTable(PDDocument pdDocument, List<ServiceRecord> pageRecords, PageInfo pageInfo) throws IOException {
+    private void fillPageTable(PDDocument pdDocument, List<ServiceRecord> pageRecords) throws IOException {
         final double charges = appProperties.getCharges();
         int recNum = 0;
         for (final ServiceRecord pageRecord : pageRecords) {
             int fieldIdxShift = recNum * 7;
-            setField(pdDocument,"Text" + (15 + fieldIdxShift), appProperties.getPlaceOfService());
-            setField(pdDocument,"Text" + (16 + fieldIdxShift), appProperties.getProcedures());
-            setField(pdDocument,"Text" + (17 + fieldIdxShift),formatMoney.format(charges));
-            setField(pdDocument,"Text" + (18 + fieldIdxShift), pageRecord.getRefId());
             LocalDate pickUpDate = pageRecord.getPickupDate();
             setField(pdDocument,"Text" + (12 + fieldIdxShift), formatMonth.format(pickUpDate));
             setField(pdDocument,"Text" + (13 + fieldIdxShift), formatDay.format(pickUpDate));
             setField(pdDocument,"Text" + (14 + fieldIdxShift), formatYearCentury.format(pickUpDate));
+            setField(pdDocument,"Text" + (15 + fieldIdxShift), appProperties.getPlaceOfService());
+            setField(pdDocument,"Text" + (16 + fieldIdxShift), appProperties.getProcedures());
+            setField(pdDocument,"Text" + (17 + fieldIdxShift), formatMoney.format(charges));
+            setField(pdDocument,"Text" + (18 + fieldIdxShift), pageRecord.getRefId());
             recNum++;
         }
     }
@@ -155,7 +155,7 @@ public class MemberPdfGenerator {
         }
     }
 
-    public static void setField(final PDDocument pdDocument, final String fName, final String fValue) throws IOException {
+    private static void setField(final PDDocument pdDocument, final String fName, final String fValue) throws IOException {
         final PDDocumentCatalog pdDocumentCatalog = pdDocument.getDocumentCatalog();
         final PDAcroForm pdAcroForm = pdDocumentCatalog.getAcroForm();
         final PDField field = pdAcroForm.getField(fName);
@@ -174,10 +174,10 @@ public class MemberPdfGenerator {
         final boolean multiPaged;
 
         // memberServiceRecords
-        PageInfo(int recordsCount, int recordsOnPage) {
+        PageInfo(int recordsCount) {
             this.recordsCount = recordsCount;
             this.pageNum = 1;
-            this.pageCount = (int)Math.round(Math.ceil((double)recordsCount / recordsOnPage));
+            this.pageCount = (int)Math.round(Math.ceil((double)recordsCount / ROWS_COUNT));
             this.multiPaged = this.pageCount > 1;
 
         }

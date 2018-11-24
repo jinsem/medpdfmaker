@@ -7,7 +7,7 @@ import java.util.*;
 
 public class ServiceRecordRepository implements EntityGroupRepository<String, ServiceRecord> {
 
-    private Map<String, List<ServiceRecord>> repository = new TreeMap<>();
+    private final Map<String, List<ServiceRecord>> repository = new TreeMap<>();
 
     @Override
     public void put(String key, ServiceRecord value) {
