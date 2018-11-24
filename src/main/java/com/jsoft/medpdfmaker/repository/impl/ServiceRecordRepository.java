@@ -28,4 +28,9 @@ public class ServiceRecordRepository implements EntityGroupRepository<String, Se
     public Set<String> getKeys() {
         return repository.keySet();
 	}
+
+    @Override
+    public void clean() {
+        repository.clear();
+    }
 }

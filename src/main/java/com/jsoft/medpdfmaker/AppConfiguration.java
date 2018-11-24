@@ -23,4 +23,9 @@ public class AppConfiguration {
     public AppProperties appProperties() {
         return new AppProperties(environment);
     }
+
+    @Bean
+    public AppParametersParser appParametersParser() {
+        return new AppParametersParser();
+    }
 }

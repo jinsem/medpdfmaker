@@ -1,0 +1,138 @@
+package com.jsoft.medpdfmaker;
+
+import com.jsoft.medpdfmaker.exception.ParametersParsingException;
+import org.apache.commons.cli.*;
+import org.apache.commons.lang.StringUtils;
+
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+
+public class AppParametersParser {
+
+    private static final String HELP_OPTION = "h";
+    private static final String HELP_OPTION_FULL = "help";
+
+    private static final String INPUT_FILE_OPTION = "i";
+    private static final String INPUT_FILE_OPTION_FULL = "input-file";
+
+    private static final String OUTPUT_FOLDER_OPTION = "o";
+    private static final String OUTPUT_FOLDER_OPTION_FULL = "output-folder";
+
+    private static final String INPUT_FILE_SHEETS_TO_PROCESS = "s";
+    private static final String INPUT_FILE_SHEETS_TO_PROCESS_FULL = "sheet-numbers";
+
+    private final Options cliOptions = buildOptions();
+
+    private Options buildOptions() {
+        final Options result = new Options();
+        result.addOption(HELP_OPTION, HELP_OPTION_FULL, false,
+                "Print application usage help");
+        result.addOption(INPUT_FILE_OPTION, INPUT_FILE_OPTION_FULL, true,
+                "Defines path to input Excel file that needs to be processed");
+        result.addOption(OUTPUT_FOLDER_OPTION, OUTPUT_FOLDER_OPTION_FULL, true,
+                "(Optional) Defines path to folder were the generated PDF file(s) should be placed. If not set, PDF file(s) will be placed in the folder where input file is located." +
+                           "If processing of multiply sheets is requested, application will create separate PDF file for each processed sheet.");
+        result.addOption(INPUT_FILE_SHEETS_TO_PROCESS, INPUT_FILE_SHEETS_TO_PROCESS_FULL, true,
+                "(Optional) Comma separated list of sheet numbers that must be processed by the application. If paarmeters is not set, only the information from the 1st sheet in the input Excel book will be processed. " +
+                           "Example: 1,2,3");
+        return result;
+    }
+
+    public AppParameters parse(String... args) {
+        final CommandLineParser parser = new DefaultParser();
+        try {
+            final CommandLine cmd = parser.parse(cliOptions, args);
+            if (cmd.hasOption(HELP_OPTION)) {
+                return buildHelpAppParameters();
+            } else {
+                return buildAppParameters(cmd);
+            }
+        } catch (ParseException e) {
+            throw new ParametersParsingException("Cannot parse application paarmeters", e);
+        }
+    }
+
+    private AppParameters buildHelpAppParameters() {
+        final AppParameters.Builder builder = new AppParameters.Builder();
+        builder.setHelpRequested(true);
+        return builder.build();
+    }
+
+    private AppParameters buildAppParameters(CommandLine cmd) {
+        final AppParameters.Builder resultBuilder = new AppParameters.Builder();
+        final String inputFileName = cmd.getOptionValue(INPUT_FILE_OPTION);
+        setInputFileName(inputFileName, resultBuilder);
+        setOutputFolderName(inputFileName, cmd.getOptionValue(OUTPUT_FOLDER_OPTION), resultBuilder);
+        setSheetNumbers(cmd.getOptionValue(INPUT_FILE_SHEETS_TO_PROCESS), resultBuilder);
+        return resultBuilder.build();
+    }
+
+    private void setInputFileName(String inputFileName, AppParameters.Builder resultBuilder) {
+        if (StringUtils.isBlank(inputFileName)) {
+            throw new ParametersParsingException(INPUT_FILE_OPTION + " is required and cannot be empty");
+        }
+        final File fileToVerify = new File(inputFileName);
+        if (!fileToVerify.exists()) {
+            throw new ParametersParsingException(inputFileName + " cannot be found. Please make sure that file name is set correctly");
+        }
+        if (!fileToVerify.canRead()) {
+            throw new ParametersParsingException(inputFileName + " cannot be read. Please make sure current system user has permissions to read this file");
+        }
+        resultBuilder.setInputFileName(inputFileName);
+    }
+
+    private void setOutputFolderName(String inputFileName, String outputFolderName, AppParameters.Builder resultBuilder) {
+        final File outputFolder;
+        if (StringUtils.isBlank(outputFolderName)) {
+            // it is OK. just take folder that contains input file
+            outputFolder = new File(inputFileName).getParentFile();
+        } else {
+            outputFolder = new File(outputFolderName);
+        }
+        if (!outputFolder.exists()) {
+            throw new ParametersParsingException(outputFolder + " cannot be found. " +
+                    "Please make sure that output folder name is set correctly");
+        }
+        if (!outputFolder.isDirectory()) {
+            throw new ParametersParsingException(outputFolder + " is not a directory. " +
+                    "Please make sure that this parameters contains valid path to a directory, not to a file");
+        }
+        if (!outputFolder.canWrite()) {
+            throw new ParametersParsingException("The application cannot create files in the " + outputFolder + " directory. " +
+                    "Please make sure that current system user has write access to this directory");
+        }
+        resultBuilder.setOutputFolderName(outputFolder.getAbsolutePath());
+    }
+
+    private void setSheetNumbers(String optionValue, AppParameters.Builder resultBuilder) {
+        final List<Integer> sheetNumbers = new LinkedList<>();
+        if (StringUtils.isBlank(optionValue)) {
+            // it is OK. Just parse the 1st sheet
+            sheetNumbers.add(0);
+        } else {
+            final String[] strNumbers = optionValue.split(",");
+            for (final String strNumber : strNumbers) {
+                final String tmpStr = StringUtils.trim(strNumber);
+                if (StringUtils.isEmpty(tmpStr)) {
+                    throw new ParametersParsingException("All sheet numbers must be set and cannot be empty");
+                }
+                int intNumber;
+                try {
+                    intNumber = Integer.parseInt(strNumber);
+                } catch (Exception e) {
+                    throw new ParametersParsingException("All sheet numbers must be numbers. Incorrect value: " + strNumber);
+                }
+                if (intNumber < 0) {
+                    throw new ParametersParsingException("All sheet numbers must be greater of equal to 0. Incorrect value: " + intNumber);
+                }
+                sheetNumbers.add(intNumber);
+            }
+        }
+        resultBuilder.setSheetNumbers(sheetNumbers);
+    }
+
+    public void printHelp() {
+        new HelpFormatter().printHelp("Main", cliOptions);
+    }
+}
