@@ -1,13 +1,9 @@
 package com.jsoft.medpdfmaker.repository.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
 import com.jsoft.medpdfmaker.repository.EntityGroupRepository;
+
+import java.util.*;
 
 public class ServiceRecordRepository implements EntityGroupRepository<String, ServiceRecord> {
 

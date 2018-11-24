@@ -1,10 +1,5 @@
 package com.jsoft.medpdfmaker;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
 import com.jsoft.medpdfmaker.parser.ObjectBuilder;
 import com.jsoft.medpdfmaker.parser.TableFileParser;
@@ -13,13 +8,7 @@ import com.jsoft.medpdfmaker.parser.impl.ServiceRecordXlsParser;
 import com.jsoft.medpdfmaker.pdf.MemberPdfGenerator;
 import com.jsoft.medpdfmaker.pdf.PdfFileGenerator;
 import com.jsoft.medpdfmaker.repository.impl.ServiceRecordRepository;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.env.Environment;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.jsoft.medpdfmaker.util.FileUtil.stripLastSlashIfNeeded;
 

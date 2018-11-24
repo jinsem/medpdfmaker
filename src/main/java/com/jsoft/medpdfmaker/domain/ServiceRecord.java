@@ -1,10 +1,10 @@
 package com.jsoft.medpdfmaker.domain;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
-
-import org.apache.commons.lang3.builder.CompareToBuilder;
 
 /**
  * Domain entity for medial service record loaded from input file.

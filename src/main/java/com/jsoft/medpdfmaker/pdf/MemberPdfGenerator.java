@@ -1,5 +1,15 @@
 package com.jsoft.medpdfmaker.pdf;
 
+import com.jsoft.medpdfmaker.AppProperties;
+import com.jsoft.medpdfmaker.Constants;
+import com.jsoft.medpdfmaker.domain.ServiceRecord;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,16 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.jsoft.medpdfmaker.Constants;
-import com.jsoft.medpdfmaker.AppProperties;
-import com.jsoft.medpdfmaker.domain.ServiceRecord;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 
 import static com.jsoft.medpdfmaker.util.FileUtil.stripLastSlashIfNeeded;
 

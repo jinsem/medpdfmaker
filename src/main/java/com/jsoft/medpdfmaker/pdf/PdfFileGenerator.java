@@ -4,10 +4,7 @@ import com.jsoft.medpdfmaker.Constants;
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
 import com.jsoft.medpdfmaker.repository.impl.ServiceRecordRepository;
 import org.apache.commons.io.FileUtils;
-import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;

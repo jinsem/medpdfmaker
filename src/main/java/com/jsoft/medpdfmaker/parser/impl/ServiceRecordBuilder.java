@@ -1,25 +1,20 @@
 package com.jsoft.medpdfmaker.parser.impl;
 
+import com.jsoft.medpdfmaker.domain.ExternalField;
+import com.jsoft.medpdfmaker.domain.FieldType;
+import com.jsoft.medpdfmaker.domain.ServiceRecord;
+import com.jsoft.medpdfmaker.parser.ObjectBuilder;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import com.jsoft.medpdfmaker.domain.ExternalField;
-import com.jsoft.medpdfmaker.domain.FieldType;
-import com.jsoft.medpdfmaker.domain.ServiceRecord;
-import com.jsoft.medpdfmaker.parser.ObjectBuilder;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DateUtil;
+import java.util.*;
 
 public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
 
