@@ -17,6 +17,9 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.*;
 
+/**
+ * Builder implementation for ServiceRecord.
+ */
 public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
 
     private static final Set<String> REQUIRED_FIELDS = new HashSet<>();
@@ -91,7 +94,7 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
     }
 
     private Boolean extractBooleanValue(Cell cell) {
-        Boolean result = false;
+        boolean result = false;
         if (CellType.BOOLEAN.equals(cell.getCellType())) {
             result = cell.getBooleanCellValue();
         } else if (CellType.NUMERIC.equals(cell.getCellType())) {

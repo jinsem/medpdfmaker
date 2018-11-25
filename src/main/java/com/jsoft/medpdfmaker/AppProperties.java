@@ -3,13 +3,9 @@ package com.jsoft.medpdfmaker;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.env.Environment;
 
-public class AppProperties {
+import static com.jsoft.medpdfmaker.Constants.*;
 
-    private static final String PLACE_OF_SERVICE_PROP = "PlaceOfService";
-    private static final String PROCEDURES_PROP = "Procedures";
-    private static final String CHARGES_PROP = "Charges";
-    private static final String FEDERAL_TAX_ID_PROP = "FederalTaxID";
-    private static final String PROVIDER_PROP = "Provider";
+public class AppProperties {
 
     private final String placeOfService;
     private final String procedures;

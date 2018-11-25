@@ -1,5 +1,6 @@
 package com.jsoft.medpdfmaker.util;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.slf4j.Logger;
 
 /**
@@ -19,6 +20,19 @@ public final class LoggerUtil {
     public static void warn(Logger log, String message) {
         if (log.isWarnEnabled()) {
             log.warn(message);
+        }
+    }
+
+    public static void logParsingError(Logger log, String description, Cell cell) {
+        if (log.isErrorEnabled()) {
+            final String message;
+            if (cell == null) {
+                message = String.format("Data parsing error: %s", description);
+            } else {
+                message = String.format("Data parsing error on sheet: [%s], row: [%d], cell: [%d]: %s",
+                        cell.getSheet().getSheetName(), cell.getRowIndex(), cell.getColumnIndex(), description);
+            }
+            log.error(message);
         }
     }
 }
