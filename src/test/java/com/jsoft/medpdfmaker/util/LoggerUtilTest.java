@@ -36,6 +36,20 @@ class LoggerUtilTest {
         verify(loggerMock, times(1)).warn(msg);
     }
 
+
+    @Test
+    void info() {
+        when(loggerMock.isInfoEnabled()).thenReturn(false);
+        final String msg = "my message";
+        LoggerUtil.info(loggerMock, msg);
+        verify(loggerMock, times(1)).isInfoEnabled();
+        verify(loggerMock, times(0)).warn(any());
+        when(loggerMock.isInfoEnabled()).thenReturn(true);
+        LoggerUtil.info(loggerMock, msg);
+        verify(loggerMock, times(2)).isInfoEnabled();
+        verify(loggerMock, times(1)).info(msg);
+    }
+
     @Test
     void logParsingError() {
         when(loggerMock.isErrorEnabled()).thenReturn(false);
