@@ -4,7 +4,7 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%msg%n"/>
         </Console>
-        <RollingFile name="RollingFile" fileName="./med-pdf-maker.log" filePattern="./med-pdf-maker-%d{-dd-MM-yyyy}-%i.log">
+        <RollingFile name="RollingFile" fileName="./logs/med-pdf-maker.log" filePattern="./logs/med-pdf-maker-%d{-dd-MM-yyyy}-%i.log">
             <PatternLayout>
                 <pattern>%d %p %C{1.} [%t] %m%n</pattern>
             </PatternLayout>
