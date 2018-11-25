@@ -64,17 +64,12 @@ public class MemberPdfGenerator {
     private Path generatePage(PageInfo pageInfo, ServiceRecord headerRecord,
                               List<ServiceRecord> pageRecords, Path workFolder) throws IOException {
         final String pageFileName = makePageFileName(headerRecord, pageInfo.pageNum, workFolder);
-        PDDocument pdDocument = null;
-        try (InputStream templateStream = getTemplateStream()) {
-            pdDocument = PDDocument.load(templateStream);
+        try (InputStream templateStream = getTemplateStream();
+             PDDocument pdDocument = PDDocument.load(templateStream);) {
             fillPageHeader(pdDocument, headerRecord, pageInfo);
             fillPageTable(pdDocument, pageRecords);
             fillPageFooter(pdDocument, pageInfo);
             pdDocument.save(pageFileName);
-        } finally {
-            if (pdDocument != null) {
-                pdDocument.close();
-            }
         }
         return Paths.get(pageFileName);
     }
