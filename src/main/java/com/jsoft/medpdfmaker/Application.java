@@ -8,7 +8,10 @@ import com.jsoft.medpdfmaker.parser.impl.ServiceRecordXlsParser;
 import com.jsoft.medpdfmaker.pdf.MemberPdfGenerator;
 import com.jsoft.medpdfmaker.pdf.PdfFileGenerator;
 import com.jsoft.medpdfmaker.repository.impl.ServiceRecordRepository;
+import com.jsoft.medpdfmaker.util.LoggerUtil;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -24,6 +27,8 @@ public class Application implements CommandLineRunner {
 
     private AppProperties appProperties;
     private AppParametersParser appParametersParser;
+
+    private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
     @Autowired
     public void setAppProperties(AppProperties appProperties) {
@@ -47,8 +52,13 @@ public class Application implements CommandLineRunner {
                 printHelpAndExis();
             }
             generatePdf(appParameters);
+            LoggerUtil.info(LOG, "Data processing completed successfully!");
         } catch (ParametersParsingException e) {
             printHelpAndExis();
+        } catch (Exception e) {
+            LoggerUtil.info(LOG, String.format("Data processing failed: %s. " +
+                    "Please look into application log file for details.", e.getMessage()));
+            throw e;
         }
     }
 
@@ -62,9 +72,12 @@ public class Application implements CommandLineRunner {
         final ServiceRecordRepository repository = new ServiceRecordRepository();
         final MemberPdfGenerator memberPdfGenerator = new MemberPdfGenerator(appProperties);
         final PdfFileGenerator pdfFileGenerator = new PdfFileGenerator(memberPdfGenerator);
+        LoggerUtil.info(LOG, "Start parsing input file " + appParameters.getInputFileName());
         for (final int sheetIdx : appParameters.getSheetNumbers()) {
+            LoggerUtil.info(LOG, String.format("Processing sheet #%d", sheetIdx));
             final String outFileName = makeOutFileName(appParameters, sheetIdx);
             parser.parse(appParameters.getInputFile(), sheetIdx, rowObj -> repository.put(rowObj.getMemberId(), rowObj));
+            LoggerUtil.info(LOG, String.format("Writing data to PDF file %s", outFileName));
             pdfFileGenerator.generate(outFileName, repository);
             repository.clean();
         }

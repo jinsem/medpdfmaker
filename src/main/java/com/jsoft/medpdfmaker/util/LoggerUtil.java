@@ -23,6 +23,18 @@ public final class LoggerUtil {
         }
     }
 
+    public static void info(Logger log, String message) {
+        if (log.isInfoEnabled()) {
+            log.info(message);
+        }
+    }
+
+    /**
+     * Print data parsing detailed error.
+     * @param log Logger instance to use
+     * @param description short description of the problem.
+     * @param cell Cell reference that contains data that cannot be parsed. If this value is null, function just ignores it.
+     */
     public static void logParsingError(Logger log, String description, Cell cell) {
         if (log.isErrorEnabled()) {
             final String message;
