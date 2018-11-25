@@ -153,9 +153,17 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         this.fName = fName;
     }
 
-
     public String getFAndLName() {
-        return String.format("%s %s", fName, lName);
+        if (fName == null && lName == null) {
+            return null;
+        }
+        if (fName == null) {
+            return lName;
+        } else if (lName == null) {
+            return fName;
+        } else {
+            return String.format("%s %s", fName, lName);
+        }
     }
 
     public String getMemberId() {
