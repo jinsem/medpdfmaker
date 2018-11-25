@@ -11,6 +11,9 @@ public class ServiceRecordRepository implements EntityGroupRepository<String, Se
 
     @Override
     public void put(String key, ServiceRecord value) {
+        if (key == null || value == null) {
+            throw new IllegalArgumentException("Both key and value cannot be null");
+        }
         repository.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
     }
 

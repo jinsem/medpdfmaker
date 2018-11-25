@@ -105,7 +105,7 @@ public class MemberPdfGenerator {
         if (StringUtils.isNotEmpty(headerRecord.getPhone())) {
             setField(pdDocument,"Text8", headerRecord.getPhone());
         }
-        LocalDate dob = headerRecord.getDob();
+        LocalDate dob = headerRecord.getDayOfBirth();
         setField(pdDocument,"Text9", formatMonth.format(dob));
         setField(pdDocument,"Text10", formatDay.format(dob));
         setField(pdDocument,"Text11", formatYearCentury.format(dob));

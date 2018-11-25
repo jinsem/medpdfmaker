@@ -3,6 +3,7 @@ package com.jsoft.medpdfmaker.parser.impl;
 import com.jsoft.medpdfmaker.domain.ExternalField;
 import com.jsoft.medpdfmaker.domain.FieldType;
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
+import com.jsoft.medpdfmaker.exception.AppException;
 import com.jsoft.medpdfmaker.parser.ObjectBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -52,26 +53,31 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
         }
         Method methodToCall = fieldMetaData.method;
         try {
-            if (fieldMetaData.fieldType.equals(FieldType.BOOLEAN)) {
-                Boolean boolVal = extractBooleanValue(valueCell);
+            if (FieldType.BOOLEAN.equals(fieldMetaData.fieldType)) {
+                final Boolean boolVal = extractBooleanValue(valueCell);
                 methodToCall.invoke(resultRecord, boolVal);
-            } else if (fieldMetaData.fieldType.equals(FieldType.DATE)) {
-                LocalDate dateVal = extractDateValue(valueCell);
+            } else if (FieldType.DATE.equals(fieldMetaData.fieldType)) {
+                final LocalDate dateVal = extractDateValue(valueCell);
                 methodToCall.invoke(resultRecord, dateVal);
-            } else if (fieldMetaData.fieldType.equals(FieldType.TIME)) {
-                LocalTime timeVal = extractTimeValue(valueCell);
+            } else if (FieldType.TIME.equals(fieldMetaData.fieldType)) {
+                final LocalTime timeVal = extractTimeValue(valueCell);
                 methodToCall.invoke(resultRecord, timeVal);
-            } else if (fieldMetaData.fieldType.equals(FieldType.STRING)) {
-                String stringVal = extractStringValue(valueCell);
+            } else if (FieldType.STRING.equals(fieldMetaData.fieldType)) {
+                final String stringVal = extractStringValue(valueCell);
                 methodToCall.invoke(resultRecord, stringVal);
-            } else if (fieldMetaData.fieldType.equals(FieldType.INTEGER)) {
-                Integer stringVal = extractIntegerValue(valueCell);
+            } else if (FieldType.INTEGER.equals(fieldMetaData.fieldType)) {
+                final Integer stringVal = extractIntegerValue(valueCell);
                 methodToCall.invoke(resultRecord, stringVal);
             } else {
-                // TODO: exception
+                throw new IllegalStateException(fieldMetaData.fieldType + " type is unknown");
             }
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            //TODO implement error processing
+            // This is unlikely situation. Annotation is used only for public fields, so no IllegalAccessException possible
+            // IllegalArgumentException is possible during application testing, but not very possible in production
+            // when new building logic is debugged and tested.
+            // InvocationTargetException is also not possible because all the methods that are called here are simple
+            // setters and do not have any complex logic that can throw an exception.
+            throw new AppException("Error setting value for attribute " + attrName, e);
         }
     }
 

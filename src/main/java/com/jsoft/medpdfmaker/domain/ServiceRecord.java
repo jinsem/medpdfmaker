@@ -7,38 +7,121 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 /**
- * Domain entity for medial service record loaded from input file.
+ * Domain entity for medical service record
  */
 @SuppressWarnings("unused")
 public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
-    
+
+    /**
+     * Service record reference ID
+     */
     private String refId;
+
+    /**
+     * Flag that marks cancelled trips that must not be included in the final PDF file.
+     */
     private boolean cancelled;
+
+    /**
+     * Patient's last name
+     */
     private String lName;
+
+    /**
+     * Patient's first name
+     */
     private String fName;
+
+    /**
+     * Patient's member ID
+     */
     private String memberId;
-    private LocalDate dob;
+
+    /**
+     * Patient's day of birth
+     */
+    private LocalDate dayOfBirth;
+
+    /**
+     * Date when patient was picked up
+     */
     private LocalDate pickupDate;
+
+    /**
+     * Time when patient was picked up
+     */
     private LocalTime pickupTime;
+
+    /**
+     * Time of the patient's appointment
+     */
     private LocalTime apptTime;
+
+    /**
+     * Patient's trip origin
+     */
     private String origin;
+
+    /**
+     * Patient's trip destination
+     */
     private String destination;
+
+    /**
+     * Flag that marks services where wheel chair was used.
+     */
     private boolean wheelChairYesNo;
+
+    /**
+     * Total number of passengers in this service trip
+     */
     private Integer totalPassengers;
+
+    /**
+     * Some notes about the service trip
+     */
     private String notes;
+
+    /**
+     * Patient's phone
+     */
     private String telephone;
+
+    /**
+     * Initial of the service trip coordinator.
+     */
     private String coordinatorInitials;
+
+    /**
+     * City where trip was performed
+     */
     private String city;
+
+    /**
+     * State where trip was performed
+     */
     private String state;
+
+    /**
+     * Zipcode where trip was performed
+     */
     private String zipCode;
+
+    /**
+     * Areacode where trip was performed
+     */
     private String areaCode;
+
+    /**
+     * Phone number. Needs to be verified what is it.
+     */
     private String phone;
 
     public String getRefId() {
         return this.refId;
     }
 
-    @ExternalField("REF_ID")
+    @ExternalField(value = "REF_ID", required = true)
     public void setRefId(String refId) {
         this.refId = refId;
     }
@@ -56,7 +139,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.lName;
     }
 
-    @ExternalField("LNAME")
+    @ExternalField(value = "LNAME", required = true)
     public void setLName(String lName) {
         this.lName = lName;
     }
@@ -79,25 +162,25 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.memberId;
     }
 
-    @ExternalField("MEMBERID")
+    @ExternalField(value = "MEMBERID", required = true)
     public void setMemberId(String memberId) {
         this.memberId = memberId;
     }
 
-    public LocalDate getDob() {
-        return this.dob;
+    public LocalDate getDayOfBirth() {
+        return this.dayOfBirth;
     }
 
-    @ExternalField(value = "DOB", fieldType = FieldType.DATE)
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
+    @ExternalField(value = "DOB", required = true, fieldType = FieldType.DATE)
+    public void setDayOfBirth(LocalDate dayOfBirth) {
+        this.dayOfBirth = dayOfBirth;
     }
 
     public LocalDate getPickupDate() {
         return this.pickupDate;
     }
 
-    @ExternalField(value = "PICKUP_DATE", fieldType = FieldType.DATE)
+    @ExternalField(value = "PICKUP_DATE", required = true, fieldType = FieldType.DATE)
     public void setPickupDate(LocalDate pickupDate) {
         this.pickupDate = pickupDate;
     }
@@ -235,7 +318,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
             .append(lName, o.lName)
             .append(fName, o.fName)
             .append(memberId, o.memberId)
-            .append(dob, o.dob)
+            .append(dayOfBirth, o.dayOfBirth)
             .append(pickupDate, o.pickupDate)
             .append(pickupTime, o.pickupTime)
             .toComparison();
@@ -253,13 +336,13 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
                && Objects.equals(lName, serviceRecord.lName) 
                && Objects.equals(fName, serviceRecord.fName) 
                && Objects.equals(memberId, serviceRecord.memberId) 
-               && Objects.equals(dob, serviceRecord.dob) 
+               && Objects.equals(dayOfBirth, serviceRecord.dayOfBirth)
                && Objects.equals(pickupDate, serviceRecord.pickupDate) 
                && Objects.equals(pickupTime, serviceRecord.pickupTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(refId, lName, fName, memberId, dob, pickupDate, pickupTime);
+        return Objects.hash(refId, lName, fName, memberId, dayOfBirth, pickupDate, pickupTime);
     }
 }

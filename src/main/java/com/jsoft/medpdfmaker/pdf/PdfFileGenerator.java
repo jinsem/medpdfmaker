@@ -30,7 +30,7 @@ public class PdfFileGenerator {
             final PDFMergerUtility pdfMerger = new PDFMergerUtility();
             pdfMerger.setDestinationFileName(outFileName);
             workFolder = initWorkFolder();
-            for(final String key : repository.getKeys()) {
+            for (final String key : repository.getKeys()) {
                 final List<ServiceRecord> serviceRecords = repository.getGroupByKey(key);
                 List<Path> pages = memberPdfGenerator.generate(workFolder, serviceRecords);
                 for (final Path page : pages) {
