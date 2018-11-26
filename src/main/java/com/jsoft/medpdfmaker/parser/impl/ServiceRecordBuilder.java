@@ -15,6 +15,8 @@ import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 /**
@@ -27,6 +29,17 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
 
     private ServiceRecord resultRecord = new ServiceRecord();
     private Set<String> requiredFieldsWithValues = new HashSet<>();
+
+    private final Set<String> possibleTrues = new HashSet<>(
+            Arrays.asList("Y", "YES", "TRUE", "X")
+    );
+    private static final List<DateTimeFormatter> TIME_FORMATS =
+            Arrays.asList(
+                    DateTimeFormatter.ofPattern("h:mma"),
+                    DateTimeFormatter.ofPattern("h:mm a"),
+                    DateTimeFormatter.ofPattern("HH:mm"),
+                    DateTimeFormatter.ofPattern("HH:mm:ss")
+            );
 
     private static Map<String, FieldMetaData> buildMetaData() {
         Map<String, FieldMetaData> result = new HashMap<>();
@@ -94,21 +107,20 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
     }
 
     private Boolean extractBooleanValue(Cell cell) {
-        boolean result = false;
-        if (CellType.BOOLEAN.equals(cell.getCellType())) {
+        boolean result;
+        if (CellType.BLANK.equals(cell.getCellType())) {
+            result = false;
+        } else if (CellType.BOOLEAN.equals(cell.getCellType())) {
             result = cell.getBooleanCellValue();
         } else if (CellType.NUMERIC.equals(cell.getCellType())) {
-            double numVal = cell.getNumericCellValue();
+            final double numVal = cell.getNumericCellValue();
             result = Math.abs(0 - numVal) > 0.01;
         } else if (CellType.STRING.equals(cell.getCellType())) {
-            String strVal = StringUtils.upperCase(StringUtils.trim(cell.getStringCellValue()));
-            Set<String> possibleTrues = new HashSet<>();
-            possibleTrues.add("Y");
-            possibleTrues.add("YES");
-            possibleTrues.add("TRUE");
-            possibleTrues.add("X");
-            result = possibleTrues.contains(strVal);
-        } 
+            final String strVal = StringUtils.upperCase(StringUtils.trim(cell.getStringCellValue()));
+            result = strVal != null && possibleTrues.contains(strVal);
+        } else {
+            result = false;
+        }
         return result;
     }     
 
@@ -157,7 +169,28 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
     }
 
     private LocalTime extractTimeValue(Cell cell) {
-        return null; // TODO implement
+        LocalTime result = null;
+        if (CellType.NUMERIC.equals(cell.getCellType())) {
+            final Date dateVal;
+            if (DateUtil.isCellDateFormatted(cell)) {
+                dateVal = cell.getDateCellValue();
+            } else {
+                dateVal = new Date(Math.round(cell.getNumericCellValue()));
+            }
+            result = dateVal.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+        } else if (CellType.STRING.equals(cell.getCellType())) {
+            final String strValue = cell.getStringCellValue();
+            for (final DateTimeFormatter format : TIME_FORMATS) {
+                try {
+                    result = LocalTime.parse(strValue, format);
+                    break;
+                } catch (DateTimeParseException e) {
+                    // did not work, try next
+                }
+            }
+        }
+        // TODO: add invalid data handling
+        return result;
     }
 
     @Override

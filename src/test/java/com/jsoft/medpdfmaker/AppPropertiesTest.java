@@ -23,16 +23,20 @@ class AppPropertiesTest {
     @Test
     void getParameters() {
         final Environment environmentMock = mock(Environment.class);
-        when(environmentMock.getProperty(Constants.PLACE_OF_SERVICE_PROP)).thenReturn("Place of service");
-        when(environmentMock.getProperty(Constants.PROCEDURES_PROP)).thenReturn("Procedures");
+        String placeOfService = "Place of service";
+        final String procedures = "Procedures";
+        final String taxId = "Tax ID";
+        final String provider = "Provider";
+        when(environmentMock.getProperty(Constants.PLACE_OF_SERVICE_PROP)).thenReturn(placeOfService);
+        when(environmentMock.getProperty(Constants.PROCEDURES_PROP)).thenReturn(procedures);
         when(environmentMock.getProperty(Constants.CHARGES_PROP)).thenReturn("50.0");
-        when(environmentMock.getProperty(Constants.FEDERAL_TAX_ID_PROP)).thenReturn("Tax ID");
-        when(environmentMock.getProperty(Constants.PROVIDER_PROP)).thenReturn("Provider");
+        when(environmentMock.getProperty(Constants.FEDERAL_TAX_ID_PROP)).thenReturn(taxId);
+        when(environmentMock.getProperty(Constants.PROVIDER_PROP)).thenReturn(provider);
         final AppProperties appProperties = new AppProperties(environmentMock);
-        assertEquals("Place of service", appProperties.getPlaceOfService());
-        assertEquals("Procedures", appProperties.getProcedures());
-        assertEquals("Tax ID", appProperties.getFederalTaxID());
-        assertEquals("Provider", appProperties.getProvider());
+        assertEquals(placeOfService, appProperties.getPlaceOfService());
+        assertEquals(procedures, appProperties.getProcedures());
+        assertEquals(taxId, appProperties.getFederalTaxID());
+        assertEquals(provider, appProperties.getProvider());
         assertEquals(50.0, appProperties.getCharges(), 0.01);
     }
 }
