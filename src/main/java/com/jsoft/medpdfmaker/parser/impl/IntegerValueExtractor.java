@@ -1,10 +1,10 @@
 package com.jsoft.medpdfmaker.parser.impl;
 
 import com.jsoft.medpdfmaker.domain.FieldType;
+import com.jsoft.medpdfmaker.exception.ValueExtractException;
 import com.jsoft.medpdfmaker.parser.ValueExtractor;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 
 public class IntegerValueExtractor implements ValueExtractor<Integer> {
 
@@ -15,21 +15,29 @@ public class IntegerValueExtractor implements ValueExtractor<Integer> {
 
     @Override
     public Integer extractValue(Cell cell) {
-        Integer result = null;
-        if (CellType.NUMERIC.equals(cell.getCellType())) {
-            double numVal = cell.getNumericCellValue();
-            result = (int)Math.round(numVal);
-        } else if (CellType.BOOLEAN.equals(cell.getCellType())) {
-            boolean boolVal = cell.getBooleanCellValue();
-            result = boolVal ? 0 : 1;
-        } else if (CellType.STRING.equals(cell.getCellType())) {
-            String strVal = StringUtils.trim(cell.getStringCellValue());
-            try {
-                result = StringUtils.isEmpty(strVal) ? null : Integer.valueOf(strVal);
-            } catch (NumberFormatException e) {
+        Integer result;
+        switch (cell.getCellType()) {
+            case NUMERIC:
+                result = (int)Math.round(cell.getNumericCellValue());
+                break;
+            case BOOLEAN:
+                result = cell.getBooleanCellValue() ? 1 : 0;
+                break;
+            case STRING:
+                result = getIntegerFromString(cell);
+                break;
+            default:
                 result = null;
-            }
         }
         return result;
+    }
+
+    private Integer getIntegerFromString(Cell cell) {
+        final String strVal = cell.getStringCellValue();
+        try {
+            return StringUtils.isEmpty(strVal) ? null : Integer.valueOf(strVal.trim());
+        } catch (NumberFormatException e) {
+            throw new ValueExtractException(String.format("Unable to parse string value %s to integer", strVal), cell);
+        }
     }
 }

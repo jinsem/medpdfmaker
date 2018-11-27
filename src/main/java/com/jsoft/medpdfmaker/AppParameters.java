@@ -1,6 +1,6 @@
 package com.jsoft.medpdfmaker;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.io.File;

@@ -1,6 +1,6 @@
 package com.jsoft.medpdfmaker;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
 
 import static com.jsoft.medpdfmaker.Constants.*;

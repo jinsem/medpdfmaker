@@ -1,10 +1,10 @@
 package com.jsoft.medpdfmaker.parser.impl;
 
 import com.jsoft.medpdfmaker.domain.FieldType;
+import com.jsoft.medpdfmaker.exception.ValueExtractException;
 import com.jsoft.medpdfmaker.parser.ValueExtractor;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DateUtil;
 
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -14,14 +14,19 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.trim;
+import static org.apache.commons.lang3.StringUtils.upperCase;
+import static org.apache.poi.ss.usermodel.DateUtil.getJavaDate;
+import static org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted;
+
 public class LocalTimeValueExtractor implements ValueExtractor<LocalTime> {
 
     private static final List<DateTimeFormatter> TIME_FORMATS =
             Arrays.asList(
-                    DateTimeFormatter.ofPattern("h:mma"),
-                    DateTimeFormatter.ofPattern("h:mm a"),
-                    DateTimeFormatter.ofPattern("HH:mm"),
-                    DateTimeFormatter.ofPattern("HH:mm:ss")
+                    DateTimeFormatter.ofPattern("h:ma"),
+                    DateTimeFormatter.ofPattern("h:m:sa"),
+                    DateTimeFormatter.ofPattern("H:m"),
+                    DateTimeFormatter.ofPattern("H:m:s")
             );
 
     @Override
@@ -31,27 +36,36 @@ public class LocalTimeValueExtractor implements ValueExtractor<LocalTime> {
 
     @Override
     public LocalTime extractValue(Cell cell) {
-        LocalTime result = null;
-        if (CellType.NUMERIC.equals(cell.getCellType())) {
-            final Date dateVal;
-            if (DateUtil.isCellDateFormatted(cell)) {
-                dateVal = cell.getDateCellValue();
-            } else {
-                dateVal = new Date(Math.round(cell.getNumericCellValue()));
-            }
-            result = dateVal.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-        } else if (CellType.STRING.equals(cell.getCellType())) {
-            final String strValue = cell.getStringCellValue();
-            for (final DateTimeFormatter format : TIME_FORMATS) {
-                try {
-                    result = LocalTime.parse(strValue, format);
-                    break;
-                } catch (DateTimeParseException e) {
-                    // did not work, try next
-                }
+        final LocalTime result;
+        switch (cell.getCellType()) {
+            case NUMERIC:
+                final Date tmpD = (isCellDateFormatted(cell)) ? cell.getDateCellValue() : getJavaDate(cell.getNumericCellValue());
+                result = tmpD.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+                break;
+            case BLANK:
+                result = null;
+                break;
+            case STRING:
+                result = parseTimeFromString(cell);
+                break;
+            default:
+                throw new ValueExtractException("Cannot extract time value from the cell", cell);
+        }
+        return result;
+    }
+
+    private LocalTime parseTimeFromString(Cell cell) {
+        final String strValue = StringUtils.remove(trim(upperCase(cell.getStringCellValue())), " ");
+        if (StringUtils.isBlank(strValue)) {
+            return null;
+        }
+        for (final DateTimeFormatter format : TIME_FORMATS) {
+            try {
+                return LocalTime.parse(strValue, format);
+            } catch (DateTimeParseException e) {
+                // did not work, try next
             }
         }
-        // TODO: add invalid data handling
-        return result;
+        throw new ValueExtractException("Cannot extract time value from the cell", cell);
     }
 }

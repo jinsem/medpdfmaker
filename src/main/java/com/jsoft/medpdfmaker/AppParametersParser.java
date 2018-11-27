@@ -2,7 +2,7 @@ package com.jsoft.medpdfmaker;
 
 import com.jsoft.medpdfmaker.exception.ParametersParsingException;
 import org.apache.commons.cli.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.LinkedList;

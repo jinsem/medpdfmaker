@@ -2,6 +2,7 @@ package com.jsoft.medpdfmaker.parser.impl;
 
 import com.jsoft.medpdfmaker.domain.FieldType;
 import com.jsoft.medpdfmaker.parser.ValueExtractor;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 
@@ -19,6 +20,7 @@ public class StringValueExtractor implements ValueExtractor<String> {
 
     @Override
     public String extractValue(Cell cell) {
-        return formatter.formatCellValue(cell);
+        final String result = formatter.formatCellValue(cell);
+        return StringUtils.isEmpty(result) ? null : result;
     }
 }
