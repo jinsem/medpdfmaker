@@ -3,6 +3,7 @@ package com.jsoft.medpdfmaker;
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
 import com.jsoft.medpdfmaker.exception.ParametersParsingException;
 import com.jsoft.medpdfmaker.parser.TableFileParser;
+import com.jsoft.medpdfmaker.parser.ValueExtractor;
 import com.jsoft.medpdfmaker.parser.impl.ServiceRecordBuilder;
 import com.jsoft.medpdfmaker.parser.impl.ServiceRecordXlsParser;
 import com.jsoft.medpdfmaker.pdf.MemberPdfGenerator;
@@ -19,6 +20,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import static com.jsoft.medpdfmaker.util.AppUtil.curDateTimeAsString;
 
@@ -27,6 +29,7 @@ public class Application implements CommandLineRunner {
 
     private AppProperties appProperties;
     private AppParametersParser appParametersParser;
+    private List<ValueExtractor> extractors;
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
@@ -38,6 +41,11 @@ public class Application implements CommandLineRunner {
     @Autowired
     public void setAppParametersParser(AppParametersParser appParametersParser) {
         this.appParametersParser = appParametersParser;
+    }
+
+    @Autowired
+    public void setExtractors(List<ValueExtractor> extractors) {
+        this.extractors = extractors;
     }
 
     public static void main(String... args) {
@@ -68,7 +76,7 @@ public class Application implements CommandLineRunner {
     }
 
     private void generatePdf(AppParameters appParameters) throws IOException {
-        final TableFileParser<ServiceRecord> parser = new ServiceRecordXlsParser(new ServiceRecordBuilder());
+        final TableFileParser<ServiceRecord> parser = new ServiceRecordXlsParser(new ServiceRecordBuilder(extractors));
         final ServiceRecordRepository repository = new ServiceRecordRepository();
         final MemberPdfGenerator memberPdfGenerator = new MemberPdfGenerator(appProperties);
         final PdfFileGenerator pdfFileGenerator = new PdfFileGenerator(memberPdfGenerator);

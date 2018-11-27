@@ -1,5 +1,6 @@
 package com.jsoft.medpdfmaker;
 
+import com.jsoft.medpdfmaker.parser.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,5 +28,30 @@ public class AppConfiguration {
     @Bean
     public AppParametersParser appParametersParser() {
         return new AppParametersParser();
+    }
+
+    @Bean
+    public BooleanValueExtractor booleanValueExtractor() {
+        return new BooleanValueExtractor();
+    }
+
+    @Bean
+    public LocalDateValueExtractor localDateValueExtractor() {
+        return new LocalDateValueExtractor();
+    }
+
+    @Bean
+    public LocalTimeValueExtractor localTimeValueExtractor() {
+        return new LocalTimeValueExtractor();
+    }
+
+    @Bean
+    public IntegerValueExtractor integerValueExtractor() {
+        return new IntegerValueExtractor();
+    }
+
+    @Bean
+    public StringValueExtractor stringValueExtractor() {
+        return new StringValueExtractor();
     }
 }
