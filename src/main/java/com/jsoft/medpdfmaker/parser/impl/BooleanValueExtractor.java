@@ -27,7 +27,6 @@ public class BooleanValueExtractor implements ValueExtractor<Boolean> {
     /**
      * Extract boolean value from the cell.
      * Basic extraction rules:
-     * - If cell is null, return null.
      * - If cell's value type is boolean, return boolean value stored in cell.
      * - if cell's value type is numeric, return true if value is greater than zero, false otherwise.
      * - if cell's value is string, return true of value of the cell equals or contains some predefined True values marekrs.
@@ -37,9 +36,6 @@ public class BooleanValueExtractor implements ValueExtractor<Boolean> {
     @Override
     public Boolean extractValue(Cell cell) {
         boolean result;
-        if (cell == null) {
-            return false;
-        }
         if (CellType.BLANK.equals(cell.getCellType())) {
             result = false;
         } else if (CellType.BOOLEAN.equals(cell.getCellType())) {

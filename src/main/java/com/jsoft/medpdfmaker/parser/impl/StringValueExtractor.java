@@ -3,9 +3,14 @@ package com.jsoft.medpdfmaker.parser.impl;
 import com.jsoft.medpdfmaker.domain.FieldType;
 import com.jsoft.medpdfmaker.parser.ValueExtractor;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DataFormatter;
 
+/**
+ * Extract string value from the cell.
+ */
 public class StringValueExtractor implements ValueExtractor<String> {
+
+    private final DataFormatter formatter = new DataFormatter();
 
     @Override
     public FieldType canParse() {
@@ -14,15 +19,6 @@ public class StringValueExtractor implements ValueExtractor<String> {
 
     @Override
     public String extractValue(Cell cell) {
-        if (cell == null) {
-            return null;
-        }
-        String result;
-        if (CellType.NUMERIC.equals(cell.getCellType())) {
-            result = String.valueOf(cell.getNumericCellValue());
-        } else {
-            result = cell.getStringCellValue();
-        }
-        return result;
+        return formatter.formatCellValue(cell);
     }
 }

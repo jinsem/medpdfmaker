@@ -16,9 +16,6 @@ public class IntegerValueExtractor implements ValueExtractor<Integer> {
     @Override
     public Integer extractValue(Cell cell) {
         Integer result = null;
-        if (cell == null) {
-            return result;
-        }
         if (CellType.NUMERIC.equals(cell.getCellType())) {
             double numVal = cell.getNumericCellValue();
             result = (int)Math.round(numVal);

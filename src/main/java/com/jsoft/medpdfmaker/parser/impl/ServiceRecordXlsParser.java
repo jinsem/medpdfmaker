@@ -74,7 +74,9 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
         for (String fieldName : fieldNames) {
             if (colIx <= maxColIx) {
                 Cell curCell = currentRow.getCell(colIx++);
-                serviceRecordBuilder.setAttributeValue(fieldName, curCell);
+                if (curCell != null) {
+                    serviceRecordBuilder.setAttributeValue(fieldName, curCell);
+                }
             }
         }
         if (serviceRecordBuilder.canBeBuilt()) {
