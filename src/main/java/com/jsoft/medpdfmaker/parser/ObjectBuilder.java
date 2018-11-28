@@ -19,11 +19,20 @@ public interface ObjectBuilder<T extends DomainEntity> {
     void setAttributeValue(String attrName, Cell value);
 
     /**
-     * Check if object can be built after setting all the values. The most possible reason of impossibility to build
-     * object is that some of the required fields or all of them were not set.
-     * @return true if object can be built, false otherwise.
+     * Check if all the attributes of entity are empty. It is kind of representation of the case when empty row
+     * is added in the Excel book. Row phicially exists, but there meaningful data in the row.
+     * This method helps builder users to understand if object that is about to be built contains any data.
+     * @return true if object that is about to be built is empty (values of all attributes are null or empty strings).
      */
-    boolean canBeBuilt();
+    boolean entityIsEmpty();
+
+    /**
+     * Check if key attributes used for entity identification are empty.
+     * @return true if key attributes used for entity identification are empty.
+     */
+    boolean entityKeyIsEmpty();
+
+    String getRequiredAttributesNames();
 
     /**
      * Build object and return it.

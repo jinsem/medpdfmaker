@@ -11,19 +11,18 @@ import org.apache.poi.ss.usermodel.Cell;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Builder implementation for ServiceRecord.
  */
 public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
 
-    private static final Set<String> REQUIRED_FIELDS = new HashSet<>();
+    private static final Set<String> REQUIRED_FIELDS = new TreeSet<>();
 
     private static final Map<String, FieldMetaData> METADATA = buildMetaData();
 
     private ServiceRecord resultRecord = new ServiceRecord();
-
-    private Set<String> requiredFieldsWithValues = new HashSet<>();
 
     private final Map<FieldType, ValueExtractor> valueExtractors;
 
@@ -62,11 +61,7 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
                 throw new IllegalStateException(fieldMetaData.fieldType + " fieldType is not defined or unknown");
             }
             final ValueExtractor valueExtractor = valueExtractors.get(fieldMetaData.fieldType);
-            final Object setterArgument = valueExtractor.extractValue(valueCell);
-            if (REQUIRED_FIELDS.contains(attrName) && setterArgument != null) {
-                requiredFieldsWithValues.add(attrName);
-            }
-            methodToCall.invoke(resultRecord, setterArgument);
+            methodToCall.invoke(resultRecord, valueExtractor.extractValue(valueCell));
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             // This is unlikely situation. Annotation is used only for public fields, so no IllegalAccessException possible
             // IllegalArgumentException is possible during application testing, but not very possible in production
@@ -78,15 +73,24 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
     }
 
     @Override
-    public boolean canBeBuilt() {
-        return REQUIRED_FIELDS.equals(requiredFieldsWithValues);
+    public boolean entityIsEmpty() {
+        return resultRecord.allFieldsAreEmpty();
+    }
+
+    @Override
+    public boolean entityKeyIsEmpty() {
+        return resultRecord.requiredFieldsAreEmpty();
+    }
+
+    @Override
+    public String getRequiredAttributesNames() {
+        return String.join(",", REQUIRED_FIELDS);
     }
 
     @Override
     public ServiceRecord build() {
         final ServiceRecord result = resultRecord;
         resultRecord = new ServiceRecord();
-        requiredFieldsWithValues = new HashSet<>();
         return result;
 	}
 

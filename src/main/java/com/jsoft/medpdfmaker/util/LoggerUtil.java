@@ -1,6 +1,7 @@
 package com.jsoft.medpdfmaker.util;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.slf4j.Logger;
 
 /**
@@ -35,7 +36,7 @@ public final class LoggerUtil {
      * @param description short description of the problem.
      * @param cell Cell reference that contains data that cannot be parsed. If this value is null, function just ignores it.
      */
-    public static void logParsingError(Logger log, String description, Cell cell) {
+    public static void logCellParsingError(Logger log, String description, Cell cell) {
         if (log.isErrorEnabled()) {
             final String message;
             if (cell == null) {
@@ -43,6 +44,32 @@ public final class LoggerUtil {
             } else {
                 message = String.format("Data parsing error on sheet: [%s], row: [%d], cell: [%d]: %s",
                         cell.getSheet().getSheetName(), cell.getRowIndex(), cell.getColumnIndex(), description);
+            }
+            log.error(message);
+        }
+    }
+
+    public static void logRowParsingWarning(Logger log, String description, Row row) {
+        if (log.isWarnEnabled()) {
+            final String message;
+            if (row == null) {
+                message = String.format("Data parsing warning: %s", description);
+            } else {
+                message = String.format("Data parsing warning on sheet: [%s], row: [%d]: %s",
+                        row.getSheet().getSheetName(), row.getRowNum(), description);
+            }
+            log.error(message);
+        }
+    }
+
+    public static void logRowParsingError(Logger log, String description, Row row) {
+        if (log.isErrorEnabled()) {
+            final String message;
+            if (row == null) {
+                message = String.format("Data parsing error: %s", description);
+            } else {
+                message = String.format("Data parsing error on sheet: [%s], row: [%d]: %s",
+                        row.getSheet().getSheetName(), row.getRowNum(), description);
             }
             log.error(message);
         }

@@ -54,13 +54,13 @@ class LoggerUtilTest {
     void logParsingError() {
         when(loggerMock.isErrorEnabled()).thenReturn(false);
         final String msg = "my message";
-        LoggerUtil.logParsingError(loggerMock, msg, null);
+        LoggerUtil.logCellParsingError(loggerMock, msg, null);
         verify(loggerMock, times(1)).isErrorEnabled();
         verify(loggerMock, times(0)).error(any());
 
         when(loggerMock.isErrorEnabled()).thenReturn(true);
         final ArgumentCaptor<String> nullLogArgument = ArgumentCaptor.forClass(String.class);
-        LoggerUtil.logParsingError(loggerMock, msg, null);
+        LoggerUtil.logCellParsingError(loggerMock, msg, null);
         verify(loggerMock, times(1)).error(nullLogArgument.capture());
         assertTrue(nullLogArgument.getValue().contains(msg));
 
@@ -71,7 +71,7 @@ class LoggerUtilTest {
         when(cellMock.getRowIndex()).thenReturn(100);
         when(cellMock.getColumnIndex()).thenReturn(200);
 
-        LoggerUtil.logParsingError(loggerMock, msg, cellMock);
+        LoggerUtil.logCellParsingError(loggerMock, msg, cellMock);
         final ArgumentCaptor<String> notNullLogArgument = ArgumentCaptor.forClass(String.class);
         verify(loggerMock, times(3)).isErrorEnabled();
         verify(loggerMock, times(2)).error(notNullLogArgument.capture());

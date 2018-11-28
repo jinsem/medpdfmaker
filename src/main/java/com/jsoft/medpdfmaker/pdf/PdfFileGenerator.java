@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.apache.pdfbox.io.MemoryUsageSetting.setupMixed;
 import static org.apache.pdfbox.io.MemoryUsageSetting.setupTempFileOnly;
 
 public class PdfFileGenerator {
@@ -37,7 +38,7 @@ public class PdfFileGenerator {
                     pdfMerger.addSource(page.toFile());
                 }
             }
-            pdfMerger.mergeDocuments(setupTempFileOnly());
+            pdfMerger.mergeDocuments(setupMixed(10_000_000));
         } finally {
             if (workFolder != null) {
                 FileUtils.cleanDirectory(workFolder.toFile());

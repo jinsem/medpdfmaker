@@ -1,15 +1,17 @@
 package com.jsoft.medpdfmaker.domain;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
  * Domain entity for medical service record
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
 
     /**
@@ -127,7 +129,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
     }
 
     public boolean isCancelled() {
-        return this.cancelled;
+        return cancelled;
     }
 
     @ExternalField(value = "CANCELLED", fieldType = FieldType.BOOLEAN)
@@ -230,7 +232,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
     }
 
     public boolean isWheelChairYesNo() {
-        return this.wheelChairYesNo;
+        return wheelChairYesNo;
     }
 
     @ExternalField(value = "WHEELCHAIR_YESNO", fieldType = FieldType.BOOLEAN)
@@ -317,6 +319,34 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
     @ExternalField("PHONE")
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public boolean requiredFieldsAreEmpty() {
+        return StringUtils.isBlank(refId) &&
+               StringUtils.isBlank(lName) &&
+               StringUtils.isBlank(fName) &&
+               StringUtils.isBlank(memberId) &&
+               dayOfBirth == null &&
+               pickupDate == null &&
+               pickupTime == null;
+    }
+
+    public boolean allFieldsAreEmpty() {
+        // Boolean values are excluded because it is hard to understand, if empty cell value means
+        // False or it means tha there is no value because whole row is empty
+        return requiredFieldsAreEmpty() &&
+                apptTime == null &&
+                StringUtils.isBlank(origin) &&
+                StringUtils.isBlank(destination) &&
+                totalPassengers == null &&
+                StringUtils.isBlank(notes) &&
+                StringUtils.isBlank(telephone) &&
+                StringUtils.isBlank(coordinatorInitials) &&
+                StringUtils.isBlank(city) &&
+                StringUtils.isBlank(state) &&
+                StringUtils.isBlank(zipCode) &&
+                StringUtils.isBlank(areaCode) &&
+                StringUtils.isBlank(phone);
     }
 
     @Override
