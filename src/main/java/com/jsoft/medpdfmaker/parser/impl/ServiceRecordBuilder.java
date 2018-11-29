@@ -4,6 +4,7 @@ import com.jsoft.medpdfmaker.domain.ExternalField;
 import com.jsoft.medpdfmaker.domain.FieldType;
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
 import com.jsoft.medpdfmaker.exception.AppException;
+import com.jsoft.medpdfmaker.exception.UnknownAttributeException;
 import com.jsoft.medpdfmaker.parser.ObjectBuilder;
 import com.jsoft.medpdfmaker.parser.ValueExtractor;
 import org.apache.poi.ss.usermodel.Cell;
@@ -11,7 +12,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Builder implementation for ServiceRecord.
@@ -50,10 +50,15 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
     }
 
     @Override
+    public boolean attributeIsKnown(String attrName) {
+        return attrName != null && METADATA.containsKey(attrName);
+    }
+
+    @Override
     public void setAttributeValue(String attrName, Cell valueCell) {
         final FieldMetaData fieldMetaData = METADATA.get(attrName);
         if (fieldMetaData == null) {
-            return;
+            throw new UnknownAttributeException(String.format("Attribute %s is unknown", attrName));
         }
         final Method methodToCall = fieldMetaData.method;
         try {

@@ -11,7 +11,14 @@ import org.apache.poi.ss.usermodel.DataFormatter;
  */
 public class StringValueExtractor implements ValueExtractor<String> {
 
-    private final DataFormatter formatter = new DataFormatter();
+    private final DataFormatter formatter;
+
+    public StringValueExtractor(final DataFormatter formatter) {
+        if (formatter == null) {
+            throw new IllegalArgumentException("formatter cannot be null");
+        }
+        this.formatter = formatter;
+    }
 
     @Override
     public FieldType canParse() {

@@ -3,7 +3,7 @@ package com.jsoft.medpdfmaker.parser;
 /**
  * Enum represents possible file parsing result
  */
-public enum ParsingResult {
+public enum Result {
 
     /**
      * Everything was OK. No errors, not warnings
@@ -22,7 +22,7 @@ public enum ParsingResult {
 
     final int importance;
 
-    ParsingResult(int importance) {
+    Result(int importance) {
         this.importance = importance;
     }
 
@@ -30,7 +30,7 @@ public enum ParsingResult {
         return importance;
     }
 
-    public static ParsingResult moreImportant(ParsingResult curResult, ParsingResult newResult) {
+    public static Result moreImportant(Result curResult, Result newResult) {
         if (curResult.getImportance() == newResult.getImportance()) {
             return curResult;
         } else if (curResult.getImportance() < newResult.getImportance()) {

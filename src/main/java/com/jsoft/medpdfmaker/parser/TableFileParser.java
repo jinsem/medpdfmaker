@@ -7,6 +7,6 @@ import java.io.IOException;
 
 public interface TableFileParser<T extends DomainEntity> {
 
-    ParsingResult parse(File srcFile, int sheetIdx, RowCallback<T> rowCallBack) throws IOException;
+    Result parse(File srcFile, int sheetIdx, RowCallback<T> rowCallBack) throws IOException;
 
 }

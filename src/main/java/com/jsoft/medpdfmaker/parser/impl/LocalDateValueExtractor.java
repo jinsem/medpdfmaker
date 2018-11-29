@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.trim;
-import static org.apache.commons.lang3.StringUtils.upperCase;
 import static org.apache.poi.ss.usermodel.DateUtil.getJavaDate;
 import static org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted;
 

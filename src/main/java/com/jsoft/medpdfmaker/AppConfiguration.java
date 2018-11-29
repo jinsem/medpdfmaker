@@ -1,6 +1,7 @@
 package com.jsoft.medpdfmaker;
 
 import com.jsoft.medpdfmaker.parser.impl.*;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -52,6 +53,6 @@ public class AppConfiguration {
 
     @Bean
     public StringValueExtractor stringValueExtractor() {
-        return new StringValueExtractor();
+        return new StringValueExtractor(new DataFormatter());
     }
 }

@@ -11,6 +11,13 @@ import org.apache.poi.ss.usermodel.Cell;
 public interface ObjectBuilder<T extends DomainEntity> {
 
     /**
+     * Return true if attribute can be processed by the builder.
+     * @param attrName attribute name to check if it can be processed or not.
+     * @return true if attribute can be processed by the builder; false otherwise.
+     */
+    boolean attributeIsKnown(String attrName);
+
+    /**
      * Set new object's attribute value.
      * @param attrName name of the attribute that needs to be set. Name must correspond to a value of ExternalField's
      * annotation that marks members of the being built class.

@@ -49,19 +49,6 @@ public final class LoggerUtil {
         }
     }
 
-    public static void logRowParsingWarning(Logger log, String description, Row row) {
-        if (log.isWarnEnabled()) {
-            final String message;
-            if (row == null) {
-                message = String.format("Data parsing warning: %s", description);
-            } else {
-                message = String.format("Data parsing warning on sheet: [%s], row: [%d]: %s",
-                        row.getSheet().getSheetName(), row.getRowNum(), description);
-            }
-            log.error(message);
-        }
-    }
-
     public static void logRowParsingError(Logger log, String description, Row row) {
         if (log.isErrorEnabled()) {
             final String message;

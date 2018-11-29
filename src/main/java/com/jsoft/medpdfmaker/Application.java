@@ -2,6 +2,8 @@ package com.jsoft.medpdfmaker;
 
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
 import com.jsoft.medpdfmaker.exception.ParametersParsingException;
+import com.jsoft.medpdfmaker.exception.ParseException;
+import com.jsoft.medpdfmaker.parser.Result;
 import com.jsoft.medpdfmaker.parser.TableFileParser;
 import com.jsoft.medpdfmaker.parser.ValueExtractor;
 import com.jsoft.medpdfmaker.parser.impl.ServiceRecordBuilder;
@@ -62,6 +64,8 @@ public class Application implements CommandLineRunner {
             generatePdf(appParameters);
             LoggerUtil.info(LOG, "Data processing completed successfully!");
         } catch (ParametersParsingException e) {
+            LoggerUtil.info(LOG, String.format("Value of one or more application parameters was invalid: %s. " +
+                    "Please try again by providing correct parameters values.", e.getMessage()));
             printHelpAndExis();
         } catch (Exception e) {
             LoggerUtil.info(LOG, String.format("Data processing failed: %s. " +
@@ -84,10 +88,22 @@ public class Application implements CommandLineRunner {
         for (final int sheetIdx : appParameters.getSheetNumbers()) {
             LoggerUtil.info(LOG, String.format("Processing sheet #%d", sheetIdx));
             final String outFileName = makeOutFileName(appParameters, sheetIdx);
-            parser.parse(appParameters.getInputFile(), sheetIdx, rowObj -> repository.put(rowObj.getMemberId(), rowObj));
-            LoggerUtil.info(LOG, String.format("Writing data to PDF file %s", outFileName));
-            pdfFileGenerator.generate(outFileName, repository);
-            repository.clean();
+            try {
+                final Result result = parser.parse(appParameters.getInputFile(), sheetIdx, rowObj -> repository.put(rowObj.getMemberId(), rowObj));
+                switch (result) {
+                    case WARNING:
+                        LoggerUtil.info(LOG, String.format("Data from sheet %d was processed without errors, but some warnings was reported", sheetIdx));
+                        generatePdf(repository, pdfFileGenerator, outFileName);
+                        break;
+                    case OK:
+                        generatePdf(repository, pdfFileGenerator, outFileName);
+                        break;
+                    default:
+                        throw new ParseException();
+                }
+            } finally {
+                repository.clean();
+            }
         }
     }
 
@@ -95,5 +111,10 @@ public class Application implements CommandLineRunner {
         final String baseName = FilenameUtils.getBaseName(appParameters.getInputFile().getAbsolutePath());
         return appParameters.getOutputFolder().getAbsolutePath() + File.separator +
                 baseName + "[" + sheetIdx + "]" + curDateTimeAsString() + ".pdf";
+    }
+
+    private void generatePdf(ServiceRecordRepository repository, PdfFileGenerator pdfFileGenerator, String outFileName) throws IOException {
+        LoggerUtil.info(LOG, String.format("Writing data to PDF file %s", outFileName));
+        pdfFileGenerator.generate(outFileName, repository);
     }
 }
