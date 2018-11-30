@@ -3,15 +3,13 @@ package com.jsoft.medpdfmaker;
 import com.jsoft.medpdfmaker.parser.impl.*;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
 @Configuration
 @ComponentScan(basePackages = {"com.jsoft.*"})
-@PropertySource("${properties.dir:classpath}:med-pdf-maker.properties")
+@PropertySource("classpath:med-pdf-maker.properties")
+@PropertySource(value = "${app.properties.ext}", ignoreResourceNotFound = true)
 public class AppConfiguration {
 
     private Environment environment;
