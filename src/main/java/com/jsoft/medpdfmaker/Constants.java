@@ -9,8 +9,7 @@ public final class Constants {
         //no-op
     }
     
-    public static final Path TMP_FOLDER_PATH = Paths.get(System.getProperty("java.io.tmpdir"));
-    public static final String WORK_FOLDER_PREF = "medpdfmaker";
+    public static final String WORK_FOLDER_PREF = "memberid-pages-";
 
     public static final String PDF_TEMPLATE_RESOURCE_PATH = "template/Form.pdf";
 

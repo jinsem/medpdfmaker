@@ -93,10 +93,10 @@ public class Application implements CommandLineRunner {
                 switch (result) {
                     case WARNING:
                         LoggerUtil.info(LOG, String.format("Data from sheet %d was processed without errors, but some warnings was reported", sheetIdx));
-                        generatePdf(repository, pdfFileGenerator, outFileName);
+                        generatePdf(repository, pdfFileGenerator, appParameters.getOutputFolder(), outFileName);
                         break;
                     case OK:
-                        generatePdf(repository, pdfFileGenerator, outFileName);
+                        generatePdf(repository, pdfFileGenerator, appParameters.getOutputFolder(), outFileName);
                         break;
                     default:
                         throw new ParseException();
@@ -113,8 +113,9 @@ public class Application implements CommandLineRunner {
                 baseName + "[" + sheetIdx + "]" + curDateTimeAsString() + ".pdf";
     }
 
-    private void generatePdf(ServiceRecordRepository repository, PdfFileGenerator pdfFileGenerator, String outFileName) throws IOException {
+    private void generatePdf(ServiceRecordRepository repository, PdfFileGenerator pdfFileGenerator,
+                             File outFolder, String outFileName) throws IOException {
         LoggerUtil.info(LOG, String.format("Writing data to PDF file %s", outFileName));
-        pdfFileGenerator.generate(outFileName, repository);
+        pdfFileGenerator.generate(outFolder, outFileName, repository);
     }
 }
