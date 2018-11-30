@@ -92,7 +92,7 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
         for (String fieldName : fieldNames) {
             if (colIx <= maxColIx) {
                 final Cell curCell = currentRow.getCell(colIx++);
-                if (curCell == null) {
+                if (curCell != null) {
                     result = getDataFromCell(result, fieldName, curCell);
                 }
             }
