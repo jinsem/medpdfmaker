@@ -1,0 +1,1 @@
+java -jar med-pdf-maker.jar %*

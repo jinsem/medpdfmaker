@@ -11,16 +11,13 @@ import java.util.List;
 public class AppParametersParser {
 
     private static final String HELP_OPTION = "h";
-    private static final String HELP_OPTION_FULL = "help";
-
-    private static final String INPUT_FILE_OPTION = "i";
-    private static final String INPUT_FILE_OPTION_FULL = "input-file";
+    public static final String HELP_OPTION_FULL = "help";
 
     private static final String OUTPUT_FOLDER_OPTION = "o";
-    private static final String OUTPUT_FOLDER_OPTION_FULL = "output-folder";
+    public static final String OUTPUT_FOLDER_OPTION_FULL = "output-folder";
 
     private static final String INPUT_FILE_SHEETS_TO_PROCESS = "s";
-    private static final String INPUT_FILE_SHEETS_TO_PROCESS_FULL = "sheet-numbers";
+    public static final String INPUT_FILE_SHEETS_TO_PROCESS_FULL = "sheet-numbers";
 
     private final Options cliOptions = buildOptions();
 
@@ -28,8 +25,6 @@ public class AppParametersParser {
         final Options result = new Options();
         result.addOption(HELP_OPTION, HELP_OPTION_FULL, false,
                 "Print application usage help");
-        result.addOption(INPUT_FILE_OPTION, INPUT_FILE_OPTION_FULL, true,
-                "Defines path to input Excel file that needs to be processed");
         result.addOption(OUTPUT_FOLDER_OPTION, OUTPUT_FOLDER_OPTION_FULL, true,
                 "(Optional) Defines path to folder were the generated PDF file(s) should be placed. If not set, PDF file(s) will be placed in the folder where input file is located." +
                            "If processing of multiply sheets is requested, application will create separate PDF file for each processed sheet.");
@@ -61,17 +56,25 @@ public class AppParametersParser {
 
     private AppParameters buildAppParameters(CommandLine cmd) {
         final AppParameters.Builder resultBuilder = new AppParameters.Builder();
-        final String inputFileName = cmd.getOptionValue(INPUT_FILE_OPTION);
+        final String inputFileName = getInputFileNameParameter(cmd);
         setInputFileName(inputFileName, resultBuilder);
         setOutputFolderName(inputFileName, cmd.getOptionValue(OUTPUT_FOLDER_OPTION), resultBuilder);
         setSheetNumbers(cmd.getOptionValue(INPUT_FILE_SHEETS_TO_PROCESS), resultBuilder);
         return resultBuilder.build();
     }
 
-    private void setInputFileName(String inputFileName, AppParameters.Builder resultBuilder) {
-        if (StringUtils.isBlank(inputFileName)) {
-            throw new ParametersParsingException(INPUT_FILE_OPTION + " is required and cannot be empty");
+    private String getInputFileNameParameter(CommandLine cmd) {
+        final String[] parameters = cmd.getArgs();
+        if (parameters.length == 0) {
+            throw new ParametersParsingException("Input file path is required and cannot be empty");
         }
+        if (parameters.length > 1) {
+            throw new ParametersParsingException("More than one input file paths are provided, or input file path is not taken into quotes");
+        }
+        return parameters[0];
+    }
+
+    private void setInputFileName(String inputFileName, AppParameters.Builder resultBuilder) {
         final File fileToVerify = new File(inputFileName);
         if (!fileToVerify.exists()) {
             throw new ParametersParsingException(inputFileName + " cannot be found. Please make sure that file name is set correctly");
@@ -133,6 +136,6 @@ public class AppParametersParser {
     }
 
     public void printHelp() {
-        new HelpFormatter().printHelp("Main", cliOptions);
+        new HelpFormatter().printHelp("medpdfmaker <input-file-name>", cliOptions, true);
     }
 }
