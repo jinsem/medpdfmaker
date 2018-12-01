@@ -109,6 +109,15 @@ class LocalTimeValueExtractorTest {
     }
 
     @Test
+    void extractValueStringEmpty() {
+        when(cellMock.getCellType()).thenReturn(STRING);
+        when(cellMock.getStringCellValue()).thenReturn("");
+        assertNull(localTimeValueExtractor.extractValue(cellMock));
+        when(cellMock.getStringCellValue()).thenReturn("   ");
+        assertNull(localTimeValueExtractor.extractValue(cellMock));
+    }
+
+    @Test
     void extractValueStringInvalid() {
         String[] invalidTimes = new String[]{"am", "25:01", "13:00 pm", "11:00 рm"};
         when(cellMock.getCellType()).thenReturn(STRING);
