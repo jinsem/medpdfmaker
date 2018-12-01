@@ -3,7 +3,8 @@ package com.jsoft.medpdfmaker;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.env.Environment;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

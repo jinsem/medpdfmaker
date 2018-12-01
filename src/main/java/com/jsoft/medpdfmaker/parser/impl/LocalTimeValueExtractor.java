@@ -24,9 +24,7 @@ public class LocalTimeValueExtractor implements ValueExtractor<LocalTime> {
     private static final List<DateTimeFormatter> TIME_FORMATS =
             Arrays.asList(
                     DateTimeFormatter.ofPattern("h:ma"),
-                    DateTimeFormatter.ofPattern("h:m:sa"),
-                    DateTimeFormatter.ofPattern("H:m"),
-                    DateTimeFormatter.ofPattern("H:m:s")
+                    DateTimeFormatter.ofPattern("H:m")
             );
 
     @Override
@@ -49,7 +47,7 @@ public class LocalTimeValueExtractor implements ValueExtractor<LocalTime> {
                 result = parseTimeFromString(cell);
                 break;
             default:
-                throw new ValueExtractException("Cannot extract time value from the cell", cell);
+                throw new ValueExtractException(String.format("Cannot extract time value from the cell, cell type %s is not supported", cell.getCellType()), cell);
         }
         return result;
     }

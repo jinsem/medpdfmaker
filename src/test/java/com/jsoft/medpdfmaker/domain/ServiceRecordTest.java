@@ -2,7 +2,6 @@ package com.jsoft.medpdfmaker.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
