@@ -26,11 +26,11 @@ public class AppParametersParser {
         result.addOption(HELP_OPTION, HELP_OPTION_FULL, false,
                 "Print application usage help");
         result.addOption(OUTPUT_FOLDER_OPTION, OUTPUT_FOLDER_OPTION_FULL, true,
-                "(Optional) Defines path to folder were the generated PDF file(s) should be placed. If not set, PDF file(s) will be placed in the folder where input file is located." +
+                "Path to folder were the generated PDF file(s) should be placed. If not set, PDF file(s) will be placed in the folder where input file is located." +
                            "If processing of multiply sheets is requested, application will create separate PDF file for each processed sheet.");
         result.addOption(INPUT_FILE_SHEETS_TO_PROCESS, INPUT_FILE_SHEETS_TO_PROCESS_FULL, true,
-                "(Optional) Comma separated list of sheet numbers that must be processed by the application. If paarmeters is not set, only the information from the 1st sheet in the input Excel book will be processed. " +
-                           "Example: 1,2,3");
+                "Comma separated list of sheet numbers that must be processed by the application. If paarmeters is not set, only the information from the 1st sheet in the input Excel book will be processed. " +
+                           "Numbers are zero bases, so first sheet has index 0, second sheet has index 1 and so on.");
         return result;
     }
 
@@ -69,7 +69,7 @@ public class AppParametersParser {
             throw new ParametersParsingException("Input file path is required and cannot be empty");
         }
         if (parameters.length > 1) {
-            throw new ParametersParsingException("More than one input file paths are provided, or input file path is not taken into quotes");
+            throw new ParametersParsingException("Multiply input file paths are provided, or input file path is not taken into quotes");
         }
         return parameters[0];
     }
@@ -88,7 +88,7 @@ public class AppParametersParser {
     private void setOutputFolderName(String inputFileName, String outputFolderName, AppParameters.Builder resultBuilder) {
         final File outputFolder;
         if (StringUtils.isBlank(outputFolderName)) {
-            // it is OK. just take folder that contains input file
+            // it is OK. just use folder that contains input file
             outputFolder = new File(inputFileName).getParentFile();
         } else {
             outputFolder = new File(outputFolderName);

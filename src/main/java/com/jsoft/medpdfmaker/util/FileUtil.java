@@ -24,4 +24,12 @@ public final class FileUtil {
         }
         return pathToProcess;
     }
+
+    public static String toOutName(String prefix, int sheetIdx, String curDateStr, String suffix) {
+        return prefix + "-[" + sheetIdx + "]-" + curDateStr + ((suffix == null) ? "" : suffix);
+    }
+
+    public static String toOutName(String prefix, int sheetIdx, String curDateStr) {
+        return toOutName(prefix, sheetIdx, curDateStr, null);
+    }
 }

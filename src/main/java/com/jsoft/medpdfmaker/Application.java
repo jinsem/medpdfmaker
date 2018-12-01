@@ -22,9 +22,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+import static com.jsoft.medpdfmaker.Constants.PDF_EXT;
 import static com.jsoft.medpdfmaker.util.AppUtil.curDateTimeAsString;
+import static com.jsoft.medpdfmaker.util.FileUtil.toOutName;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -87,16 +92,15 @@ public class Application implements CommandLineRunner {
         LoggerUtil.info(LOG, "Start parsing input file " + appParameters.getInputFileName());
         for (final int sheetIdx : appParameters.getSheetNumbers()) {
             LoggerUtil.info(LOG, String.format("Processing sheet #%d", sheetIdx));
-            final String outFileName = makeOutFileName(appParameters, sheetIdx);
             try {
                 final Result result = parser.parse(appParameters.getInputFile(), sheetIdx, rowObj -> repository.put(rowObj.getMemberId(), rowObj));
                 switch (result) {
                     case WARNING:
                         LoggerUtil.info(LOG, String.format("Data from sheet %d was processed without errors, but some warnings was reported", sheetIdx));
-                        generatePdf(repository, pdfFileGenerator, appParameters.getOutputFolder(), outFileName);
+                        generatePdf(repository, pdfFileGenerator, appParameters, sheetIdx);
                         break;
                     case OK:
-                        generatePdf(repository, pdfFileGenerator, appParameters.getOutputFolder(), outFileName);
+                        generatePdf(repository, pdfFileGenerator, appParameters, sheetIdx);
                         break;
                     default:
                         throw new ParseException();
@@ -107,15 +111,24 @@ public class Application implements CommandLineRunner {
         }
     }
 
-    private String makeOutFileName(AppParameters appParameters, int sheetIdx) {
-        final String baseName = FilenameUtils.getBaseName(appParameters.getInputFile().getAbsolutePath());
-        return appParameters.getOutputFolder().getAbsolutePath() + File.separator +
-                baseName + "[" + sheetIdx + "]" + curDateTimeAsString() + ".pdf";
+    private void generatePdf(ServiceRecordRepository repository, PdfFileGenerator pdfFileGenerator,
+                             AppParameters appParameters, int sheetIdx) throws IOException {
+        final String curDateStr = curDateTimeAsString();
+        final String outFileName = makeOutFileName(appParameters, sheetIdx, curDateStr);
+        LoggerUtil.info(LOG, String.format("Writing data to PDF file %s", outFileName));
+        final Path workFolder = createWorkFolder(appParameters, sheetIdx, curDateStr);
+        pdfFileGenerator.generate(workFolder, outFileName, repository);
     }
 
-    private void generatePdf(ServiceRecordRepository repository, PdfFileGenerator pdfFileGenerator,
-                             File outFolder, String outFileName) throws IOException {
-        LoggerUtil.info(LOG, String.format("Writing data to PDF file %s", outFileName));
-        pdfFileGenerator.generate(outFolder, outFileName, repository);
+    private String makeOutFileName(AppParameters appParameters, int sheetIdx, String curDateStr) {
+        final String baseName = FilenameUtils.getBaseName(appParameters.getInputFile().getAbsolutePath());
+        return appParameters.getOutputFolder().getAbsolutePath() + File.separator +
+                toOutName(baseName, sheetIdx, curDateStr, PDF_EXT);
+    }
+
+    private Path createWorkFolder(AppParameters appParameters, int sheetIdx, String curDateStr) throws IOException {
+        final String baseName = FilenameUtils.getBaseName(appParameters.getInputFile().getAbsolutePath());
+        final Path workDirectory = Paths.get(appParameters.getOutputFolder().getAbsolutePath(), toOutName(baseName, sheetIdx, curDateStr));
+        return Files.createDirectory(workDirectory);
     }
 }

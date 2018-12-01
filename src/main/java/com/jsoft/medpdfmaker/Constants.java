@@ -1,15 +1,12 @@
 package com.jsoft.medpdfmaker;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 public final class Constants {
 
     private Constants() {
         //no-op
     }
-    
-    public static final String WORK_FOLDER_PREF = "memberid-pages-";
+
+    public static final String PDF_EXT = ".pdf";
 
     public static final String PDF_TEMPLATE_RESOURCE_PATH = "template/Form.pdf";
 
