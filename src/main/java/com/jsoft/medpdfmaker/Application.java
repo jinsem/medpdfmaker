@@ -90,9 +90,14 @@ public class Application implements CommandLineRunner {
         final PdfFileGenerator pdfFileGenerator = new PdfFileGenerator(memberPdfGenerator);
         LoggerUtil.info(LOG, "Start parsing input file " + appParameters.getInputFileName());
         for (final int sheetIdx : appParameters.getSheetNumbers()) {
-            LoggerUtil.info(LOG, String.format("Processing sheet #%d", sheetIdx));
+            LoggerUtil.info(LOG, String.format("Processing sheet # %d", sheetIdx));
             try {
-                final Result result = parser.parse(appParameters.getInputFile().toFile(), sheetIdx, rowObj -> repository.put(rowObj.getMemberId(), rowObj));
+                final Result result = parser.parse(appParameters.getInputFile().toFile(), sheetIdx,
+                        rowObj -> {
+                            if (!rowObj.isCancelled()) {
+                                repository.put(rowObj.getMemberId(), rowObj);
+                            }
+                        });
                 switch (result) {
                     case WARNING:
                         LoggerUtil.info(LOG, String.format("Data from sheet %d was processed without errors, but some warnings was reported", sheetIdx));

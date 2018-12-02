@@ -16,7 +16,7 @@ public enum Result {
     WARNING(1),
 
     /**
-     * Some serious errors found, data cannot be passed ot the next steps
+     * Some serious errors found, data cannot be passed to the next steps
      */
     ERROR(2);
 

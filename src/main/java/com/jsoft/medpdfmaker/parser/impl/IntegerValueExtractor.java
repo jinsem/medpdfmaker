@@ -5,8 +5,18 @@ import com.jsoft.medpdfmaker.exception.ValueExtractException;
 import com.jsoft.medpdfmaker.parser.ValueExtractor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 
 public class IntegerValueExtractor implements ValueExtractor<Integer> {
+
+    private final DataFormatter formatter;
+
+    public IntegerValueExtractor(DataFormatter formatter) {
+        if (formatter == null) {
+            throw new IllegalArgumentException("formatter cannot be null");
+        }
+        this.formatter = formatter;
+    }
 
     @Override
     public FieldType canParse() {
@@ -18,7 +28,7 @@ public class IntegerValueExtractor implements ValueExtractor<Integer> {
         Integer result;
         switch (cell.getCellType()) {
             case NUMERIC:
-                result = (int)Math.round(cell.getNumericCellValue());
+                result = fetchInt(cell.getNumericCellValue());
                 break;
             case BOOLEAN:
                 result = cell.getBooleanCellValue() ? 1 : 0;
@@ -32,10 +42,14 @@ public class IntegerValueExtractor implements ValueExtractor<Integer> {
         return result;
     }
 
+    private int fetchInt(Double cellValue) {
+        return (int)Math.round(cellValue);
+    }
+
     private Integer getIntegerFromString(Cell cell) {
-        final String strVal = cell.getStringCellValue();
+        final String strVal = formatter.formatCellValue(cell);
         try {
-            return StringUtils.isEmpty(strVal) ? null : Integer.valueOf(strVal.trim());
+            return StringUtils.isEmpty(strVal) ? null : fetchInt(Double.valueOf(strVal.trim()));
         } catch (NumberFormatException e) {
             throw new ValueExtractException(String.format("Unable to parse string value %s to integer", strVal), cell);
         }

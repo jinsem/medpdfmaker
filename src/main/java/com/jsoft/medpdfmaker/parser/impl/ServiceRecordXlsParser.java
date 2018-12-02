@@ -44,10 +44,12 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
              final Workbook workbook = new XSSFWorkbook(excelFile)) {
             if (sheetNumberIsValid(workbook, sheetIdx)) {
                 for (final Row currentRow : workbook.getSheetAt(sheetIdx)) {
-                    if (fieldNames.isEmpty()) {
-                        result = moreImportant(result, tryToInitFieldNames(fieldNames, currentRow));
-                    } else {
-                        result = moreImportant(result, processRow(fieldNames, currentRow, rowCallBack));
+                    if (rowIsVisible(currentRow)) {
+                        if (fieldNames.isEmpty()) {
+                            result = moreImportant(result, tryToInitFieldNames(fieldNames, currentRow));
+                        } else {
+                            result = moreImportant(result, processRow(fieldNames, currentRow, rowCallBack));
+                        }
                     }
                 }
                 if (fieldNames.isEmpty()) {
@@ -62,6 +64,13 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
         }
         return result;
 	}
+
+    private boolean rowIsVisible(Row currentRow) {
+        if (!currentRow.isFormatted() || currentRow.getRowStyle() == null) {
+            return true;
+        }
+        return !currentRow.getRowStyle().getHidden();
+    }
 
     private boolean sheetNumberIsValid(Workbook workbook, int sheetIdx) {
         return sheetIdx >= 0 && sheetIdx < workbook.getNumberOfSheets() && !workbook.isSheetHidden(sheetIdx);

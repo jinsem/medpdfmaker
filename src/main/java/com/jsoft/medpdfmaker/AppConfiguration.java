@@ -49,7 +49,7 @@ public class AppConfiguration {
 
     @Bean
     public IntegerValueExtractor integerValueExtractor() {
-        return new IntegerValueExtractor();
+        return new IntegerValueExtractor(new DataFormatter());
     }
 
     @Bean
