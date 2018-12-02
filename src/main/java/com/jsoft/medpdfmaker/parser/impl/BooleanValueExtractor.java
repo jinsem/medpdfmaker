@@ -47,7 +47,7 @@ public class BooleanValueExtractor implements ValueExtractor<Boolean> {
                 break;
             case STRING:
                 final String strVal = StringUtils.remove(cell.getStringCellValue(), " ");
-                result = strVal != null && valueIsTrue(strVal.trim().toUpperCase());
+                result = StringUtils.isNotEmpty(strVal) && valueIsTrue(strVal.trim().toUpperCase());
                 break;
             default:
                 result = false;
@@ -59,7 +59,7 @@ public class BooleanValueExtractor implements ValueExtractor<Boolean> {
         boolean result = possibleTrues.contains(strVal);
         if (!result) {
             for (final String possibleTrue : possibleTrues) {
-                result = possibleTrue.contains(strVal);
+                result = strVal.contains(possibleTrue);
                 if (result) {
                     break;
                 }

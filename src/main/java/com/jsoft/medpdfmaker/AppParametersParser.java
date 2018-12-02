@@ -4,7 +4,8 @@ import com.jsoft.medpdfmaker.exception.ParametersParsingException;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -75,37 +76,37 @@ public class AppParametersParser {
     }
 
     private void setInputFileName(String inputFileName, AppParameters.Builder resultBuilder) {
-        final File fileToVerify = new File(inputFileName);
-        if (!fileToVerify.exists()) {
+        final Path fileToVerify = Paths.get(inputFileName);
+        if (!fileToVerify.toFile().exists()) {
             throw new ParametersParsingException(inputFileName + " cannot be found. Please make sure that file name is set correctly");
         }
-        if (!fileToVerify.canRead()) {
+        if (!fileToVerify.toFile().canRead()) {
             throw new ParametersParsingException(inputFileName + " cannot be read. Please make sure current system user has permissions to read this file");
         }
-        resultBuilder.setInputFileName(inputFileName);
+        resultBuilder.setInputFile(fileToVerify);
     }
 
     private void setOutputFolderName(String inputFileName, String outputFolderName, AppParameters.Builder resultBuilder) {
-        final File outputFolder;
+        final Path outputFolder;
         if (StringUtils.isBlank(outputFolderName)) {
             // it is OK. just use folder that contains input file
-            outputFolder = new File(inputFileName).getParentFile();
+            outputFolder = Paths.get(inputFileName).getParent();
         } else {
-            outputFolder = new File(outputFolderName);
+            outputFolder = Paths.get(outputFolderName);
         }
-        if (!outputFolder.exists()) {
+        if (!outputFolder.toFile().exists()) {
             throw new ParametersParsingException(outputFolder + " cannot be found. " +
                     "Please make sure that output folder name is set correctly");
         }
-        if (!outputFolder.isDirectory()) {
+        if (!outputFolder.toFile().isDirectory()) {
             throw new ParametersParsingException(outputFolder + " is not a directory. " +
                     "Please make sure that this parameters contains valid path to a directory, not to a file");
         }
-        if (!outputFolder.canWrite()) {
+        if (!outputFolder.toFile().canWrite()) {
             throw new ParametersParsingException("The application cannot create files in the " + outputFolder + " directory. " +
                     "Please make sure that current system user has write access to this directory");
         }
-        resultBuilder.setOutputFolderName(outputFolder.getAbsolutePath());
+        resultBuilder.setOutputFolder(outputFolder);
     }
 
     private void setSheetNumbers(String optionValue, AppParameters.Builder resultBuilder) {

@@ -1,9 +1,8 @@
 package com.jsoft.medpdfmaker;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,10 +12,8 @@ import java.util.List;
 public class AppParameters {
 
     private boolean helpRequested;
-    private String inputFileName;
-    private File inputFile;
-    private String outputFolderName;
-    private File outputFolder;
+    private Path inputFile;
+    private Path outputFolder;
     private List<Integer> sheetNumbers;
 
     private AppParameters() {
@@ -37,14 +34,14 @@ public class AppParameters {
      * @return full path to the input file name that needs to be processed.
      */
     public String getInputFileName() {
-        return inputFileName;
+        return (inputFile == null) ? null : inputFile.toString();
     }
 
     /**
      * Get File object that corresponds to inputFileName attribute.
      * @return File object that corresponds to inputFileName attribute or null if inputFileName attribute is null.
      */
-    public File getInputFile() {
+    public Path getInputFile() {
         return inputFile;
     }
 
@@ -55,14 +52,14 @@ public class AppParameters {
      * @return name of the file that will contain data extracted from input file.
      */
     public String getOutputFolderName() {
-        return outputFolderName;
+        return (outputFolder == null) ? null : outputFolder.toString();
     }
 
     /**
      * Get File object that corresponds to outputFolderName attribute.
      * @return File object that corresponds to outputFolderName attribute or null if outputFolderName attribute is null.
      */
-    public File getOutputFolder() {
+    public Path getOutputFolder() {
         return outputFolder;
     }
 
@@ -83,8 +80,8 @@ public class AppParameters {
     @SuppressWarnings({"UnusedReturnValue", "WeakerAccess"})
     public static class Builder {
         private boolean helpRequested = false;
-        private String inputFileName;
-        private String outputFolderName;
+        private Path inputFile;
+        private Path outputFolder;
         private List<Integer> sheetNumbers;
 
         public Builder setHelpRequested(boolean helpRequested) {
@@ -92,28 +89,28 @@ public class AppParameters {
             return this;
         }
 
-        public Builder setInputFileName(String inputFileName) {
+        public Builder setInputFile(Path inputFile) {
             if (helpRequested) {
-                this.inputFileName = null;
+                this.inputFile = null;
             } else {
-                validateRequiredString(inputFileName, "inputFileName");
-                this.inputFileName = inputFileName;
+                validateRequiredPath(inputFile, "inputFile");
+                this.inputFile = inputFile;
             }
             return this;
         }
 
-        private void validateRequiredString(String value, String attrName) {
-            if (StringUtils.isBlank(value)) {
+        private void validateRequiredPath(Path value, String attrName) {
+            if (value == null) {
                 throw new IllegalArgumentException(attrName + " value cannot be empty or blank");
             }
         }
 
-        public Builder setOutputFolderName(String outputFileName) {
+        public Builder setOutputFolder(Path outputFile) {
             if (helpRequested) {
-                this.outputFolderName = null;
+                this.outputFolder = null;
             } else {
-                validateRequiredString(outputFileName, "outputFolderName");
-                this.outputFolderName = outputFileName;
+                validateRequiredPath(outputFile, "outputFolderName");
+                this.outputFolder = outputFile;
             }
             return this;
         }
@@ -137,15 +134,13 @@ public class AppParameters {
         public AppParameters build() {
             if (!helpRequested) {
                 validateSheetNumbers(sheetNumbers);
-                validateRequiredString(inputFileName, "inputFileName");
-                validateRequiredString(outputFolderName, "outputFolderName");
+                validateRequiredPath(inputFile, "inputFileName");
+                validateRequiredPath(outputFolder, "outputFolderName");
             }
-            AppParameters result = new AppParameters();
+            final AppParameters result = new AppParameters();
             result.helpRequested = helpRequested;
-            result.inputFileName = inputFileName;
-            result.inputFile = (result.inputFileName == null) ? null : new File(inputFileName);
-            result.outputFolderName = outputFolderName;
-            result.outputFolder = (result.outputFolderName == null) ? null : new File(outputFolderName);
+            result.inputFile = inputFile;
+            result.outputFolder = outputFolder;
             result.sheetNumbers = sheetNumbers;
             return result;
         }

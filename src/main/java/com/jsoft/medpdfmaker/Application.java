@@ -20,7 +20,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -93,7 +92,7 @@ public class Application implements CommandLineRunner {
         for (final int sheetIdx : appParameters.getSheetNumbers()) {
             LoggerUtil.info(LOG, String.format("Processing sheet #%d", sheetIdx));
             try {
-                final Result result = parser.parse(appParameters.getInputFile(), sheetIdx, rowObj -> repository.put(rowObj.getMemberId(), rowObj));
+                final Result result = parser.parse(appParameters.getInputFile().toFile(), sheetIdx, rowObj -> repository.put(rowObj.getMemberId(), rowObj));
                 switch (result) {
                     case WARNING:
                         LoggerUtil.info(LOG, String.format("Data from sheet %d was processed without errors, but some warnings was reported", sheetIdx));
@@ -121,14 +120,14 @@ public class Application implements CommandLineRunner {
     }
 
     private String makeOutFileName(AppParameters appParameters, int sheetIdx, String curDateStr) {
-        final String baseName = FilenameUtils.getBaseName(appParameters.getInputFile().getAbsolutePath());
-        return appParameters.getOutputFolder().getAbsolutePath() + File.separator +
-                toOutName(baseName, sheetIdx, curDateStr, PDF_EXT);
+        final String baseName = FilenameUtils.getBaseName(appParameters.getInputFile().toString());
+        Path result = Paths.get(appParameters.getOutputFolder().toString(), toOutName(baseName, sheetIdx, curDateStr, PDF_EXT));
+        return result.toString();
     }
 
     private Path createWorkFolder(AppParameters appParameters, int sheetIdx, String curDateStr) throws IOException {
-        final String baseName = FilenameUtils.getBaseName(appParameters.getInputFile().getAbsolutePath());
-        final Path workDirectory = Paths.get(appParameters.getOutputFolder().getAbsolutePath(), toOutName(baseName, sheetIdx, curDateStr));
+        final String baseName = FilenameUtils.getBaseName(appParameters.getInputFile().toString());
+        final Path workDirectory = Paths.get(appParameters.getOutputFolder().toString(), toOutName(baseName, sheetIdx, curDateStr));
         return Files.createDirectory(workDirectory);
     }
 }
