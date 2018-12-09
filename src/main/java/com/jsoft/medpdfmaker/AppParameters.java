@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Application command line parameters holder.
  */
+@SuppressWarnings("WeakerAccess")
 public class AppParameters {
 
     private boolean helpRequested;

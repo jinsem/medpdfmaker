@@ -87,7 +87,7 @@ public class Application implements CommandLineRunner {
         final TableFileParser<ServiceRecord> parser = new ServiceRecordXlsParser(new ServiceRecordBuilder(extractors));
         final ServiceRecordRepository repository = new ServiceRecordRepository();
         final MemberPdfGenerator memberPdfGenerator = new MemberPdfGenerator(appProperties);
-        final PdfFileGenerator pdfFileGenerator = new PdfFileGenerator(memberPdfGenerator);
+        final PdfFileGenerator pdfFileGenerator = new PdfFileGenerator(appProperties, memberPdfGenerator);
         LoggerUtil.info(LOG, "Start parsing input file " + appParameters.getInputFileName());
         for (final int sheetIdx : appParameters.getSheetNumbers()) {
             LoggerUtil.info(LOG, String.format("Processing sheet # %d", sheetIdx));
@@ -126,7 +126,7 @@ public class Application implements CommandLineRunner {
 
     private String makeOutFileName(AppParameters appParameters, int sheetIdx, String curDateStr) {
         final String baseName = FilenameUtils.getBaseName(appParameters.getInputFile().toString());
-        Path result = Paths.get(appParameters.getOutputFolder().toString(), toOutName(baseName, sheetIdx, curDateStr, PDF_EXT));
+        Path result = Paths.get(appParameters.getOutputFolder().toString(), toOutName(baseName, sheetIdx, curDateStr));
         return result.toString();
     }
 
