@@ -10,4 +10,6 @@ localwork/
 *.iws
 .~lock*
 *.log
+.attach_pid*
+.log4j2.xml.swp
 

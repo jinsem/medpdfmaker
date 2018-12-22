@@ -7,10 +7,12 @@ import com.jsoft.medpdfmaker.exception.AppException;
 import com.jsoft.medpdfmaker.exception.UnknownAttributeException;
 import com.jsoft.medpdfmaker.parser.ObjectBuilder;
 import com.jsoft.medpdfmaker.parser.ValueExtractor;
+import org.apache.commons.lang3.Validate;
 import org.apache.poi.ss.usermodel.Cell;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -26,11 +28,15 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
 
     private final Map<FieldType, ValueExtractor> valueExtractors;
 
-    public ServiceRecordBuilder(List<ValueExtractor> extractors) {
+    private final BigDecimal defaultTripPrice;
+
+    public ServiceRecordBuilder(List<ValueExtractor> extractors, BigDecimal defaultTripPrice) {
+        Validate.notNull(defaultTripPrice, "defaultTripPrice cannot be null");
         valueExtractors = new EnumMap<>(FieldType.class);
         for (ValueExtractor extractor : extractors) {
             valueExtractors.put(extractor.canParse(), extractor);
         }
+        this.defaultTripPrice = defaultTripPrice;
     }
 
     private static Map<String, FieldMetaData> buildMetaData() {
@@ -95,6 +101,9 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
     @Override
     public ServiceRecord build() {
         final ServiceRecord result = resultRecord;
+        if (result.getTripPrice() == null) {
+            result.setTripPrice(defaultTripPrice);
+        }
         resultRecord = new ServiceRecord();
         return result;
 	}

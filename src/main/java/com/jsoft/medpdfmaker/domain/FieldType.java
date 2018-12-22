@@ -28,5 +28,10 @@ public enum FieldType {
     /**
      * Integer number
      */
-    INTEGER
+    INTEGER,
+
+    /**
+     * Decimal number that represents money
+     */
+    DECIMAL_MONEY
 }

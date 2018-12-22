@@ -3,6 +3,7 @@ package com.jsoft.medpdfmaker.domain;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -117,6 +118,11 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
      * Phone number. Needs to be verified what is it.
      */
     private String phone;
+
+    /**
+     * Price of the trip described bu the service record.
+     */
+    private BigDecimal tripPrice;
 
     public String getRefId() {
         return this.refId;
@@ -320,6 +326,15 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         this.phone = phone;
     }
 
+    public BigDecimal getTripPrice() {
+        return tripPrice;
+    }
+
+    @ExternalField(value = "TRIP_PRICE", fieldType = FieldType.DECIMAL_MONEY)
+    public void setTripPrice(BigDecimal tripPrice) {
+        this.tripPrice = tripPrice;
+    }
+
     public boolean requiredFieldsAreEmpty() {
         return StringUtils.isBlank(refId) &&
                StringUtils.isBlank(lName) &&
@@ -345,7 +360,8 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
                 StringUtils.isBlank(state) &&
                 StringUtils.isBlank(zipCode) &&
                 StringUtils.isBlank(areaCode) &&
-                StringUtils.isBlank(phone);
+                StringUtils.isBlank(phone) &&
+                tripPrice == null;
     }
 
     @Override

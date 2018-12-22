@@ -3,6 +3,7 @@ package com.jsoft.medpdfmaker.pdf;
 import com.jsoft.medpdfmaker.AppProperties;
 import com.jsoft.medpdfmaker.Constants;
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
+import com.jsoft.medpdfmaker.domain.ServiceRecordKey;
 import com.jsoft.medpdfmaker.repository.impl.ServiceRecordRepository;
 import com.jsoft.medpdfmaker.util.LoggerUtil;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
@@ -37,7 +38,7 @@ public class PdfFileGenerator {
         }
         final List<Path> buffer = new ArrayList<>();
         int mergeCount = 1;
-        for (final String key : repository.getKeys()) {
+        for (final ServiceRecordKey key : repository.getKeys()) {
             final List<ServiceRecord> serviceRecords = repository.getGroupByKey(key);
             final List<Path> pages = memberPdfGenerator.generate(workFolder, serviceRecords);
             if (appProperties.isCompositePdfEnabled()) {

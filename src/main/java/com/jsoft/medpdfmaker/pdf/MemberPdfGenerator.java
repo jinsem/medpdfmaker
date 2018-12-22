@@ -13,6 +13,7 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -68,7 +69,7 @@ public class MemberPdfGenerator {
              PDDocument pdDocument = PDDocument.load(templateStream);) {
             fillPageHeader(pdDocument, headerRecord, pageInfo);
             fillPageTable(pdDocument, pageRecords);
-            fillPageFooter(pdDocument, pageInfo);
+            fillPageFooter(pdDocument, pageInfo, headerRecord);
             pdDocument.save(pageFileName);
         }
         return Paths.get(pageFileName);
@@ -109,7 +110,6 @@ public class MemberPdfGenerator {
     }
 
     private void fillPageTable(PDDocument pdDocument, List<ServiceRecord> pageRecords) throws IOException {
-        final double charges = appProperties.getCharges();
         int recNum = 0;
         for (final ServiceRecord pageRecord : pageRecords) {
             int fieldIdxShift = recNum * 7;
@@ -119,23 +119,24 @@ public class MemberPdfGenerator {
             setField(pdDocument,"Text" + (14 + fieldIdxShift), formatYearCentury.format(pickUpDate));
             setField(pdDocument,"Text" + (15 + fieldIdxShift), appProperties.getPlaceOfService());
             setField(pdDocument,"Text" + (16 + fieldIdxShift), appProperties.getProcedures());
-            setField(pdDocument,"Text" + (17 + fieldIdxShift), formatMoney.format(charges));
+            setField(pdDocument,"Text" + (17 + fieldIdxShift), formatMoney.format(pageRecord.getTripPrice()));
             setField(pdDocument,"Text" + (18 + fieldIdxShift), pageRecord.getRefId());
             recNum++;
         }
     }
 
-    private void fillPageFooter(PDDocument pdDocument, PageInfo pageInfo) throws IOException {
-        final double charges = appProperties.getCharges();
+    private void fillPageFooter(PDDocument pdDocument, PageInfo pageInfo, ServiceRecord headerRecord) throws IOException {
+        final BigDecimal charges = headerRecord.getTripPrice();
         if (pageInfo.lastPage()) {
-            setField(pdDocument,"Text56", formatMoney.format(charges * pageInfo.recordsCount));
+            setField(pdDocument,"Text56", formatMoney.format(charges.multiply(BigDecimal.valueOf(pageInfo.recordsCount))));
         } else {
             setField(pdDocument,"Text56", "See page " + pageInfo.pageCount);
         }
     }
 
     private String makePageFileName(ServiceRecord headerRecord, int pageNum, Path workFolder) {
-        final String normalizedMemberId = headerRecord.getMemberId().replaceAll("[^a-zA-Z0-9.-]", "_");
+        final String normalizedMemberId = String.format("%s_(%s)", headerRecord.getMemberId(), headerRecord.getTripPrice().toString())
+                .replaceAll("[^a-zA-Z0-9.-]", "_");
         return stripLastSlashIfNeeded(workFolder.toFile().getAbsolutePath()) +
                File.separator +
                String.format("%s_%03d.pdf", normalizedMemberId, pageNum);

@@ -1,6 +1,7 @@
 package com.jsoft.medpdfmaker;
 
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
+import com.jsoft.medpdfmaker.domain.ServiceRecordKey;
 import com.jsoft.medpdfmaker.exception.ParametersParsingException;
 import com.jsoft.medpdfmaker.exception.ParseException;
 import com.jsoft.medpdfmaker.parser.Result;
@@ -84,7 +85,7 @@ public class Application implements CommandLineRunner {
     }
 
     private void generatePdf(AppParameters appParameters) throws IOException {
-        final TableFileParser<ServiceRecord> parser = new ServiceRecordXlsParser(new ServiceRecordBuilder(extractors));
+        final TableFileParser<ServiceRecord> parser = new ServiceRecordXlsParser(new ServiceRecordBuilder(extractors, appProperties.getCharges()));
         final ServiceRecordRepository repository = new ServiceRecordRepository();
         final MemberPdfGenerator memberPdfGenerator = new MemberPdfGenerator(appProperties);
         final PdfFileGenerator pdfFileGenerator = new PdfFileGenerator(appProperties, memberPdfGenerator);
@@ -95,7 +96,8 @@ public class Application implements CommandLineRunner {
                 final Result result = parser.parse(appParameters.getInputFile().toFile(), sheetIdx,
                         rowObj -> {
                             if (!rowObj.isCancelled()) {
-                                repository.put(rowObj.getMemberId(), rowObj);
+                                final ServiceRecordKey key = new ServiceRecordKey(rowObj.getMemberId(), rowObj.getTripPrice());
+                                repository.put(key, rowObj);
                             }
                         });
                 switch (result) {

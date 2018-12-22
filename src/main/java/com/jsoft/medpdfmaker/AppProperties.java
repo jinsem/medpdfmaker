@@ -3,6 +3,9 @@ package com.jsoft.medpdfmaker;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class AppProperties {
 
     public static final String PLACE_OF_SERVICE_PROP = "PlaceOfService";
@@ -14,7 +17,7 @@ public class AppProperties {
 
     private final String placeOfService;
     private final String procedures;
-    private final double charges;
+    private final BigDecimal charges;
     private final String federalTaxID;
     private final String provider;
     private final int maxPagesInPdfFile;
@@ -33,17 +36,17 @@ public class AppProperties {
         maxPagesInPdfFile = fetchMaxPagesInPdfFile(strMaxPagesInPdfFile);
     }
 
-    private double fetchCharges(String chargesStr) {
-        double result;
+    private BigDecimal fetchCharges(String chargesStr) {
+        BigDecimal result;
         if (StringUtils.isBlank(chargesStr)) {
             throw new IllegalArgumentException(CHARGES_PROP + " property value must be set");
         }
         try {
-            result = Double.valueOf(chargesStr);
+            result = new BigDecimal(chargesStr).setScale(2, RoundingMode.UP);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(CHARGES_PROP + " property value is not a number");
         }
-        if (result <= 0) {
+        if (result.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException(CHARGES_PROP + " property value must be integer or decimal value greater than zero");
         }
         return result;
@@ -73,7 +76,7 @@ public class AppProperties {
         return procedures;
     }
 
-    public double getCharges() {
+    public BigDecimal getCharges() {
         return charges;
     }
 

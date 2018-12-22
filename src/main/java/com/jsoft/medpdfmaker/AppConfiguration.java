@@ -53,6 +53,11 @@ public class AppConfiguration {
     }
 
     @Bean
+    public DecimalMoneyValueExtractor decimalMoneyValueExtractor() {
+        return new DecimalMoneyValueExtractor(new DataFormatter());
+    }
+
+    @Bean
     public StringValueExtractor stringValueExtractor() {
         return new StringValueExtractor(new DataFormatter());
     }

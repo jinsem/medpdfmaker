@@ -3,6 +3,9 @@ package com.jsoft.medpdfmaker;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.env.Environment;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -38,6 +41,23 @@ class AppPropertiesTest {
         assertEquals(procedures, appProperties.getProcedures());
         assertEquals(taxId, appProperties.getFederalTaxID());
         assertEquals(provider, appProperties.getProvider());
-        assertEquals(50.0, appProperties.getCharges(), 0.01);
+        assertEquals(new BigDecimal("50.00"), appProperties.getCharges());
+    }
+
+    @Test
+    void getParametersPriceRounding() {
+        final Environment environmentMock = mock(Environment.class);
+        when(environmentMock.getProperty(AppProperties.CHARGES_PROP)).thenReturn("57.124");
+        AppProperties appProperties = new AppProperties(environmentMock);
+        assertEquals(new BigDecimal("57.13"), appProperties.getCharges());
+
+        when(environmentMock.getProperty(AppProperties.CHARGES_PROP)).thenReturn("57.1");
+        appProperties = new AppProperties(environmentMock);
+        assertEquals(new BigDecimal("57.10"), appProperties.getCharges());
+    }
+
+    @Test
+    void name() {
+        System.out.println(new BigDecimal("12.333").setScale(2, RoundingMode.UP));
     }
 }

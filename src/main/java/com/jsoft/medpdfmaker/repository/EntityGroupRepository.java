@@ -11,7 +11,7 @@ public interface EntityGroupRepository<K, V> {
 
     boolean isEmpty();
 
-    Set<String> getKeys();
+    Set<K> getKeys();
 
     void clean();
 }

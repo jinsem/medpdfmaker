@@ -1,16 +1,17 @@
 package com.jsoft.medpdfmaker.repository.impl;
 
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
+import com.jsoft.medpdfmaker.domain.ServiceRecordKey;
 import com.jsoft.medpdfmaker.repository.EntityGroupRepository;
 
 import java.util.*;
 
-public class ServiceRecordRepository implements EntityGroupRepository<String, ServiceRecord> {
+public class ServiceRecordRepository implements EntityGroupRepository<ServiceRecordKey, ServiceRecord> {
 
-    private final Map<String, List<ServiceRecord>> repository = new TreeMap<>();
+    private final Map<ServiceRecordKey, List<ServiceRecord>> repository = new TreeMap<>();
 
     @Override
-    public void put(String key, ServiceRecord value) {
+    public void put(ServiceRecordKey key, ServiceRecord value) {
         if (key == null || value == null) {
             throw new IllegalArgumentException("Both key and value cannot be null");
         }
@@ -18,7 +19,7 @@ public class ServiceRecordRepository implements EntityGroupRepository<String, Se
     }
 
     @Override
-    public List<ServiceRecord> getGroupByKey(String key) {
+    public List<ServiceRecord> getGroupByKey(ServiceRecordKey key) {
         return repository.get(key);
     }
 
@@ -28,7 +29,7 @@ public class ServiceRecordRepository implements EntityGroupRepository<String, Se
     }
 
     @Override
-    public Set<String> getKeys() {
+    public Set<ServiceRecordKey> getKeys() {
         return repository.keySet();
 	}
 
