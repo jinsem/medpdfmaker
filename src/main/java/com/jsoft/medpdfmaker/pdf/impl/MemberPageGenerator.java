@@ -1,9 +1,10 @@
-package com.jsoft.medpdfmaker.pdf;
+package com.jsoft.medpdfmaker.pdf.impl;
 
 import com.jsoft.medpdfmaker.AppProperties;
 import com.jsoft.medpdfmaker.Constants;
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
-import org.apache.commons.collections4.CollectionUtils;
+import com.jsoft.medpdfmaker.pdf.PageGenerator;
+import com.jsoft.medpdfmaker.pdf.PageHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
@@ -19,13 +20,13 @@ import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import static com.jsoft.medpdfmaker.util.FileUtil.stripLastSlashIfNeeded;
 
-public class MemberPdfGenerator {
+public class MemberPageGenerator implements PageGenerator {
+
 
     private static final int ROWS_COUNT = 6;
 
@@ -36,14 +37,12 @@ public class MemberPdfGenerator {
     private final DateTimeFormatter formatMonth = DateTimeFormatter.ofPattern("MM");
     private final DecimalFormat formatMoney = new DecimalFormat("0.00");
 
-    public MemberPdfGenerator(final AppProperties appProperties) {
+    public MemberPageGenerator(final AppProperties appProperties) {
         this.appProperties = appProperties;
     }
 
-    public List<Path> generate(final Path workFolder, final List<ServiceRecord> memberServiceRecords) throws IOException {
-        if (CollectionUtils.isEmpty(memberServiceRecords)) {
-            return Collections.emptyList();
-        }
+    @Override
+    public void generate(Path workFolder, List<ServiceRecord> memberServiceRecords, PageHandler pageHandler) throws IOException {
         final List<Path> result = new LinkedList<>();
         final ServiceRecord headerRecord = memberServiceRecords.get(0);
         List<ServiceRecord> pageRecords = new LinkedList<>();
@@ -51,15 +50,14 @@ public class MemberPdfGenerator {
         for (final ServiceRecord memberServiceRecord : memberServiceRecords) {
             pageRecords.add(memberServiceRecord);
             if (pageRecords.size() == ROWS_COUNT) {
-                result.add(generatePage(pageInfo, headerRecord, pageRecords, workFolder));
+                pageHandler.onPage(generatePage(pageInfo, headerRecord, pageRecords, workFolder));
                 pageRecords = new LinkedList<>();
                 pageInfo.incPageNum();
             }
         }
         if (!pageRecords.isEmpty()) {
-            result.add(generatePage(pageInfo, headerRecord, pageRecords, workFolder));
+            pageHandler.onPage(generatePage(pageInfo, headerRecord, pageRecords, workFolder));
         }
-        return result;
     }
 
     private Path generatePage(PageInfo pageInfo, ServiceRecord headerRecord,
@@ -138,8 +136,8 @@ public class MemberPdfGenerator {
         final String normalizedMemberId = String.format("%s_(%s)", headerRecord.getMemberId(), headerRecord.getTripPrice().toString())
                 .replaceAll("[^a-zA-Z0-9.-]", "_");
         return stripLastSlashIfNeeded(workFolder.toFile().getAbsolutePath()) +
-               File.separator +
-               String.format("%s_%03d.pdf", normalizedMemberId, pageNum);
+                File.separator +
+                String.format("%s_%03d.pdf", normalizedMemberId, pageNum);
     }
 
     private InputStream getTemplateStream() {

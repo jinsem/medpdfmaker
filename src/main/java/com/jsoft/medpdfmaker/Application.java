@@ -9,8 +9,8 @@ import com.jsoft.medpdfmaker.parser.TableFileParser;
 import com.jsoft.medpdfmaker.parser.ValueExtractor;
 import com.jsoft.medpdfmaker.parser.impl.ServiceRecordBuilder;
 import com.jsoft.medpdfmaker.parser.impl.ServiceRecordXlsParser;
-import com.jsoft.medpdfmaker.pdf.MemberPdfGenerator;
-import com.jsoft.medpdfmaker.pdf.PdfFileGenerator;
+import com.jsoft.medpdfmaker.pdf.impl.MemberPageGenerator;
+import com.jsoft.medpdfmaker.pdf.impl.MembersBookGenerator;
 import com.jsoft.medpdfmaker.repository.impl.ServiceRecordRepository;
 import com.jsoft.medpdfmaker.util.LoggerUtil;
 import org.apache.commons.io.FilenameUtils;
@@ -87,8 +87,8 @@ public class Application implements CommandLineRunner {
     private void generatePdf(AppParameters appParameters) throws IOException {
         final TableFileParser<ServiceRecord> parser = new ServiceRecordXlsParser(new ServiceRecordBuilder(extractors, appProperties.getCharges()));
         final ServiceRecordRepository repository = new ServiceRecordRepository();
-        final MemberPdfGenerator memberPdfGenerator = new MemberPdfGenerator(appProperties);
-        final PdfFileGenerator pdfFileGenerator = new PdfFileGenerator(appProperties, memberPdfGenerator);
+        final MemberPageGenerator memberPageGenerator = new MemberPageGenerator(appProperties);
+        final MembersBookGenerator membersBookGenerator = new MembersBookGenerator(appProperties, memberPageGenerator);
         LoggerUtil.info(LOG, "Start parsing input file " + appParameters.getInputFileName());
         for (final int sheetIdx : appParameters.getSheetNumbers()) {
             LoggerUtil.info(LOG, String.format("Processing sheet # %d", sheetIdx));
@@ -103,10 +103,10 @@ public class Application implements CommandLineRunner {
                 switch (result) {
                     case WARNING:
                         LoggerUtil.info(LOG, String.format("Data from sheet %d was processed without errors, but some warnings was reported", sheetIdx));
-                        generatePdf(repository, pdfFileGenerator, appParameters, sheetIdx);
+                        generatePdf(repository, membersBookGenerator, appParameters, sheetIdx);
                         break;
                     case OK:
-                        generatePdf(repository, pdfFileGenerator, appParameters, sheetIdx);
+                        generatePdf(repository, membersBookGenerator, appParameters, sheetIdx);
                         break;
                     default:
                         throw new ParseException();
@@ -117,7 +117,7 @@ public class Application implements CommandLineRunner {
         }
     }
 
-    private void generatePdf(ServiceRecordRepository repository, PdfFileGenerator pdfFileGenerator,
+    private void generatePdf(ServiceRecordRepository repository, MembersBookGenerator pdfFileGenerator,
                              AppParameters appParameters, int sheetIdx) throws IOException {
         final String curDateStr = curDateTimeAsString();
         final String outFileName = makeOutFileName(appParameters, sheetIdx, curDateStr);

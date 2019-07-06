@@ -1,9 +1,11 @@
-package com.jsoft.medpdfmaker.pdf;
+package com.jsoft.medpdfmaker.pdf.impl;
 
 import com.jsoft.medpdfmaker.AppProperties;
 import com.jsoft.medpdfmaker.Constants;
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
 import com.jsoft.medpdfmaker.domain.ServiceRecordKey;
+import com.jsoft.medpdfmaker.pdf.PageGenerator;
+import com.jsoft.medpdfmaker.pdf.PageHandler;
 import com.jsoft.medpdfmaker.repository.impl.ServiceRecordRepository;
 import com.jsoft.medpdfmaker.util.LoggerUtil;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
@@ -12,22 +14,21 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.pdfbox.io.MemoryUsageSetting.setupTempFileOnly;
 
-public class PdfFileGenerator {
+public class MembersBookGenerator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PdfFileGenerator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MembersBookGenerator.class);
 
-    private final MemberPdfGenerator memberPdfGenerator;
+    private final PageGenerator pageGenerator;
     private final AppProperties appProperties;
 
-    public PdfFileGenerator(AppProperties appProperties, final MemberPdfGenerator memberPdfGenerator) {
+    public MembersBookGenerator(AppProperties appProperties, final PageGenerator pageGenerator) {
         this.appProperties = appProperties;
-        this.memberPdfGenerator = memberPdfGenerator;
+        this.pageGenerator = pageGenerator;
     }
 
     public void generate(final Path workFolder, final String outFileName,
@@ -37,23 +38,20 @@ public class PdfFileGenerator {
             return;
         }
         final List<Path> buffer = new ArrayList<>();
-        int mergeCount = 1;
+        int[] mergeCount = new int[]{0};
         for (final ServiceRecordKey key : repository.getKeys()) {
             final List<ServiceRecord> serviceRecords = repository.getGroupByKey(key);
-            final List<Path> pages = memberPdfGenerator.generate(workFolder, serviceRecords);
-            if (appProperties.isCompositePdfEnabled()) {
-                for (final Path page : pages) {
-                    buffer.add(page);
+            pageGenerator.generate(workFolder, serviceRecords, pagePath -> {
+                    buffer.add(pagePath);
                     if (buffer.size() >= appProperties.getMaxPagesInPdfFile()) {
-                        mergeBatchIfNeeded(buffer, outFileName, mergeCount);
+                        mergeBatchIfNeeded(buffer, outFileName, mergeCount[0]);
                         buffer.clear();
-                        mergeCount++;
+                        mergeCount[0]++;
                     }
-                }
-            }
+            });
         }
         if (appProperties.isCompositePdfEnabled()) {
-            mergeBatchIfNeeded(buffer, outFileName, mergeCount);
+            mergeBatchIfNeeded(buffer, outFileName, mergeCount[0]);
         }
     }
 
