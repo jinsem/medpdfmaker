@@ -4,7 +4,6 @@ import com.jsoft.medpdfmaker.domain.ServiceRecord;
 import com.jsoft.medpdfmaker.exception.ValueExtractException;
 import com.jsoft.medpdfmaker.parser.ObjectBuilder;
 import com.jsoft.medpdfmaker.parser.Result;
-import com.jsoft.medpdfmaker.parser.RowCallback;
 import com.jsoft.medpdfmaker.parser.TableFileParser;
 import com.jsoft.medpdfmaker.util.LoggerUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.jsoft.medpdfmaker.parser.Result.*;
 
@@ -36,7 +36,7 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
     }
 
     @Override
-	public Result parse(final File srcFile, final int sheetIdx, final RowCallback<ServiceRecord> rowCallBack)
+	public Result parse(final File srcFile, final int sheetIdx, final Consumer<ServiceRecord> rowCallBack)
             throws IOException {
         Result result = OK;
         final List<String> fieldNames = new ArrayList<>();
@@ -94,7 +94,7 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
         return result;
     }
 
-    private Result processRow(List<String> fieldNames, Row currentRow, RowCallback<ServiceRecord> rowCallBack) {
+    private Result processRow(List<String> fieldNames, Row currentRow, Consumer<ServiceRecord> rowCallBack) {
         Result result = OK;
         short colIx = currentRow.getFirstCellNum();
         final short maxColIx = currentRow.getLastCellNum();
@@ -111,7 +111,7 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
                 LoggerUtil.logRowParsingError(LOG, String.format("One or more required values %s are not set", serviceRecordBuilder.getRequiredAttributesNames()), currentRow);
                 result = ERROR;
             } else {
-                rowCallBack.onRow(serviceRecordBuilder.build());
+                rowCallBack.accept(serviceRecordBuilder.build());
             }
         }
         return result;
