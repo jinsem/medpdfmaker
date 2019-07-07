@@ -5,7 +5,7 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class ServiceRecordKey implements Comparable<ServiceRecordKey> {
+public class MemberIdPriceKey implements ServiceRecordGroupKey {
 
     /**
      * Patient's member ID
@@ -13,28 +13,20 @@ public class ServiceRecordKey implements Comparable<ServiceRecordKey> {
     private final String memberId;
 
     /**
-     * Price of the trip described bu the service record.
+     * Price of the trip described by the service record.
      */
     private final BigDecimal tripPrice;
 
-    public ServiceRecordKey(String memberId, BigDecimal tripPrice) {
-        this.memberId = memberId;
-        this.tripPrice = tripPrice;
-    }
-
-    public String getMemberId() {
-        return memberId;
-    }
-
-    public BigDecimal getTripPrice() {
-        return tripPrice;
+    public MemberIdPriceKey(ServiceRecord serviceRecord) {
+        this.memberId = serviceRecord.getMemberId();
+        this.tripPrice = serviceRecord.getTripPrice();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ServiceRecordKey that = (ServiceRecordKey) o;
+        MemberIdPriceKey that = (MemberIdPriceKey) o;
         return Objects.equals(memberId, that.memberId) &&
                 Objects.equals(tripPrice, that.tripPrice);
     }
@@ -45,7 +37,7 @@ public class ServiceRecordKey implements Comparable<ServiceRecordKey> {
     }
 
     @Override
-    public int compareTo(ServiceRecordKey o) {
+    public int compareTo(MemberIdPriceKey o) {
         return new CompareToBuilder()
                 .append(memberId, o.memberId)
                 .append(tripPrice, o.tripPrice)

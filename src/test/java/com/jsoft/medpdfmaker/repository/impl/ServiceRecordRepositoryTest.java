@@ -1,7 +1,8 @@
 package com.jsoft.medpdfmaker.repository.impl;
 
+import com.jsoft.medpdfmaker.domain.MemberIdPriceKey;
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
-import com.jsoft.medpdfmaker.domain.ServiceRecordKey;
+import com.jsoft.medpdfmaker.domain.ServiceRecordGroupKey;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,42 +26,49 @@ class ServiceRecordRepositoryTest {
     @Test
     void putInvalid() {
         assertThrows(IllegalArgumentException.class, () -> serviceRecordRepository.put(null, new ServiceRecord()));
-        assertThrows(IllegalArgumentException.class, () -> serviceRecordRepository.put(new ServiceRecordKey("key", BigDecimal.ZERO), null));
+        assertThrows(IllegalArgumentException.class, () -> serviceRecordRepository.put(new MemberIdPriceKey(makeSerivceRecord("key", BigDecimal.ZERO)), null));
         assertThrows(IllegalArgumentException.class, () -> serviceRecordRepository.put(null, null));
+    }
+
+    private ServiceRecord makeSerivceRecord(String memberId, BigDecimal price) {
+        final ServiceRecord result = new ServiceRecord();
+        result.setMemberId(memberId);
+        result.setTripPrice(price);
+        return result;
     }
 
     @Test
     void putAndGetKeys() {
-        Set<ServiceRecordKey> expected = new HashSet<>(Arrays.asList(
-                new ServiceRecordKey("k1", BigDecimal.ZERO),
-                new ServiceRecordKey("k2", BigDecimal.ZERO),
-                new ServiceRecordKey("k3", BigDecimal.ZERO)
+        Set<MemberIdPriceKey> expected = new HashSet<>(Arrays.asList(
+                new MemberIdPriceKey(makeSerivceRecord("k1", BigDecimal.ZERO)),
+                new MemberIdPriceKey(makeSerivceRecord("k2", BigDecimal.ZERO)),
+                new MemberIdPriceKey(makeSerivceRecord("k3", BigDecimal.ZERO))
         )
         );
-        for (ServiceRecordKey anExpected : expected) {
+        for (MemberIdPriceKey anExpected : expected) {
             serviceRecordRepository.put(anExpected, new ServiceRecord());
         }
-        final Set<ServiceRecordKey> actual = serviceRecordRepository.getKeys();
+        final Set<ServiceRecordGroupKey> actual = serviceRecordRepository.getKeys();
         assertEquals(expected, actual);
     }
 
     @Test
     void putAndGetGroupByKey() {
-        Set<ServiceRecordKey> groupsNames = new HashSet<>(Arrays.asList(
-                new ServiceRecordKey("k1", BigDecimal.ZERO),
-                new ServiceRecordKey("k2", BigDecimal.ZERO),
-                new ServiceRecordKey("k3", BigDecimal.ZERO)
+        Set<MemberIdPriceKey> groupsNames = new HashSet<>(Arrays.asList(
+                new MemberIdPriceKey(makeSerivceRecord("k1", BigDecimal.ZERO)),
+                new MemberIdPriceKey(makeSerivceRecord("k2", BigDecimal.ZERO)),
+                new MemberIdPriceKey(makeSerivceRecord("k3", BigDecimal.ZERO))
         )
         );
-        for (ServiceRecordKey groupsName : groupsNames) {
+        for (MemberIdPriceKey groupsName : groupsNames) {
             for (int i = 0; i < 3; i++) {
                 final ServiceRecord serviceRecord = new ServiceRecord();
                 serviceRecord.setMemberId("Member of " + groupsName);
                 serviceRecordRepository.put(groupsName, serviceRecord);
             }
         }
-        assertNull(serviceRecordRepository.getGroupByKey(new ServiceRecordKey("I am invalid key", BigDecimal.ZERO)));
-        for (ServiceRecordKey groupsName : groupsNames) {
+        assertNull(serviceRecordRepository.getGroupByKey(new MemberIdPriceKey(makeSerivceRecord("I am invalid key", BigDecimal.ZERO))));
+        for (MemberIdPriceKey groupsName : groupsNames) {
             List<ServiceRecord> actualRecords = serviceRecordRepository.getGroupByKey(groupsName);
             assertNotNull(actualRecords);
             assertEquals(3, actualRecords.size());
@@ -73,7 +81,7 @@ class ServiceRecordRepositoryTest {
     @Test
     void isEmptyAndClen() {
         assertTrue(serviceRecordRepository.isEmpty());
-        serviceRecordRepository.put(new ServiceRecordKey("some-key", BigDecimal.ZERO), new ServiceRecord());
+        serviceRecordRepository.put(new MemberIdPriceKey(makeSerivceRecord("some-key", BigDecimal.ZERO)), new ServiceRecord());
         assertFalse(serviceRecordRepository.isEmpty());
         serviceRecordRepository.clean();
         assertTrue(serviceRecordRepository.isEmpty());

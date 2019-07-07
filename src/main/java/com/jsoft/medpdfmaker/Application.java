@@ -1,7 +1,7 @@
 package com.jsoft.medpdfmaker;
 
+import com.jsoft.medpdfmaker.domain.MemberIdPriceKey;
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
-import com.jsoft.medpdfmaker.domain.ServiceRecordKey;
 import com.jsoft.medpdfmaker.exception.ParametersParsingException;
 import com.jsoft.medpdfmaker.exception.ParseException;
 import com.jsoft.medpdfmaker.parser.Result;
@@ -27,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static com.jsoft.medpdfmaker.Constants.PDF_EXT;
 import static com.jsoft.medpdfmaker.util.AppUtil.curDateTimeAsString;
 import static com.jsoft.medpdfmaker.util.FileUtil.toOutName;
 
@@ -96,7 +95,7 @@ public class Application implements CommandLineRunner {
                 final Result result = parser.parse(appParameters.getInputFile().toFile(), sheetIdx,
                         rowObj -> {
                             if (!rowObj.isCancelled()) {
-                                final ServiceRecordKey key = new ServiceRecordKey(rowObj.getMemberId(), rowObj.getTripPrice());
+                                final MemberIdPriceKey key = new MemberIdPriceKey(rowObj);
                                 repository.put(key, rowObj);
                             }
                         });

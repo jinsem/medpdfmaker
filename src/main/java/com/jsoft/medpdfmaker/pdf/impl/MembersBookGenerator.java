@@ -3,9 +3,8 @@ package com.jsoft.medpdfmaker.pdf.impl;
 import com.jsoft.medpdfmaker.AppProperties;
 import com.jsoft.medpdfmaker.Constants;
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
-import com.jsoft.medpdfmaker.domain.ServiceRecordKey;
+import com.jsoft.medpdfmaker.domain.ServiceRecordGroupKey;
 import com.jsoft.medpdfmaker.pdf.PageGenerator;
-import com.jsoft.medpdfmaker.pdf.PageHandler;
 import com.jsoft.medpdfmaker.repository.impl.ServiceRecordRepository;
 import com.jsoft.medpdfmaker.util.LoggerUtil;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
@@ -39,7 +38,7 @@ public class MembersBookGenerator {
         }
         final List<Path> buffer = new ArrayList<>();
         int[] mergeCount = new int[]{0};
-        for (final ServiceRecordKey key : repository.getKeys()) {
+        for (final ServiceRecordGroupKey key : repository.getKeys()) {
             final List<ServiceRecord> serviceRecords = repository.getGroupByKey(key);
             pageGenerator.generate(workFolder, serviceRecords, pagePath -> {
                     buffer.add(pagePath);
