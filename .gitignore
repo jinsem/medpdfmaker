@@ -12,4 +12,5 @@ localwork/
 *.log
 .attach_pid*
 .log4j2.xml.swp
+.~lock.*.xls#
 
