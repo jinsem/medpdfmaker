@@ -171,28 +171,8 @@ If Range("B2").Value <> Empty And UCase(Range("B2").Value) <> UCase("Cancelled")
 
     Columns("B:B").Select
     Selection.Delete Shift:=xlToLeft
-    ActiveWindow.ScrollColumn = 2
-    ActiveWindow.ScrollColumn = 3
-    ActiveWindow.ScrollColumn = 4
-    ActiveWindow.ScrollColumn = 5
-    ActiveWindow.ScrollColumn = 6
-    ActiveWindow.ScrollColumn = 7
-    ActiveWindow.ScrollColumn = 8
-    ActiveWindow.ScrollColumn = 9
-    ActiveWindow.ScrollColumn = 10
-    ActiveWindow.ScrollColumn = 11
     Columns("O:O").Select
     Selection.Cut
-    ActiveWindow.ScrollColumn = 10
-    ActiveWindow.ScrollColumn = 9
-    ActiveWindow.ScrollColumn = 8
-    ActiveWindow.ScrollColumn = 7
-    ActiveWindow.ScrollColumn = 6
-    ActiveWindow.ScrollColumn = 5
-    ActiveWindow.ScrollColumn = 4
-    ActiveWindow.ScrollColumn = 3
-    ActiveWindow.ScrollColumn = 2
-    ActiveWindow.ScrollColumn = 1
     Columns("B:B").Select
     Selection.Insert Shift:=xlToRight
     Columns("E:F").Select
@@ -204,18 +184,6 @@ If Range("B2").Value <> Empty And UCase(Range("B2").Value) <> UCase("Cancelled")
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Columns("J:J").Select
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    ActiveWindow.ScrollColumn = 2
-    ActiveWindow.ScrollColumn = 3
-    ActiveWindow.ScrollColumn = 4
-    ActiveWindow.ScrollColumn = 5
-    ActiveWindow.ScrollColumn = 6
-    ActiveWindow.ScrollColumn = 7
-    ActiveWindow.ScrollColumn = 8
-    ActiveWindow.ScrollColumn = 9
-    ActiveWindow.ScrollColumn = 10
-    ActiveWindow.ScrollColumn = 11
-    ActiveWindow.ScrollColumn = 12
-    ActiveWindow.ScrollColumn = 13
     Columns("P:P").Select
     Selection.Delete Shift:=xlToLeft
     Columns("N:N").Select
@@ -232,18 +200,6 @@ If Range("B2").Value <> Empty And UCase(Range("B2").Value) <> UCase("Cancelled")
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    ActiveWindow.ScrollColumn = 12
-    ActiveWindow.ScrollColumn = 11
-    ActiveWindow.ScrollColumn = 10
-    ActiveWindow.ScrollColumn = 9
-    ActiveWindow.ScrollColumn = 8
-    ActiveWindow.ScrollColumn = 7
-    ActiveWindow.ScrollColumn = 6
-    ActiveWindow.ScrollColumn = 5
-    ActiveWindow.ScrollColumn = 4
-    ActiveWindow.ScrollColumn = 3
-    ActiveWindow.ScrollColumn = 2
-    ActiveWindow.ScrollColumn = 1
     Columns("E:E").Select
     Selection.NumberFormat = "m/d;@"
     Columns("F:G").Select
@@ -280,15 +236,6 @@ If Range("B2").Value <> Empty And UCase(Range("B2").Value) <> UCase("Cancelled")
         .Underline = xlUnderlineStyleNone
         .TintAndShade = 0
     End With
-    ActiveWindow.ScrollColumn = 2
-    ActiveWindow.ScrollColumn = 3
-    ActiveWindow.ScrollColumn = 4
-    ActiveWindow.ScrollColumn = 5
-    ActiveWindow.ScrollColumn = 6
-    ActiveWindow.ScrollColumn = 7
-    ActiveWindow.ScrollColumn = 8
-    ActiveWindow.ScrollColumn = 9
-    ActiveWindow.ScrollColumn = 10
     Columns("N:O").Select
     With Selection.Font
         .Name = "Calibri"
@@ -313,15 +260,6 @@ If Range("B2").Value <> Empty And UCase(Range("B2").Value) <> UCase("Cancelled")
         .ReadingOrder = xlContext
         .MergeCells = False
     End With
-    ActiveWindow.ScrollColumn = 9
-    ActiveWindow.ScrollColumn = 8
-    ActiveWindow.ScrollColumn = 7
-    ActiveWindow.ScrollColumn = 6
-    ActiveWindow.ScrollColumn = 5
-    ActiveWindow.ScrollColumn = 4
-    ActiveWindow.ScrollColumn = 3
-    ActiveWindow.ScrollColumn = 2
-    ActiveWindow.ScrollColumn = 1
     Columns("B:B").Select
     With Selection
         .HorizontalAlignment = xlLeft
@@ -386,37 +324,6 @@ If Range("B2").Value <> Empty And UCase(Range("B2").Value) <> UCase("Cancelled")
     Range("I3").Select
     Selection.AutoFill Destination:=Range("I3:I150"), Type:=xlFillDefault
     Range("I3:I150").Select
-    ActiveWindow.ScrollRow = 117
-    ActiveWindow.ScrollRow = 113
-    ActiveWindow.ScrollRow = 106
-    ActiveWindow.ScrollRow = 96
-    ActiveWindow.ScrollRow = 85
-    ActiveWindow.ScrollRow = 77
-    ActiveWindow.ScrollRow = 69
-    ActiveWindow.ScrollRow = 62
-    ActiveWindow.ScrollRow = 60
-    ActiveWindow.ScrollRow = 56
-    ActiveWindow.ScrollRow = 54
-    ActiveWindow.ScrollRow = 51
-    ActiveWindow.ScrollRow = 48
-    ActiveWindow.ScrollRow = 46
-    ActiveWindow.ScrollRow = 43
-    ActiveWindow.ScrollRow = 41
-    ActiveWindow.ScrollRow = 37
-    ActiveWindow.ScrollRow = 35
-    ActiveWindow.ScrollRow = 33
-    ActiveWindow.ScrollRow = 28
-    ActiveWindow.ScrollRow = 26
-    ActiveWindow.ScrollRow = 20
-    ActiveWindow.ScrollRow = 17
-    ActiveWindow.ScrollRow = 15
-    ActiveWindow.ScrollRow = 9
-    ActiveWindow.ScrollRow = 8
-    ActiveWindow.ScrollRow = 5
-    ActiveWindow.ScrollRow = 4
-    ActiveWindow.ScrollRow = 3
-    ActiveWindow.ScrollRow = 2
-    ActiveWindow.ScrollRow = 1
     Columns("I:I").Select
     Selection.Copy
     Columns("H:H").Select
@@ -452,21 +359,6 @@ If Range("B2").Value <> Empty And UCase(Range("B2").Value) <> UCase("Cancelled")
     Range("I2").Select
     Selection.AutoFill Destination:=Range("I2:I150"), Type:=xlFillDefault
     Range("I2:I150").Select
-    ActiveWindow.ScrollRow = 119
-    ActiveWindow.ScrollRow = 116
-    ActiveWindow.ScrollRow = 105
-    ActiveWindow.ScrollRow = 88
-    ActiveWindow.ScrollRow = 73
-    ActiveWindow.ScrollRow = 55
-    ActiveWindow.ScrollRow = 39
-    ActiveWindow.ScrollRow = 26
-    ActiveWindow.ScrollRow = 17
-    ActiveWindow.ScrollRow = 10
-    ActiveWindow.ScrollRow = 6
-    ActiveWindow.ScrollRow = 4
-    ActiveWindow.ScrollRow = 3
-    ActiveWindow.ScrollRow = 2
-    ActiveWindow.ScrollRow = 1
     Columns("F:F").Select
     Selection.Copy
     Columns("K:K").Select
@@ -597,16 +489,6 @@ If Range("B2").Value <> Empty And UCase(Range("B2").Value) <> UCase("Cancelled")
     Range("J2").Select
     Selection.AutoFill Destination:=Range("J2:J139"), Type:=xlFillDefault
     Range("J2:J139").Select
-    ActiveWindow.ScrollRow = 118
-    ActiveWindow.ScrollRow = 117
-    ActiveWindow.ScrollRow = 114
-    ActiveWindow.ScrollRow = 111
-    ActiveWindow.ScrollRow = 105
-    ActiveWindow.ScrollRow = 94
-    ActiveWindow.ScrollRow = 77
-    ActiveWindow.ScrollRow = 59
-    ActiveWindow.ScrollRow = 36
-    ActiveWindow.ScrollRow = 1
     Cells.Select
     ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort.SortFields.Clear
     ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort.SortFields.Add Key _
@@ -649,39 +531,11 @@ If Range("B2").Value <> Empty And UCase(Range("B2").Value) <> UCase("Cancelled")
     End With
     Columns("J:J").Select
     Selection.ClearContents
-    ActiveWindow.ScrollColumn = 2
-    ActiveWindow.ScrollColumn = 3
-    ActiveWindow.ScrollColumn = 4
-    ActiveWindow.ScrollColumn = 5
-    ActiveWindow.ScrollColumn = 6
-    ActiveWindow.ScrollColumn = 7
-    ActiveWindow.ScrollColumn = 8
-    ActiveWindow.ScrollColumn = 9
-    ActiveWindow.ScrollColumn = 10
-    ActiveWindow.ScrollColumn = 11
-    ActiveWindow.ScrollColumn = 12
-    ActiveWindow.ScrollColumn = 13
-    ActiveWindow.ScrollColumn = 14
     Columns("P:Q").Select
     Range("Q1").Activate
     Selection.ClearContents
-    ActiveWindow.ScrollColumn = 18
-    ActiveWindow.ScrollColumn = 19
     Columns("S:S").Select
     Selection.ClearContents
-    ActiveWindow.ScrollColumn = 18
-    ActiveWindow.ScrollColumn = 17
-    ActiveWindow.ScrollColumn = 16
-    ActiveWindow.ScrollColumn = 13
-    ActiveWindow.ScrollColumn = 11
-    ActiveWindow.ScrollColumn = 9
-    ActiveWindow.ScrollColumn = 7
-    ActiveWindow.ScrollColumn = 6
-    ActiveWindow.ScrollColumn = 4
-    ActiveWindow.ScrollColumn = 3
-    ActiveWindow.ScrollColumn = 2
-    ActiveWindow.ScrollColumn = 1
-    
     
  ' replace huiny #* /*
     Columns("L:M").Select
@@ -706,12 +560,6 @@ If Range("B2").Value <> Empty And UCase(Range("B2").Value) <> UCase("Cancelled")
     ' MsgBox " 1 number of row=" & numofrows
     Rows((numofrows + 1) & ":200").ClearContents
  ' MsgBox "4 After deleting extras rows."
-    
-    
-
-    
-    
-
 
 ' last changes as of 3/26/2013 huinya  highlight TP > 2
     Columns("O:O").Select
@@ -751,8 +599,6 @@ If Range("B2").Value <> Empty And UCase(Range("B2").Value) <> UCase("Cancelled")
  '   Range("N1:O1").Select
  '   Selection.FormatConditions.Delete
 
-
-
 ' Delete column with original dates
     Columns("H:H").Select
     Selection.Cut
@@ -765,14 +611,11 @@ If Range("B2").Value <> Empty And UCase(Range("B2").Value) <> UCase("Cancelled")
 
 ' MsgBox "Ref time deleted"
 
-
-
 'Sub HighlightZ()
 'Find all the rows that have a value ='Must' in column "N" and
 'color cell H:N in green. (Standard Module Code!)
 
 ActSh = ActiveSheet.Name
-' MsgBox (" Active sheet====" & ActSh)
 
 Application.ScreenUpdating = False
 Worksheets(ActSh).Select
@@ -790,13 +633,10 @@ If Worksheets(ActSh).Cells(n, 14) = "Must" Then
         .TintAndShade = 0
         .PatternTintAndShade = 0
     End With
-
-
 Else
 End If
 Next r
 Application.ScreenUpdating = True
-
 
 ' move phone to left
  Range(Columns(16), Columns(17)).Select
@@ -812,10 +652,6 @@ Application.ScreenUpdating = True
         .TintAndShade = -0.249977111117893
         .PatternTintAndShade = 0
     End With
-   
- 
- 
- 
 
 ' Extra formatting 5/1/2013
 '===================================
@@ -865,12 +701,6 @@ Application.ScreenUpdating = True
     End With
     Columns("G:G").Select
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    ActiveWindow.ScrollColumn = 2
-    ActiveWindow.ScrollColumn = 3
-    ActiveWindow.ScrollColumn = 4
-    ActiveWindow.ScrollColumn = 5
-    ActiveWindow.ScrollColumn = 6
-    ActiveWindow.ScrollColumn = 7
     Columns("R:R").Select
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Range("R1").Select
@@ -929,25 +759,12 @@ Application.ScreenUpdating = True
     Range("V1").Formula = "Notes"
     Range("V2").Formula = "=RIGHT(B2,LEN(B2)-FIND(""#"",B2))"
     Range("V2" & ":V" & LastRow).FillDown
-    
-    
-    
     Columns("U:V").Select
     Selection.Copy
     Range("W1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
         :=False, Transpose:=False
     Columns("W:W").Select
-    ActiveWindow.ScrollColumn = 13
-    ActiveWindow.ScrollColumn = 12
-    ActiveWindow.ScrollColumn = 11
-    ActiveWindow.ScrollColumn = 7
-    ActiveWindow.ScrollColumn = 6
-    ActiveWindow.ScrollColumn = 5
-    ActiveWindow.ScrollColumn = 4
-    ActiveWindow.ScrollColumn = 3
-    ActiveWindow.ScrollColumn = 2
-    ActiveWindow.ScrollColumn = 1
     Columns("B:B").Select
     Selection.Font.Size = 6    'xxx
     Application.CutCopyMode = False
@@ -1034,17 +851,6 @@ Application.ScreenUpdating = True
         .PatternTintAndShade = 0
     End With
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
 ' Find last day cell and insert empty line between dates 03/13/2013
     ' MsgBox " Will find this date: " & tmrow & "  " & ss
     'Dim r As Long
@@ -1064,11 +870,6 @@ Application.ScreenUpdating = True
     Else
        MsgBox "3. Can not find next date " & tmrow
     End If
-    
-    
-    
-   
-   
 TCEnd:
  If c1 = "x1" Or c1 = "x3" Then
     Range("Z1").Select
@@ -1080,32 +881,3 @@ TCEnd:
    MsgBox (c1 & vbNewLine & "Completed OK" & vbNewLine & "Red time is calculated + 2 hrs from appointment time" & vbNewLine & vbNewLine & " Don't forget to Save As this file ")
  End If
 End Sub
-
-
-
-
-
-
-
-' 05/31/13
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
