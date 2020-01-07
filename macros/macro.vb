@@ -19,7 +19,7 @@ Sub DailyCCHPOldFormat()
                  & "Edit dates if needed and press OK " & vbNewLine & vbNewLine _
                  & "Or press Cancel to stop macros"
     defaultDates = Format(today, "mm/dd/yyyy") & "-" & Format(tmrow, "mm/dd/yyyy")
-    inputResponse = InputBox(prompt:=datesPromt, Title:="Enter dates", Default:=defaultDates, Type:=2)
+    inputResponse = InputBox(prompt:=datesPromt, Title:="Enter dates", Default:=defaultDates)
     If inputResponse = False Then
         GoTo TCEnd
     Else
