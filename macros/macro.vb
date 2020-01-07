@@ -55,29 +55,34 @@ Sub DailyCCHPOldFormat()
     
     ' twick Notes Column later need to separate from cooridinaotr initials:
     ' Copy coordinator initials and notes
-    concatCoordinatorAndNotes
+    ' Modify column P in place 
+    concatCoordinatorAndNotes targetColumn := "B"
 
+    ' Phone 
     Columns("O:O").Select
     Selection.Copy
+    ' Phone 
     Range("R1").Select
     Selection.Insert Shift:=xlToRight
-    Columns("B:B").Select
-    Selection.Delete Shift:=xlToLeft
-    Columns("O:O").Select
-    Selection.Cut
-    Columns("B:B").Select
-    Selection.Insert Shift:=xlToRight
-    Columns("E:F").Select
-    Selection.Delete Shift:=xlToLeft
-    Columns("H:H").Select
-    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    Columns("I:I").Select
-    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    Columns("J:J").Select
-    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+
+    ' P contained coordinator + notes. Remove it since it was copied to B 
     Columns("P:P").Select
     Selection.Delete Shift:=xlToLeft
+
+    ' Delete member ID and DOB
+    Columns("E:F").Select
+    Selection.Delete Shift:=xlToLeft
+    ' H contains origin 
+    Columns("H:H").Select
+    ' Insert 4 empty columns 
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    ' P has notes column
+    Columns("P:P").Select
+    Selection.Delete Shift:=xlToLeft
+    ' Wheelchair YN column
     Columns("N:N").Select
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, Formula1:="=""No"""
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
@@ -648,13 +653,13 @@ private Sub convertFormulasToValuesInSelection()
     Next rng
 End Sub
 
-private Sub concatCoordinatorAndNotes()
+private Sub concatCoordinatorAndNotes(targetColumn as String)
     Dim i As Long
     
-    Range("P1").ClearContents
-    Range("P1").Formula = "Coordinator"
+    Range(targetColumn & "1").ClearContents
+    Range(targetColumn & "1").Formula = "Coordinator"
     ' 16 == P column
     For i = Cells(Cells.Rows.Count, 16).End(xlUp).Row To 2 Step -1
-        Range("P" & i).Value = Range("P" & i).Value & "#" & Range("N" & i).Value
+        Range(targetColumn & i).Value = Range("P" & i).Value & "#" & Range("N" & i).Value
     Next
 End Sub
