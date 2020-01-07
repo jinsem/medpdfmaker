@@ -46,18 +46,18 @@ Sub DailyCCHPOldFormat()
     ' twick Notes Column later need to separate from cooridinaotr initials:
     ' fill formula till the end
     ' Copy coordinator initials and notes
-    Range("Q1").Formula = "Coordinator"
-    Range("Q2").Formula = "=CONCATENATE(P2,""#"",N2)"
-    Range("Q2" & ":Q" & LastR).FillDown
+    Range("R1").Formula = "Coordinator"
+    Range("R2").Formula = "=CONCATENATE(P2,""#"",N2)"
+    Range("R2" & ":R" & LastR).FillDown
+    Columns("R:R").Select
+    convertFormulasToValuesInSelection
 
-    ' copy values only and paste into coordinator
-    Columns("Q:Q").Select
-    Selection.Copy
-    Range("R1").Select
-    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
     Columns("P:P").Select
     Application.CutCopyMode = False
     Selection.ClearContents
+
+
+
     Columns("R:R").Select
     Selection.Copy
     Range("P1").Select
@@ -67,6 +67,7 @@ Sub DailyCCHPOldFormat()
     Selection.ClearContents
     Columns("R:R").Select
     Selection.ClearContents
+
 
     ' delete only cancelled
     ' Delete rows out of date range
@@ -660,3 +661,11 @@ Private Sub setCalibriFont(fontSize As Integer, followTheme As Boolean)
     End If
 End Sub
 
+private Sub convertFormulasToValuesInSelection()
+    Dim rng As Range
+    For Each rng In Selection
+        If rng.HasFormula Then
+            rng.Formula = rng.Value
+        End If
+    Next rng
+End Sub
