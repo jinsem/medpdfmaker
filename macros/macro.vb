@@ -3,6 +3,7 @@ Sub DailyCCHPOldFormat()
     ' Constants
     Const CANCELLED_COL As String = "B"
     Const PICKUP_DATE_COL_IDX As Integer = 7
+    Const WORK_BOOK_NAME as String = "SFTAXI - MONTHLY EXPORT"
 
     ' Simple counter
     Dim x As Long
@@ -127,7 +128,6 @@ Sub DailyCCHPOldFormat()
     setCalibriFont fontSize:=6, followTheme:=False
     Columns("N:O").Select
     setCalibriFont fontSize:=6, followTheme:=False
-    Selection.ColumnWidth = 6.43
     Selection.ColumnWidth = 3.29
     Columns("O:O").Select
     With Selection
@@ -172,11 +172,11 @@ Sub DailyCCHPOldFormat()
         .TintAndShade = 0
     End With
     Cells.Select
-    ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort.SortFields.Add Key _
+    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Add Key _
         :=Range("A2:A649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
         DataOption:=xlSortNormal
-    With ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort
+    With ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort
         .SetRange Range("A1:W999")
         .Header = xlYes
         .MatchCase = False
@@ -339,10 +339,10 @@ Sub DailyCCHPOldFormat()
     Selection.AutoFill Destination:=Range("J2:J139"), Type:=xlFillDefault
     Range("J2:J139").Select
     Cells.Select
-    ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort.SortFields.Add Key _
+    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Add Key _
         :=Range("A1"), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
-    With ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort
+    With ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort
         .SetRange Range("A1:U649")
         .Header = xlYes
         .MatchCase = False
@@ -350,11 +350,11 @@ Sub DailyCCHPOldFormat()
         .SortMethod = xlPinYin
         .Apply
     End With
-    ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort.SortFields.Add Key _
+    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Add Key _
         :=Range("B2:B649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
         DataOption:=xlSortNormal
-    With ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort
+    With ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort
         .SetRange Range("A1:U649")
         .Header = xlYes
         .MatchCase = False
@@ -362,14 +362,14 @@ Sub DailyCCHPOldFormat()
         .SortMethod = xlPinYin
         .Apply
     End With
-    ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort.SortFields.Add Key _
+    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Add Key _
         :=Range("E2:E649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
         DataOption:=xlSortNormal
-    ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort.SortFields.Add Key _
+    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Add Key _
         :=Range("J2:J649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
         DataOption:=xlSortNormal
-    With ActiveWorkbook.Worksheets("SFTAXI - MONTHLY EXPORT").Sort
+    With ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort
         .SetRange Range("A1:U649")
         .Header = xlYes
         .MatchCase = False
