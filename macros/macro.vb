@@ -44,30 +44,13 @@ Sub DailyCCHPOldFormat()
     ActiveSheet.Paste
     
     ' twick Notes Column later need to separate from cooridinaotr initials:
-    ' fill formula till the end
     ' Copy coordinator initials and notes
-    Range("R1").Formula = "Coordinator"
-    Range("R2").Formula = "=CONCATENATE(P2,""#"",N2)"
-    Range("R2" & ":R" & LastR).FillDown
-    Columns("R:R").Select
-    convertFormulasToValuesInSelection
-
-    Columns("P:P").Select
-    Application.CutCopyMode = False
-    Selection.ClearContents
-
-
-
-    Columns("R:R").Select
-    Selection.Copy
-    Range("P1").Select
-    ActiveSheet.Paste
-    Columns("Q:Q").Select
-    Application.CutCopyMode = False
-    Selection.ClearContents
-    Columns("R:R").Select
-    Selection.ClearContents
-
+    Range("P1").ClearContents
+    Range("P1").Formula = "Coordinator"
+    ' 16 == P column
+    For x = Cells(Cells.Rows.Count, 16).End(xlUp).Row To 2 Step -1
+        Range("P" & x).Value = Range("P" & x).Value & "#" & Range("N" & x).Value
+    Next
 
     ' delete only cancelled
     ' Delete rows out of date range
