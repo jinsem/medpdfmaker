@@ -82,20 +82,10 @@ Sub DailyCCHPOldFormat()
     ' P has notes column
     Columns("P:P").Select
     Selection.Delete Shift:=xlToLeft
+    
     ' Wheelchair YN column
-    Columns("N:N").Select
-    Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, Formula1:="=""No"""
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Font
-         .Color = -16383844
-         .TintAndShade = 0
-    End With
-    With Selection.FormatConditions(1).Interior
-        .PatternColorIndex = xlAutomatic
-        .Color = 13551615
-        .TintAndShade = 0
-    End With
-    Selection.FormatConditions(1).StopIfTrue = False
+    highlightWheelChairColumns columnLetter := "N"
+
     Columns("E:E").Select
     Selection.NumberFormat = "m/d;@"
     Columns("F:G").Select
@@ -662,4 +652,20 @@ private Sub concatCoordinatorAndNotes(targetColumn as String)
     For i = Cells(Cells.Rows.Count, 16).End(xlUp).Row To 2 Step -1
         Range(targetColumn & i).Value = Range("P" & i).Value & "#" & Range("N" & i).Value
     Next
+End Sub
+
+private Sub highlightWheelChairColumns(columnLetter as String)
+    Columns(columnLetter & ":" & columnLetter).Select
+    Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, Formula1:="=""No"""
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    With Selection.FormatConditions(1).Font
+         .Color = -16383844
+         .TintAndShade = 0
+    End With
+    With Selection.FormatConditions(1).Interior
+        .PatternColorIndex = xlAutomatic
+        .Color = 13551615
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
 End Sub
