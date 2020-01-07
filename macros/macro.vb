@@ -42,8 +42,6 @@ Sub DailyCCHPOldFormat()
     Selection.Copy
     Range("AM1").Select
     ActiveSheet.Paste
-    Range("Q1").Select
-    ActiveCell.FormulaR1C1 = "Notes11"
     
     ' twick Notes Column later need to separate from cooridinaotr initials:
     ' fill formula till the end
