@@ -413,17 +413,7 @@ Sub DailyCCHPOldFormat()
     Range("O1").Select
     ActiveCell.FormulaR1C1 = "TP"
     Rows("1:1").Select
-    With Selection.Font
-        .Name = "Calibri"
-        .Size = 8
-        .Strikethrough = False
-        .Superscript = False
-        .Subscript = False
-        .OutlineFont = False
-        .Shadow = False
-        .Underline = xlUnderlineStyleNone
-        .TintAndShade = 0
-    End With
+    setCalibriFont fontSize:=8, followTheme:=True
     Columns("L:M").Select
     Selection.Replace What:="STREET", Replacement:="ST", LookAt:=xlPart, _
         SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
