@@ -43,15 +43,6 @@ Sub DailyCCHPOldFormat()
     Range("AM1").Select
     ActiveSheet.Paste
     
-    ' twick Notes Column later need to separate from cooridinaotr initials:
-    ' Copy coordinator initials and notes
-    Range("P1").ClearContents
-    Range("P1").Formula = "Coordinator"
-    ' 16 == P column
-    For x = Cells(Cells.Rows.Count, 16).End(xlUp).Row To 2 Step -1
-        Range("P" & x).Value = Range("P" & x).Value & "#" & Range("N" & x).Value
-    Next
-
     ' delete only cancelled
     ' Delete rows out of date range
     For x = Cells(Cells.Rows.Count, PICKUP_DATE_COL_IDX).End(xlUp).Row To 2 Step -1
@@ -62,6 +53,10 @@ Sub DailyCCHPOldFormat()
         End If
     Next
     
+    ' twick Notes Column later need to separate from cooridinaotr initials:
+    ' Copy coordinator initials and notes
+    concatCoordinatorAndNotes
+
     Columns("O:O").Select
     Selection.Copy
     Range("R1").Select
@@ -651,4 +646,15 @@ private Sub convertFormulasToValuesInSelection()
             rng.Formula = rng.Value
         End If
     Next rng
+End Sub
+
+private Sub concatCoordinatorAndNotes()
+    Dim i As Long
+    
+    Range("P1").ClearContents
+    Range("P1").Formula = "Coordinator"
+    ' 16 == P column
+    For i = Cells(Cells.Rows.Count, 16).End(xlUp).Row To 2 Step -1
+        Range("P" & i).Value = Range("P" & i).Value & "#" & Range("N" & i).Value
+    Next
 End Sub
