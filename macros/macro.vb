@@ -14,6 +14,9 @@ Sub DailyCCHPOldFormat()
     Dim datesPromt As String
     Dim inputResponse As Variant
     Dim defaultDates As String
+    Dim LastR As Long
+
+    LastR = Range("A1:A" & Range("A1").End(xlDown).Row).Rows.Count
 
     datesPromt = "All cancelled trips will be deleted " & vbNewLine _
                  & "Default dates selected: " & today & " to  " & tmrow & vbNewLine _
@@ -44,9 +47,6 @@ Sub DailyCCHPOldFormat()
     
     ' twick Notes Column later need to separate from cooridinaotr initials:
     ' fill formula till the end
-    Dim LastR As Long
-    LastR = Range("A1:A" & Range("A1").End(xlDown).Row).Rows.Count
-
     ' Copy coordinator initials and notes
     Range("Q1").Formula = "Coordinator"
     Range("Q2").Formula = "=CONCATENATE(P2,""#"",N2)"
