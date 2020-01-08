@@ -102,35 +102,11 @@ Sub DailyCCHPOldFormat()
     setCalibriFont fontSize:=6, followTheme:=False
     Selection.ColumnWidth = 3.29
     Columns("O:O").Select
-    With Selection
-        .HorizontalAlignment = xlLeft
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
-    End With
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     Columns("B:B").Select
-    With Selection
-        .HorizontalAlignment = xlLeft
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
-    End With
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     Columns("E:E").Select
-    With Selection
-        .HorizontalAlignment = xlLeft
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
-    End With
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     Rows("1:1").Select
     With Selection.Font
         .Name = "Calibri"
@@ -262,23 +238,14 @@ Sub DailyCCHPOldFormat()
         .PatternTintAndShade = 0
     End With
     Columns("G:G").Select
-    With Selection
-        .HorizontalAlignment = xlLeft
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
-    End With
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     Columns("B:B").ColumnWidth = 4.29
     Columns("C:C").ColumnWidth = 10
     Columns("D:D").ColumnWidth = 12.14
     Columns("E:E").ColumnWidth = 5.14
     Columns("F:F").ColumnWidth = 8.29
-    Selection.ColumnWidth = 8.43
-    Columns("H:K").Select
-    Selection.ColumnWidth = 7.71
+    Columns("G:G").ColumnWidth = 8.43
+    Columns("H:K").ColumnWidth = 7.71
     Columns("L:L").ColumnWidth = 38.14
     Columns("M:M").ColumnWidth = 39.43
     Columns("N:N").Select
@@ -407,18 +374,17 @@ Sub DailyCCHPOldFormat()
     Application.ScreenUpdating = False
     Worksheets(ActSh).Select
     For Each r In Worksheets(ActSh).UsedRange.Rows
-
-    n = r.Row
-    If Worksheets(ActSh).Cells(n, 14) = "Must" Then
-        Range("H" & n & ":N" & n).Select
-        With Selection.Interior
-            .Pattern = xlSolid
-            .PatternColorIndex = xlAutomatic
-            .Color = 5287936
-            .TintAndShade = 0
-            .PatternTintAndShade = 0
-        End With
-    End If
+        n = r.Row
+        If Worksheets(ActSh).Cells(n, 14) = "Must" Then
+            Range("H" & n & ":N" & n).Select
+            With Selection.Interior
+                .Pattern = xlSolid
+                .PatternColorIndex = xlAutomatic
+                .Color = 5287936
+                .TintAndShade = 0
+                .PatternTintAndShade = 0
+            End With
+        End If
     Next r
     Application.ScreenUpdating = True
 
@@ -438,49 +404,13 @@ Sub DailyCCHPOldFormat()
     End With
 
     Columns("A:A").Select
-    With Selection
-        .HorizontalAlignment = xlLeft
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
-    End With
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     Range("A1").Select
-    With Selection
-        .HorizontalAlignment = xlCenter
-        .VerticalAlignment = xlCenter
-        .WrapText = False
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
-    End With
+    allightSelectionTo horizontalAlignment := xlCenter, verticalAlignment := xlCenter
     Columns("G:G").Select
-    With Selection
-        .HorizontalAlignment = xlRight
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
-    End With
+    allightSelectionTo horizontalAlignment := xlRight, verticalAlignment := xlCenter
     Range("G1").Select
-    With Selection
-        .HorizontalAlignment = xlCenter
-        .VerticalAlignment = xlCenter
-        .WrapText = False
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
-    End With
+    allightSelectionTo horizontalAlignment := xlCenter, verticalAlignment := xlCenter
     Columns("G:G").Select
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Columns("R:R").Select
@@ -668,4 +598,18 @@ private Sub highlightWheelChairColumns(columnLetter as String)
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
+End Sub
+
+Private Sub allightSelectionTo(horizontalAlignment as Integer, verticalAlignment as Integer)
+    With Selection
+        .HorizontalAlignment = horizontalAlignment
+        .VerticalAlignment = verticalAlignment
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
 End Sub
