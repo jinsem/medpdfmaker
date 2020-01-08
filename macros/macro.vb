@@ -1,4 +1,45 @@
 Sub DailyCCHPOldFormat()
+    ' Columns reference 
+    ' ' REF_ID
+    ' Columns("A:A")
+    ' ' Coordinator
+    ' Columns("B:B")
+    ' ' LNAME
+    ' Columns("C:C")
+    ' ' FNAME
+    ' Columns("D:D")
+    ' ' PICKUP_DATE
+    ' Columns("E:E")
+    ' ' PickupTime*
+    ' Columns("F:F")
+    ' ' --- Empty --- 
+    ' Columns("G:G")
+    ' ' Appt_time
+    ' Columns("H:H")
+    ' ' --- Empty --- 
+    ' Columns("I:I")
+    ' ' --- Empty --- 
+    ' Columns("J:J")
+    ' ' --- Empty --- 
+    ' Columns("K:K")
+    ' ' --- Empty --- 
+    ' Columns("L:L")
+    ' ' Origin
+    ' Columns("M:M")
+    ' ' Destination
+    ' Columns("N:N")
+    ' ' WheelChair_YesNo
+    ' Columns("O:O")
+    ' ' TP
+    ' Columns("P:P")
+    ' ' Telephone
+    ' Columns("Q:Q")
+    ' ' Notes
+    ' Columns("R:R")
+    ' ' --- Empty --- 
+    ' Columns("S:S")
+    ' ' Pickup_timeORIGINAL
+    ' Columns("T:T")
 
     ' Constants
     Const CANCELLED_COL As String = "B"
@@ -93,15 +134,12 @@ Sub DailyCCHPOldFormat()
     Selection.Replace What:="AM", Replacement:="AM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Selection.Replace What:="PM", Replacement:="PM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Selection.NumberFormat = "h:mm;@"
-    Columns("B:B").ColumnWidth = 5.43
-    Columns("E:E").ColumnWidth = 5.86
     Columns("B:B").Select
     setCalibriFont fontSize:=6, followTheme:=False
     Columns("E:E").Select
     setCalibriFont fontSize:=6, followTheme:=False
     Columns("N:O").Select
     setCalibriFont fontSize:=6, followTheme:=False
-    Selection.ColumnWidth = 3.29
     Columns("O:O").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     Columns("B:B").Select
@@ -109,17 +147,8 @@ Sub DailyCCHPOldFormat()
     Columns("E:E").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     Rows("1:1").Select
-    With Selection.Font
-        .Name = "Calibri"
-        .Size = 10
-        .Strikethrough = False
-        .Superscript = False
-        .Subscript = False
-        .OutlineFont = False
-        .Shadow = False
-        .Underline = xlUnderlineStyleNone
-        .TintAndShade = 0
-    End With
+    setCalibriFont fontSize:=10, followTheme:=False
+
     Cells.Select
     
     ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
@@ -136,7 +165,6 @@ Sub DailyCCHPOldFormat()
     End With
     Range("K1").Select
     ActiveCell.FormulaR1C1 = "XXXXX"
-    Range("I3").Select
     Columns("F:F").Select
     Application.CutCopyMode = False
     Selection.Copy
@@ -150,7 +178,6 @@ Sub DailyCCHPOldFormat()
         "=IF((AND(RC[-8]-R[-1]C[-8]=1,RC[-3]="""",RC[-5]=R[-1]C[-5])),R[-1]C[-2]+TIME(2,0,0),"""")"
     Range("I3").Select
     Selection.AutoFill Destination:=Range("I3:I150"), Type:=xlFillDefault
-    Range("I3:I150").Select
     Columns("I:I").Select
     Selection.Copy
     Columns("H:H").Select
@@ -178,7 +205,6 @@ Sub DailyCCHPOldFormat()
         "=IF(RC[-3]<>"""",TEXT(RC[-3],""HH:MM""),CONCATENATE(TEXT(RC[-1],""HH:MM""),""_""))"
     Range("I2").Select
     Selection.AutoFill Destination:=Range("I2:I150"), Type:=xlFillDefault
-    Range("I2:I150").Select
     Columns("F:F").Select
     Selection.Copy
     Columns("K:K").Select
@@ -241,15 +267,6 @@ Sub DailyCCHPOldFormat()
     End With
     Columns("G:G").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    Columns("B:B").ColumnWidth = 4.29
-    Columns("C:C").ColumnWidth = 10
-    Columns("D:D").ColumnWidth = 12.14
-    Columns("E:E").ColumnWidth = 5.14
-    Columns("F:F").ColumnWidth = 8.29
-    Columns("G:G").ColumnWidth = 8.43
-    Columns("H:K").ColumnWidth = 7.71
-    Columns("L:L").ColumnWidth = 38.14
-    Columns("M:M").ColumnWidth = 39.43
     Columns("N:N").Select
     Selection.Replace What:="Yes(Must)", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Range("N5").Select
@@ -278,7 +295,6 @@ Sub DailyCCHPOldFormat()
     Selection.NumberFormat = "h:mm;@"
     Range("J2").Select
     Selection.AutoFill Destination:=Range("J2:J139"), Type:=xlFillDefault
-    Range("J2:J139").Select
     Cells.Select
     ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
     ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
@@ -326,19 +342,6 @@ Sub DailyCCHPOldFormat()
     Columns("S:S").Select
     Selection.ClearContents
     
-    Columns("L:M").Select
-    Columns("L:M").Select
-    Selection.Replace What:="#*", Replacement:="", LookAt:=xlPart, _
-        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-        ReplaceFormat:=False
-    Selection.Replace What:="/*", Replacement:="", LookAt:=xlPart, _
-        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-        ReplaceFormat:=False
-    Selection.Replace What:=".,", Replacement:="", LookAt:=xlPart, _
-        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-        ReplaceFormat:=False
-    Selection.ColumnWidth = 30.43
-
     ' clean all leftovers after last detail line
     numofrows = Cells(Rows.Count, "a").End(xlUp).Row
     Rows((numofrows + 1) & ":200").ClearContents
@@ -421,8 +424,6 @@ Sub DailyCCHPOldFormat()
     Selection.Replace What:="(415) ", Replacement:="", LookAt:=xlPart, _
         SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
         ReplaceFormat:=False
-    Selection.ColumnWidth = 12.14
-
 
     ' format with _ in column F
     ' Find all the cell F with "_" and format font
@@ -480,13 +481,10 @@ Sub DailyCCHPOldFormat()
     Selection.Copy
     Range("R1").Select
     ActiveSheet.Paste
-    Selection.ColumnWidth = 13.57
     Columns("U:X").Select
     Application.CutCopyMode = False
     Selection.ClearContents
     
-    Columns("B:B").Select
-    Selection.ColumnWidth = 4.71
     Range("B1").Select
     With Selection.Interior
         .Pattern = xlSolid
@@ -495,9 +493,7 @@ Sub DailyCCHPOldFormat()
         .TintAndShade = -0.249977111117893
         .PatternTintAndShade = 0
     End With
-    Selection.Font.Bold = True
-   
-   
+      
     ' formating for new notes/inititanl
     Columns("B:B").Select
     setCalibriFont fontSize:=6, followTheme:=True
@@ -505,7 +501,6 @@ Sub DailyCCHPOldFormat()
     setCalibriFont fontSize:=9, followTheme:=True
     Range("R1").Select
     setCalibriFont fontSize:=9, followTheme:=True
-    Selection.Font.Bold = True
     With Selection.Interior
         .Pattern = xlSolid
         .PatternColorIndex = xlAutomatic
@@ -513,13 +508,17 @@ Sub DailyCCHPOldFormat()
         .TintAndShade = -0.249977111117893
         .PatternTintAndShade = 0
     End With
-   
-    ' Find last day cell and insert empty line between dates 03/13/2013
+    
+    setColWidths
+    ' Bold header 
+    Rows("1:1").EntireRow.Select
+    Selection.Font.Bold = True
+
+    ' Find last day cell and insert empty line between dates
     r = Application.Match(CLng(tmrow), Range("E1:E100"), 0)
     If Not IsError(r) Then
         Rows(r & ":" & r).Select
         Selection.Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
-       
         Rows(r & ":" & r).Select
         With Selection.Interior
             .PatternColorIndex = xlAutomatic
@@ -615,4 +614,18 @@ Private Sub unifyStreetNames(rangeDef as String)
     Selection.Replace What:="AVENUE", Replacement:="AVE", LookAt:=xlPart, _
         SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
         ReplaceFormat:=False
+    Selection.Replace What:="#*", Replacement:="", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Selection.Replace What:="/*", Replacement:="", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Selection.Replace What:=".,", Replacement:="", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
 End Sub
+
+Private Sub setColWidths
+    Cells.Select
+    Cells.EntireColumn.AutoFit
+End Sub 
