@@ -39,7 +39,7 @@ Sub DailyCCHPOldFormat()
     End If
 
     ' Copy notes
-    copyPaste fromColumns := "N:N", toColumns := "AM:AM"
+    copyPaste fromColumns := "N:N", toColumns := "AM:AM", special := False
 
     ' delete only cancelled
     ' Delete rows out of date range
@@ -102,24 +102,18 @@ Sub DailyCCHPOldFormat()
         .SortMethod = xlPinYin
         .Apply
     End With
-    Columns("F:F").Select
-    Application.CutCopyMode = False
-    Selection.Copy
-    Columns("S:S").Select
-    ActiveSheet.Paste
-    Application.CutCopyMode = False
+
+    copyPaste fromColumns := "F:F", toColumns := "S:S", special := False
 
     Range("I3").Select
     ActiveCell.FormulaR1C1 = _
         "=IF((AND(RC[-8]-R[-1]C[-8]=1,RC[-3]="""",RC[-5]=R[-1]C[-5])),R[-1]C[-2]+TIME(2,0,0),"""")"
     Range("I3").Select
     Selection.AutoFill Destination:=Range("I3:I150"), Type:=xlFillDefault
-    Columns("I:I").Select
-    Selection.Copy
+
+    copyPaste fromColumns := "I:I", toColumns := "H:H", special := True
+
     Columns("H:H").Select
-    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
-    Columns("H:H").Select
-    Application.CutCopyMode = False
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlLess, Formula1:="=1"
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Font
@@ -140,23 +134,11 @@ Sub DailyCCHPOldFormat()
         "=IF(RC[-3]<>"""",TEXT(RC[-3],""HH:MM""),CONCATENATE(TEXT(RC[-1],""HH:MM""),""_""))"
     Range("I2").Select
     Selection.AutoFill Destination:=Range("I2:I150"), Type:=xlFillDefault
-    Columns("F:F").Select
-    Selection.Copy
-    Columns("K:K").Select
-    ActiveSheet.Paste
-    Application.CutCopyMode = False
-    Columns("I:I").Select
-    Selection.Copy
-    Columns("J:J").Select
-    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
-    Columns("J:J").Select
-    Application.CutCopyMode = False
-    Selection.Copy
-    Range("F1").Select
-    ActiveSheet.Paste
-    Range("F1").Select
-    Application.CutCopyMode = False
-    ActiveCell.FormulaR1C1 = "PickupTime*"
+    
+    copyPaste fromColumns := "F:F", toColumns := "K:K", special := False
+    copyPaste fromColumns := "I:I", toColumns := "J:J", special := True
+    copyPaste fromColumns := "J:J", toColumns := "F:F", special := False
+
     Columns("H:I").Select
     Selection.ClearContents
     Columns("F:F").Select
@@ -177,12 +159,10 @@ Sub DailyCCHPOldFormat()
     Selection.FormatConditions.Delete
     Columns("J:J").Select
     Selection.ClearContents
+
+    copyPaste fromColumns := "K:K", toColumns := "H:H", special := False
+
     Columns("K:K").Select
-    Selection.Copy
-    Columns("H:H").Select
-    ActiveSheet.Paste
-    Columns("K:K").Select
-    Application.CutCopyMode = False
     Selection.ClearContents
     Range("I2").Select
     
@@ -215,9 +195,6 @@ Sub DailyCCHPOldFormat()
     End With
     Selection.FormatConditions(1).StopIfTrue = False
     
-    Range("J1").Select
-    Application.CutCopyMode = False
-    ActiveCell.FormulaR1C1 = "SortTime"
     Range("J2").Select
     ActiveCell.FormulaR1C1 = "=IF(RC[9]<>"""",RC[9],TIMEVALUE(SUBSTITUTE(RC[-4],""_"","""")))"
     Range("J2").Select
@@ -281,8 +258,6 @@ Sub DailyCCHPOldFormat()
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    Range("O1").Select
-    ActiveCell.FormulaR1C1 = "TP"
     unifyStreetNames rangeDef := "L:M"
 
     ' Delete column with original dates
@@ -329,8 +304,6 @@ Sub DailyCCHPOldFormat()
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Columns("R:R").Select
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    Range("R1").Select
-    ActiveCell.FormulaR1C1 = "Notes"
     Columns("Q:Q").Select
     Selection.Replace What:="(415) ", Replacement:="", LookAt:=xlPart, _
         SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
@@ -374,24 +347,13 @@ Sub DailyCCHPOldFormat()
     Range("V1").Formula = "Notes"
     Range("V2").Formula = "=RIGHT(B2,LEN(B2)-FIND(""#"",B2))"
     Range("V2" & ":V" & LastRow).FillDown
-    Columns("U:V").Select
-    Selection.Copy
-    Range("W1").Select
-    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
+
+    copyPaste fromColumns := "U:V", toColumns := "W:X", special := True
     Columns("B:B").Select
-    Application.CutCopyMode = False
     Selection.ClearContents
-    Columns("W:W").Select
-    Selection.Copy
-    Range("B1").Select
-    ActiveSheet.Paste
-    Columns("X:X").Select
-    Application.CutCopyMode = False
-    Selection.Copy
-    Range("R1").Select
-    ActiveSheet.Paste
+    copyPaste fromColumns := "W:W", toColumns := "B:B", special := False
+    copyPaste fromColumns := "X:X", toColumns := "R:R", special := False
     Columns("U:X").Select
-    Application.CutCopyMode = False
     Selection.ClearContents
     
     ' Find last day cell and insert empty line between dates
@@ -604,10 +566,14 @@ Private Sub formatColumns
     Cells.EntireColumn.AutoFit
 End Sub 
 
-Private Sub copyPaste(fromColumns as String, toColumns as String)
+Private Sub copyPaste(fromColumns as String, toColumns as String, special as Boolean)
     Columns(fromColumns).Select
     Selection.Copy
     Columns(toColumns).Select
-    ActiveSheet.Paste
+    if special then 
+        Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
+    else 
+        ActiveSheet.Paste
+    end if 
     Application.CutCopyMode = False
 End Sub 
