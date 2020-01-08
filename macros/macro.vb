@@ -166,9 +166,6 @@ Sub DailyCCHPOldFormat()
     Selection.ClearContents
     Range("I2").Select
     
-    Range("K2:K3").Select
-    Range("K3").Activate
-    
     Columns("H:H").Select
     With Selection.Interior
         .PatternColor = 12632256
@@ -241,7 +238,6 @@ Sub DailyCCHPOldFormat()
     Columns("J:J").Select
     Selection.ClearContents
     Columns("P:Q").Select
-    Range("Q1").Activate
     Selection.ClearContents
     Columns("S:S").Select
     Selection.ClearContents
