@@ -106,12 +106,12 @@ Sub DailyCCHPOldFormat()
     copyPaste fromColumns := "F:F", toColumns := "S:S", special := False
 
     Range("I3").Select
-    ActiveCell.FormulaR1C1 = _
-        "=IF((AND(RC[-8]-R[-1]C[-8]=1,RC[-3]="""",RC[-5]=R[-1]C[-5])),R[-1]C[-2]+TIME(2,0,0),"""")"
+    ActiveCell.FormulaR1C1 = "=IF((AND(RC[-8]-R[-1]C[-8]=1,RC[-3]="""",RC[-5]=R[-1]C[-5])),R[-1]C[-2]+TIME(2,0,0),"""")"
     Range("I3").Select
     Selection.AutoFill Destination:=Range("I3:I150"), Type:=xlFillDefault
 
     copyPaste fromColumns := "I:I", toColumns := "H:H", special := True
+    clearColumn columnDef := "I:I"
 
     Columns("H:H").Select
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlLess, Formula1:="=1"
@@ -127,11 +127,8 @@ Sub DailyCCHPOldFormat()
     End With
     Selection.FormatConditions(1).StopIfTrue = False
 
-    clearColumn columnDef := "I:I"
-
     Range("I2").Select
-    ActiveCell.FormulaR1C1 = _
-        "=IF(RC[-3]<>"""",TEXT(RC[-3],""HH:MM""),CONCATENATE(TEXT(RC[-1],""HH:MM""),""_""))"
+    ActiveCell.FormulaR1C1 = "=IF(RC[-3]<>"""",TEXT(RC[-3],""HH:MM""),CONCATENATE(TEXT(RC[-1],""HH:MM""),""_""))"
     Range("I2").Select
     Selection.AutoFill Destination:=Range("I2:I150"), Type:=xlFillDefault
     
@@ -145,7 +142,6 @@ Sub DailyCCHPOldFormat()
     Selection.FormatConditions.Add Type:=xlTextString, String:="_", TextOperator:=xlContains
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Font
-        '.Color = -16383844
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -155,13 +151,10 @@ Sub DailyCCHPOldFormat()
         .TintAndShade = 0
         .PatternTintAndShade = 0
     End With
-    Columns("H:H").Select
     Selection.FormatConditions.Delete
 
     clearColumn columnDef := "J:J"
-
     copyPaste fromColumns := "K:K", toColumns := "H:H", special := False
-
     clearColumn columnDef := "K:K"
     
     Columns("H:H").Select
@@ -173,10 +166,7 @@ Sub DailyCCHPOldFormat()
     End With
     Columns("N:N").Select
     Selection.Replace What:="Yes(Must)", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
-    Range("N5").Select
-    Selection.Copy
-    Cells.Replace What:="Yes (Must)", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
-    Columns("N:N").Select
+    Selection.Replace What:="Yes (Must)", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Selection.FormatConditions.Add Type:=xlTextString, String:="Must", TextOperator:=xlContains
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Font
@@ -280,17 +270,6 @@ Sub DailyCCHPOldFormat()
     Range(Columns(16), Columns(17)).Select
     Selection.Delete Shift:=xlToLeft
     
-    ' highlight first row
-    Rows("1:1").EntireRow.Select
-    Selection.FormatConditions.Delete
-    ActiveCell.Range("A1:P1").Select
-    With Selection.Interior
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorDark1
-        .TintAndShade = -0.249977111117893
-        .PatternTintAndShade = 0
-    End With
-
     Columns("G:G").Select
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Columns("R:R").Select
@@ -302,7 +281,6 @@ Sub DailyCCHPOldFormat()
 
     ' format with _ in column F
     ' Find all the cell F with "_" and format font
-
     Application.ScreenUpdating = False
     Worksheets(ActiveSheet.Name).Select
     For Each r In Worksheets(ActiveSheet.Name).UsedRange.Rows
@@ -317,7 +295,6 @@ Sub DailyCCHPOldFormat()
         Else
             Range("F" & n & ":F" & n).Select
             With Selection.Interior
-                'Selection.Font.Size = 22
                 Selection.Font.Bold = True
                 Selection.HorizontalAlignment = xlRight
             End With
@@ -326,25 +303,8 @@ Sub DailyCCHPOldFormat()
 
     Application.ScreenUpdating = True
 
-    '  Notes...
-    
-    Dim LastRow As Long
-    LastRow = Range("A1:A" & Range("A1").End(xlDown).Row).Rows.Count
-    
-    Range("U1").Formula = "Coordinator"
-    Range("U2").Formula = "=LEFT(B2,FIND(""#"",B2)-1)"
-    Range("U2" & ":U" & LastRow).FillDown
-    
-    Range("V1").Formula = "Notes"
-    Range("V2").Formula = "=RIGHT(B2,LEN(B2)-FIND(""#"",B2))"
-    Range("V2" & ":V" & LastRow).FillDown
-
-    copyPaste fromColumns := "U:V", toColumns := "W:X", special := True
-
-    clearColumn columnDef := "B:B"
-    copyPaste fromColumns := "W:W", toColumns := "B:B", special := False
-    copyPaste fromColumns := "X:X", toColumns := "R:R", special := False
-    clearColumn columnDef := "U:X"
+    ' Split coordinator and notes back and place them appropriate columns ...
+    splitCoordinatorAndNotes srcCol := "B", coordinatorCol := "B", notesCol := "R"    
     
     ' Find last day cell and insert empty line between dates
     r = Application.Match(CLng(tmrow), Range("E1:E100"), 0)
@@ -407,6 +367,25 @@ private Sub concatCoordinatorAndNotes(targetColumn as String)
     For i = Cells(Cells.Rows.Count, 16).End(xlUp).Row To 2 Step -1
         Range(targetColumn & i).Value = Range("P" & i).Value & "#" & Range("N" & i).Value
     Next
+End Sub
+
+private Sub splitCoordinatorAndNotes(srcCol as String, coordinatorCol as String, notesCol as String)
+    Dim i As Long
+    Dim rowsCnt As Long
+    Dim concatVal as String
+    Dim coordinator as String
+    Dim notes as String
+
+    rowsCnt = Cells(Cells.Rows.Count, 1).End(xlUp).Row
+    For i = 2 To rowsCnt
+        concatVal = Range(srcCol & i).Value
+        coordinator = LEFT(concatVal, InStr(concatVal, "#")-1)
+        notes = RIGHT(concatVal, LEN(concatVal) - InStr(concatVal, "#"))
+        Range(coordinatorCol & i).ClearContents
+        Range(coordinatorCol & i).Value = coordinator
+        Range(notesCol & i).ClearContents
+        Range(notesCol & i).Value = notes
+    Next i
 End Sub
 
 private Sub highlightWheelChairColumns(columnLetter as String)
@@ -541,6 +520,7 @@ Private Sub formatColumns
     '-------------------------------------------------------------------------------
     ' Bold header 
     Rows("1:1").EntireRow.Select
+    Selection.FormatConditions.Delete
     setCalibriFont fontSize:=10, followTheme:=False
     With Selection.Interior
         .Pattern = xlSolid
