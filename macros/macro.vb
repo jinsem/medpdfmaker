@@ -3,7 +3,6 @@ Sub DailyCCHPOldFormat()
     ' Constants
     Const CANCELLED_COL As String = "B"
     Const PICKUP_DATE_COL_IDX As Integer = 7
-    Const WORK_BOOK_NAME as String = "SFTAXI - MONTHLY EXPORT"
 
     ' Simple counter
     Dim x As Long
@@ -15,8 +14,10 @@ Sub DailyCCHPOldFormat()
     Dim inputResponse As Variant
     Dim defaultDates As String
     Dim LastR As Long
+    Dim ActSh as String
 
     LastR = Range("A1:A" & Range("A1").End(xlDown).Row).Rows.Count
+    ActSh = ActiveSheet.Name
 
     datesPromt = "All cancelled trips will be deleted " & vbNewLine _
                  & "Default dates selected: " & today & " to  " & tmrow & vbNewLine _
@@ -120,11 +121,12 @@ Sub DailyCCHPOldFormat()
         .TintAndShade = 0
     End With
     Cells.Select
-    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Add Key _
+    
+    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
         :=Range("A2:A649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
         DataOption:=xlSortNormal
-    With ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort
+    With ActiveWorkbook.Worksheets(ActSh).Sort
         .SetRange Range("A1:W999")
         .Header = xlYes
         .MatchCase = False
@@ -278,10 +280,10 @@ Sub DailyCCHPOldFormat()
     Selection.AutoFill Destination:=Range("J2:J139"), Type:=xlFillDefault
     Range("J2:J139").Select
     Cells.Select
-    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Add Key _
+    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
         :=Range("A1"), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
-    With ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort
+    With ActiveWorkbook.Worksheets(ActSh).Sort
         .SetRange Range("A1:U649")
         .Header = xlYes
         .MatchCase = False
@@ -289,11 +291,11 @@ Sub DailyCCHPOldFormat()
         .SortMethod = xlPinYin
         .Apply
     End With
-    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Add Key _
+    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
         :=Range("B2:B649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
         DataOption:=xlSortNormal
-    With ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort
+    With ActiveWorkbook.Worksheets(ActSh).Sort
         .SetRange Range("A1:U649")
         .Header = xlYes
         .MatchCase = False
@@ -301,14 +303,14 @@ Sub DailyCCHPOldFormat()
         .SortMethod = xlPinYin
         .Apply
     End With
-    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Add Key _
+    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
         :=Range("E2:E649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
         DataOption:=xlSortNormal
-    ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort.SortFields.Add Key _
+    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
         :=Range("J2:J649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
         DataOption:=xlSortNormal
-    With ActiveWorkbook.Worksheets(WORK_BOOK_NAME).Sort
+    With ActiveWorkbook.Worksheets(ActSh).Sort
         .SetRange Range("A1:U649")
         .Header = xlYes
         .MatchCase = False
@@ -353,13 +355,7 @@ Sub DailyCCHPOldFormat()
     ActiveCell.FormulaR1C1 = "TP"
     Rows("1:1").Select
     setCalibriFont fontSize:=8, followTheme:=True
-    Columns("L:M").Select
-    Selection.Replace What:="STREET", Replacement:="ST", LookAt:=xlPart, _
-        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-        ReplaceFormat:=False
-    Selection.Replace What:="AVENUE", Replacement:="AVE", LookAt:=xlPart, _
-        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-        ReplaceFormat:=False
+    unifyStreetNames rangeDef := "L:M"
 
     ' Delete column with original dates
     Columns("H:H").Select
@@ -368,8 +364,6 @@ Sub DailyCCHPOldFormat()
     Selection.Insert Shift:=xlToRight
     Columns("H:H").Select
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-
-    ActSh = ActiveSheet.Name
 
     Application.ScreenUpdating = False
     Worksheets(ActSh).Select
@@ -427,7 +421,6 @@ Sub DailyCCHPOldFormat()
     Selection.Replace What:="(415) ", Replacement:="", LookAt:=xlPart, _
         SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
         ReplaceFormat:=False
-    Selection.ColumnWidth = 10.29
     Selection.ColumnWidth = 12.14
 
 
@@ -437,24 +430,24 @@ Sub DailyCCHPOldFormat()
     Application.ScreenUpdating = False
     Worksheets(ActiveSheet.Name).Select
     For Each r In Worksheets(ActiveSheet.Name).UsedRange.Rows
-    n = r.Row
-    If InStr(Cells(n, 6).Text, "_") Then
-        Range("F" & n & ":F" & n).Select
-        With Selection.Interior
-            Selection.Font.Size = 8
-            .Color = 49407
-            Selection.HorizontalAlignment = xlLeft
-        End With
-    Else
-        Range("F" & n & ":F" & n).Select
-        With Selection.Interior
-            'Selection.Font.Size = 22
-            Selection.Font.Bold = True
-            Selection.HorizontalAlignment = xlRight
-        End With
-    End If
-
+        n = r.Row
+        If InStr(Cells(n, 6).Text, "_") Then
+            Range("F" & n & ":F" & n).Select
+            With Selection.Interior
+                Selection.Font.Size = 8
+                .Color = 49407
+                Selection.HorizontalAlignment = xlLeft
+            End With
+        Else
+            Range("F" & n & ":F" & n).Select
+            With Selection.Interior
+                'Selection.Font.Size = 22
+                Selection.Font.Bold = True
+                Selection.HorizontalAlignment = xlRight
+            End With
+        End If
     Next r
+
     Application.ScreenUpdating = True
 
     '  Notes...
@@ -612,4 +605,14 @@ Private Sub allightSelectionTo(horizontalAlignment as Integer, verticalAlignment
         .ReadingOrder = xlContext
         .MergeCells = False
     End With
+End Sub
+
+Private Sub unifyStreetNames(rangeDef as String)
+    Columns(rangeDef).Select
+    Selection.Replace What:="STREET", Replacement:="ST", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
+    Selection.Replace What:="AVENUE", Replacement:="AVE", LookAt:=xlPart, _
+        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+        ReplaceFormat:=False
 End Sub
