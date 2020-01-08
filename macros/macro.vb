@@ -39,11 +39,8 @@ Sub DailyCCHPOldFormat()
     End If
 
     ' Copy notes
-    Columns("N:N").Select
-    Selection.Copy
-    Range("AM1").Select
-    ActiveSheet.Paste
-    
+    copyPaste fromColumns := "N:N", toColumns := "AM:AM"
+
     ' delete only cancelled
     ' Delete rows out of date range
     For x = Cells(Cells.Rows.Count, PICKUP_DATE_COL_IDX).End(xlUp).Row To 2 Step -1
@@ -87,12 +84,9 @@ Sub DailyCCHPOldFormat()
     ' Wheelchair YN column
     highlightWheelChairColumns columnLetter := "N"
 
-    Columns("E:E").Select
-    Selection.NumberFormat = "m/d;@"
     Columns("F:G").Select
     Selection.Replace What:="AM", Replacement:="AM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Selection.Replace What:="PM", Replacement:="PM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
-    Selection.NumberFormat = "h:mm;@"
 
     Cells.Select
     
@@ -108,15 +102,12 @@ Sub DailyCCHPOldFormat()
         .SortMethod = xlPinYin
         .Apply
     End With
-    Range("K1").Select
-    ActiveCell.FormulaR1C1 = "XXXXX"
     Columns("F:F").Select
     Application.CutCopyMode = False
     Selection.Copy
     Columns("S:S").Select
     ActiveSheet.Paste
     Application.CutCopyMode = False
-    Selection.NumberFormat = "h:mm;@"
 
     Range("I3").Select
     ActiveCell.FormulaR1C1 = _
@@ -129,7 +120,6 @@ Sub DailyCCHPOldFormat()
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
     Columns("H:H").Select
     Application.CutCopyMode = False
-    Selection.NumberFormat = "h:mm;@"
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlLess, Formula1:="=1"
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Font
@@ -154,11 +144,7 @@ Sub DailyCCHPOldFormat()
     Selection.Copy
     Columns("K:K").Select
     ActiveSheet.Paste
-    Range("K1").Select
     Application.CutCopyMode = False
-    ActiveCell.FormulaR1C1 = "Pickup_timeORIGINAL"
-    Columns("F:F").Select
-    Selection.NumberFormat = "General"
     Columns("I:I").Select
     Selection.Copy
     Columns("J:J").Select
@@ -234,8 +220,6 @@ Sub DailyCCHPOldFormat()
     ActiveCell.FormulaR1C1 = "SortTime"
     Range("J2").Select
     ActiveCell.FormulaR1C1 = "=IF(RC[9]<>"""",RC[9],TIMEVALUE(SUBSTITUTE(RC[-4],""_"","""")))"
-    Columns("J:J").Select
-    Selection.NumberFormat = "h:mm;@"
     Range("J2").Select
     Selection.AutoFill Destination:=Range("J2:J139"), Type:=xlFillDefault
     Cells.Select
@@ -347,12 +331,6 @@ Sub DailyCCHPOldFormat()
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Range("R1").Select
     ActiveCell.FormulaR1C1 = "Notes"
-    Range("S1").Select
-    With Selection.Interior
-        .Pattern = xlNone
-        .TintAndShade = 0
-        .PatternTintAndShade = 0
-    End With
     Columns("Q:Q").Select
     Selection.Replace What:="(415) ", Replacement:="", LookAt:=xlPart, _
         SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
@@ -529,31 +507,42 @@ Private Sub unifyStreetNames(rangeDef as String)
 End Sub
 
 Private Sub formatColumns
-    ' REF_ID
+    Range("A1").FormulaR1C1 = "REF_ID"
     Columns("A:A").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    ' Coordinator
+    
+    Range("B1").FormulaR1C1 = "Coordinator"
     Columns("B:B").Select
     setCalibriFont fontSize:=6, followTheme:=True
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlBottom
-    ' LNAME
+
+    Range("C1").FormulaR1C1 = "LNAME"
     Columns("C:C").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    ' FNAME
+
+    Range("D1").FormulaR1C1 = "FNAME"
     Columns("D:D").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    ' PICKUP_DATE
+
+    Range("E1").FormulaR1C1 = "PICKUP_DATE"
     Columns("E:E").Select
     setCalibriFont fontSize:=6, followTheme:=True
+    Selection.NumberFormat = "m/d;@"
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlBottom
-    ' PickupTime*
+
+    Range("F1").FormulaR1C1 = "PickupTime*"
     Columns("F:F").Select
     allightSelectionTo horizontalAlignment := xlRight, verticalAlignment := xlCenter
+    Selection.NumberFormat = "General"
+
     ' --- Empty --- 
     ' Columns("G:G").Select
-    ' Appt_time
+
+    Range("H1").FormulaR1C1 = "Appt_time"
     Columns("H:H").Select
     allightSelectionTo horizontalAlignment := xlRight, verticalAlignment := xlCenter
+    Selection.NumberFormat = "h:mm;@"
+
     ' --- Empty --- 
     ' Columns("I:I").Select
     ' --- Empty --- 
@@ -562,31 +551,42 @@ Private Sub formatColumns
     ' Columns("K:K").Select
     ' --- Empty --- 
     ' Columns("L:L").Select
-    ' Origin
+
+    Range("M1").FormulaR1C1 = "Origin"
     Columns("M:M").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    ' Destination
+
+    Range("N1").FormulaR1C1 = "Destination"
     Columns("N:N").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    ' WheelChair_YesNo
+
+    Range("O1").FormulaR1C1 = "WheelChair_YesNo"
     Columns("O:O").Select
     setCalibriFont fontSize:=6, followTheme:=True
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    ' TP
+
+    Range("P1").FormulaR1C1 = "TP"
     Columns("P:P").Select
     setCalibriFont fontSize:=6, followTheme:=True
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    ' Telephone
+
+    Range("Q1").FormulaR1C1 = "Telephone"
     Columns("Q:Q").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    ' Notes
+
+    Range("R1").FormulaR1C1 = "Notes"
     Columns("R:R").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
+
     ' --- Empty --- 
     ' Columns("S:S").Select
-    ' Pickup_timeORIGINAL
+
+    Range("T1").FormulaR1C1 = "Pickup_timeORIGINAL"
     Columns("T:T").Select
+    Selection.NumberFormat = "h:mm;@"
     allightSelectionTo horizontalAlignment := xlRight, verticalAlignment := xlCenter
+
+    '-------------------------------------------------------------------------------
     ' Bold header 
     Rows("1:1").EntireRow.Select
     setCalibriFont fontSize:=10, followTheme:=False
@@ -602,4 +602,12 @@ Private Sub formatColumns
     ' Adjust widths
     Cells.Select
     Cells.EntireColumn.AutoFit
+End Sub 
+
+Private Sub copyPaste(fromColumns as String, toColumns as String)
+    Columns(fromColumns).Select
+    Selection.Copy
+    Columns(toColumns).Select
+    ActiveSheet.Paste
+    Application.CutCopyMode = False
 End Sub 
