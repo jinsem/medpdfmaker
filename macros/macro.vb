@@ -93,12 +93,6 @@ Sub DailyCCHPOldFormat()
     Selection.Replace What:="AM", Replacement:="AM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Selection.Replace What:="PM", Replacement:="PM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Selection.NumberFormat = "h:mm;@"
-    Columns("O:O").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    Columns("B:B").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    Columns("E:E").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
 
     Cells.Select
     
@@ -216,8 +210,6 @@ Sub DailyCCHPOldFormat()
         .TintAndShade = 0
         .PatternTintAndShade = 0
     End With
-    Columns("G:G").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     Columns("N:N").Select
     Selection.Replace What:="Yes(Must)", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Range("N5").Select
@@ -349,14 +341,6 @@ Sub DailyCCHPOldFormat()
         .PatternTintAndShade = 0
     End With
 
-    Columns("A:A").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    Range("A1").Select
-    allightSelectionTo horizontalAlignment := xlCenter, verticalAlignment := xlCenter
-    Columns("G:G").Select
-    allightSelectionTo horizontalAlignment := xlRight, verticalAlignment := xlCenter
-    Range("G1").Select
-    allightSelectionTo horizontalAlignment := xlCenter, verticalAlignment := xlCenter
     Columns("G:G").Select
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Columns("R:R").Select
@@ -416,9 +400,7 @@ Sub DailyCCHPOldFormat()
     Selection.Copy
     Range("W1").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
-    Columns("W:W").Select
     Columns("B:B").Select
-    Selection.Font.Size = 6
     Application.CutCopyMode = False
     Selection.ClearContents
     Columns("W:W").Select
@@ -434,18 +416,6 @@ Sub DailyCCHPOldFormat()
     Application.CutCopyMode = False
     Selection.ClearContents
     
-    Range("B1").Select
-    With Selection.Interior
-        .Pattern = xlSolid
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorDark1
-        .TintAndShade = -0.249977111117893
-        .PatternTintAndShade = 0
-    End With
-      
-    ' formating for new notes/inititanl
-    formatColumns
-
     ' Find last day cell and insert empty line between dates
     r = Application.Match(CLng(tmrow), Range("E1:E100"), 0)
     If Not IsError(r) Then
@@ -459,11 +429,12 @@ Sub DailyCCHPOldFormat()
             .PatternTintAndShade = 0
        End With
     Else
-       MsgBox "3. Can not find next date " & tmrow
+       MsgBox "Can not find next date " & tmrow
     End If
 
 TCEnd:
  
+    formatColumns
     Range("A1").Select
     MsgBox ("Completed OK" & vbNewLine & "Red time is calculated + 2 hrs from appointment time" & vbNewLine & vbNewLine & " Don't forget to Save As this file ")
 End Sub
@@ -560,48 +531,62 @@ End Sub
 Private Sub formatColumns
     ' REF_ID
     Columns("A:A").Select
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     ' Coordinator
     Columns("B:B").Select
     setCalibriFont fontSize:=6, followTheme:=True
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlBottom
     ' LNAME
     Columns("C:C").Select
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     ' FNAME
     Columns("D:D").Select
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     ' PICKUP_DATE
     Columns("E:E").Select
     setCalibriFont fontSize:=6, followTheme:=True
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlBottom
     ' PickupTime*
     Columns("F:F").Select
+    allightSelectionTo horizontalAlignment := xlRight, verticalAlignment := xlCenter
     ' --- Empty --- 
-    Columns("G:G").Select
+    ' Columns("G:G").Select
     ' Appt_time
     Columns("H:H").Select
+    allightSelectionTo horizontalAlignment := xlRight, verticalAlignment := xlCenter
     ' --- Empty --- 
-    Columns("I:I").Select
+    ' Columns("I:I").Select
     ' --- Empty --- 
-    Columns("J:J").Select
+    ' Columns("J:J").Select
     ' --- Empty --- 
-    Columns("K:K").Select
+    ' Columns("K:K").Select
     ' --- Empty --- 
-    Columns("L:L").Select
+    ' Columns("L:L").Select
     ' Origin
     Columns("M:M").Select
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     ' Destination
     Columns("N:N").Select
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     ' WheelChair_YesNo
     Columns("O:O").Select
     setCalibriFont fontSize:=6, followTheme:=True
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     ' TP
     Columns("P:P").Select
     setCalibriFont fontSize:=6, followTheme:=True
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     ' Telephone
     Columns("Q:Q").Select
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     ' Notes
     Columns("R:R").Select
+    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     ' --- Empty --- 
-    Columns("S:S").Select
+    ' Columns("S:S").Select
     ' Pickup_timeORIGINAL
     Columns("T:T").Select
+    allightSelectionTo horizontalAlignment := xlRight, verticalAlignment := xlCenter
     ' Bold header 
     Rows("1:1").EntireRow.Select
     setCalibriFont fontSize:=10, followTheme:=False
@@ -613,6 +598,7 @@ Private Sub formatColumns
         .PatternTintAndShade = 0
     End With
     Selection.Font.Bold = True
+    allightSelectionTo horizontalAlignment := xlCenter, verticalAlignment := xlCenter
     ' Adjust widths
     Cells.Select
     Cells.EntireColumn.AutoFit
