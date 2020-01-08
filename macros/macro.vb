@@ -1,45 +1,4 @@
 Sub DailyCCHPOldFormat()
-    ' Columns reference 
-    ' ' REF_ID
-    ' Columns("A:A")
-    ' ' Coordinator
-    ' Columns("B:B")
-    ' ' LNAME
-    ' Columns("C:C")
-    ' ' FNAME
-    ' Columns("D:D")
-    ' ' PICKUP_DATE
-    ' Columns("E:E")
-    ' ' PickupTime*
-    ' Columns("F:F")
-    ' ' --- Empty --- 
-    ' Columns("G:G")
-    ' ' Appt_time
-    ' Columns("H:H")
-    ' ' --- Empty --- 
-    ' Columns("I:I")
-    ' ' --- Empty --- 
-    ' Columns("J:J")
-    ' ' --- Empty --- 
-    ' Columns("K:K")
-    ' ' --- Empty --- 
-    ' Columns("L:L")
-    ' ' Origin
-    ' Columns("M:M")
-    ' ' Destination
-    ' Columns("N:N")
-    ' ' WheelChair_YesNo
-    ' Columns("O:O")
-    ' ' TP
-    ' Columns("P:P")
-    ' ' Telephone
-    ' Columns("Q:Q")
-    ' ' Notes
-    ' Columns("R:R")
-    ' ' --- Empty --- 
-    ' Columns("S:S")
-    ' ' Pickup_timeORIGINAL
-    ' Columns("T:T")
 
     ' Constants
     Const CANCELLED_COL As String = "B"
@@ -134,20 +93,12 @@ Sub DailyCCHPOldFormat()
     Selection.Replace What:="AM", Replacement:="AM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Selection.Replace What:="PM", Replacement:="PM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Selection.NumberFormat = "h:mm;@"
-    Columns("B:B").Select
-    setCalibriFont fontSize:=6, followTheme:=False
-    Columns("E:E").Select
-    setCalibriFont fontSize:=6, followTheme:=False
-    Columns("N:O").Select
-    setCalibriFont fontSize:=6, followTheme:=False
     Columns("O:O").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     Columns("B:B").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
     Columns("E:E").Select
     allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    Rows("1:1").Select
-    setCalibriFont fontSize:=10, followTheme:=False
 
     Cells.Select
     
@@ -356,8 +307,6 @@ Sub DailyCCHPOldFormat()
     Selection.FormatConditions(1).StopIfTrue = False
     Range("O1").Select
     ActiveCell.FormulaR1C1 = "TP"
-    Rows("1:1").Select
-    setCalibriFont fontSize:=8, followTheme:=True
     unifyStreetNames rangeDef := "L:M"
 
     ' Delete column with original dates
@@ -495,24 +444,7 @@ Sub DailyCCHPOldFormat()
     End With
       
     ' formating for new notes/inititanl
-    Columns("B:B").Select
-    setCalibriFont fontSize:=6, followTheme:=True
-    Range("B1").Select
-    setCalibriFont fontSize:=9, followTheme:=True
-    Range("R1").Select
-    setCalibriFont fontSize:=9, followTheme:=True
-    With Selection.Interior
-        .Pattern = xlSolid
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorDark1
-        .TintAndShade = -0.249977111117893
-        .PatternTintAndShade = 0
-    End With
-    
-    setColWidths
-    ' Bold header 
-    Rows("1:1").EntireRow.Select
-    Selection.Font.Bold = True
+    formatColumns
 
     ' Find last day cell and insert empty line between dates
     r = Application.Match(CLng(tmrow), Range("E1:E100"), 0)
@@ -625,7 +557,63 @@ Private Sub unifyStreetNames(rangeDef as String)
         ReplaceFormat:=False
 End Sub
 
-Private Sub setColWidths
+Private Sub formatColumns
+    ' REF_ID
+    Columns("A:A").Select
+    ' Coordinator
+    Columns("B:B").Select
+    setCalibriFont fontSize:=6, followTheme:=True
+    ' LNAME
+    Columns("C:C").Select
+    ' FNAME
+    Columns("D:D").Select
+    ' PICKUP_DATE
+    Columns("E:E").Select
+    setCalibriFont fontSize:=6, followTheme:=True
+    ' PickupTime*
+    Columns("F:F").Select
+    ' --- Empty --- 
+    Columns("G:G").Select
+    ' Appt_time
+    Columns("H:H").Select
+    ' --- Empty --- 
+    Columns("I:I").Select
+    ' --- Empty --- 
+    Columns("J:J").Select
+    ' --- Empty --- 
+    Columns("K:K").Select
+    ' --- Empty --- 
+    Columns("L:L").Select
+    ' Origin
+    Columns("M:M").Select
+    ' Destination
+    Columns("N:N").Select
+    ' WheelChair_YesNo
+    Columns("O:O").Select
+    setCalibriFont fontSize:=6, followTheme:=True
+    ' TP
+    Columns("P:P").Select
+    setCalibriFont fontSize:=6, followTheme:=True
+    ' Telephone
+    Columns("Q:Q").Select
+    ' Notes
+    Columns("R:R").Select
+    ' --- Empty --- 
+    Columns("S:S").Select
+    ' Pickup_timeORIGINAL
+    Columns("T:T").Select
+    ' Bold header 
+    Rows("1:1").EntireRow.Select
+    setCalibriFont fontSize:=10, followTheme:=False
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorDark1
+        .TintAndShade = -0.249977111117893
+        .PatternTintAndShade = 0
+    End With
+    Selection.Font.Bold = True
+    ' Adjust widths
     Cells.Select
     Cells.EntireColumn.AutoFit
 End Sub 
