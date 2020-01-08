@@ -137,6 +137,7 @@ Sub DailyCCHPOldFormat()
     copyPaste fromColumns := "J:J", toColumns := "F:F", special := False
 
     clearColumn columnDef := "H:I"
+    clearColumn columnDef := "J:J"
 
     Columns("F:F").Select
     Selection.FormatConditions.Add Type:=xlTextString, String:="_", TextOperator:=xlContains
@@ -153,7 +154,6 @@ Sub DailyCCHPOldFormat()
     End With
     Selection.FormatConditions.Delete
 
-    clearColumn columnDef := "J:J"
     copyPaste fromColumns := "K:K", toColumns := "H:H", special := False
     clearColumn columnDef := "K:K"
     
