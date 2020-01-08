@@ -126,8 +126,8 @@ Sub DailyCCHPOldFormat()
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    Columns("I:I").Select
-    Selection.ClearContents
+
+    clearColumn columnDef := "I:I"
 
     Range("I2").Select
     ActiveCell.FormulaR1C1 = _
@@ -139,8 +139,8 @@ Sub DailyCCHPOldFormat()
     copyPaste fromColumns := "I:I", toColumns := "J:J", special := True
     copyPaste fromColumns := "J:J", toColumns := "F:F", special := False
 
-    Columns("H:I").Select
-    Selection.ClearContents
+    clearColumn columnDef := "H:I"
+
     Columns("F:F").Select
     Selection.FormatConditions.Add Type:=xlTextString, String:="_", TextOperator:=xlContains
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
@@ -157,14 +157,12 @@ Sub DailyCCHPOldFormat()
     End With
     Columns("H:H").Select
     Selection.FormatConditions.Delete
-    Columns("J:J").Select
-    Selection.ClearContents
+
+    clearColumn columnDef := "J:J"
 
     copyPaste fromColumns := "K:K", toColumns := "H:H", special := False
 
-    Columns("K:K").Select
-    Selection.ClearContents
-    Range("I2").Select
+    clearColumn columnDef := "K:K"
     
     Columns("H:H").Select
     With Selection.Interior
@@ -235,12 +233,9 @@ Sub DailyCCHPOldFormat()
         .SortMethod = xlPinYin
         .Apply
     End With
-    Columns("J:J").Select
-    Selection.ClearContents
-    Columns("P:Q").Select
-    Selection.ClearContents
-    Columns("S:S").Select
-    Selection.ClearContents
+    clearColumn columnDef := "J:J"
+    clearColumn columnDef := "P:Q"
+    clearColumn columnDef := "S:S"
     
     ' clean all leftovers after last detail line
     numofrows = Cells(Rows.Count, "a").End(xlUp).Row
@@ -345,12 +340,11 @@ Sub DailyCCHPOldFormat()
     Range("V2" & ":V" & LastRow).FillDown
 
     copyPaste fromColumns := "U:V", toColumns := "W:X", special := True
-    Columns("B:B").Select
-    Selection.ClearContents
+
+    clearColumn columnDef := "B:B"
     copyPaste fromColumns := "W:W", toColumns := "B:B", special := False
     copyPaste fromColumns := "X:X", toColumns := "R:R", special := False
-    Columns("U:X").Select
-    Selection.ClearContents
+    clearColumn columnDef := "U:X"
     
     ' Find last day cell and insert empty line between dates
     r = Application.Match(CLng(tmrow), Range("E1:E100"), 0)
@@ -573,3 +567,8 @@ Private Sub copyPaste(fromColumns as String, toColumns as String, special as Boo
     end if 
     Application.CutCopyMode = False
 End Sub 
+
+private sub clearColumn(columnDef as String)
+    Columns(columnDef).Select
+    Selection.ClearContents
+end sub
