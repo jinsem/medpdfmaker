@@ -1,4 +1,4 @@
-Sub DailyCCHPOldFormat()
+Sub DailyCCHPNewFormat()
 
     ' Constants
     Const CANCELLED_COL As String = "B"
@@ -15,6 +15,9 @@ Sub DailyCCHPOldFormat()
     Dim defaultDates As String
     Dim LastR As Long
     Dim ActSh as String
+    
+    ' Move all the columns around to make it compatible with old format
+    convertToOldFormat
 
     LastR = Range("A1:A" & Range("A1").End(xlDown).Row).Rows.Count
     ActSh = ActiveSheet.Name
@@ -324,9 +327,47 @@ Sub DailyCCHPOldFormat()
 
 TCEnd:
  
-    formatColumns
+    ' formatColumns
     Range("A1").Select
     MsgBox ("Completed OK" & vbNewLine & "Red time is calculated + 2 hrs from appointment time" & vbNewLine & vbNewLine & " Don't forget to Save As this file ")
+End Sub
+
+Private Sub convertToOldFormat
+    '--- Names changes
+    ' TrackingNumber <-> REF_ID
+    ' MemberNumber <-> MemberID
+    ' LastName <-> LNAME
+    ' FirstName <-> FNAME
+    ' OpenedByName <-> Coordinator_Initials
+    ' Ride Cancellation <-> Cancelled
+    ' Date of Service <-> PICKUP_DATE
+    ' Appointment Pick-up Time <-> Pickup_time
+    ' Appointment Scheduled Time <-> Appt_time
+    ' Pick Up Location <-> Origin
+    ' Destination <-> Destination
+    ' Wheelchair <-> WheelChair_YesNo
+    ' Number of Passengers <-> Total_Passengers
+    ' Notes <-> Notes
+    ' Primary Contact Number <-> Telephone
+    ' Date of Birth <-> DOB
+
+    '--- Column changes 
+    ' E <- B - MemberID
+    ' B <- F - Cancelled
+    ' F <- P - DOB
+    ' P <- E - Coordinator_Initials
+    copyPaste fromColumns := "E:E", toColumns := "CE:CE", special := False
+    copyPaste fromColumns := "B:B", toColumns := "CB:CB", special := False
+    copyPaste fromColumns := "F:F", toColumns := "CF:CF", special := False
+    copyPaste fromColumns := "P:P", toColumns := "CP:CP", special := False
+    clearColumn columnDef := "E:E"
+    clearColumn columnDef := "B:B"
+    clearColumn columnDef := "F:F"
+    clearColumn columnDef := "P:P"
+    copyPaste fromColumns := "CB:CB", toColumns := "E:E", special := False
+    copyPaste fromColumns := "CF:CF", toColumns := "B:B", special := False
+    copyPaste fromColumns := "CP:CP", toColumns := "F:F", special := False
+    copyPaste fromColumns := "CE:CE", toColumns := "P:P", special := False
 End Sub
 
 Private Sub setCalibriFont(fontSize As Integer, followTheme As Boolean)
