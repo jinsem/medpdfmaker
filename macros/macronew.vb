@@ -3,6 +3,7 @@ Sub DailyCCHPNewFormat()
     ' Constants
     Const CANCELLED_COL As String = "B"
     Const PICKUP_DATE_COL_IDX As Integer = 7
+    Const CANCELED as Integer = 1
 
     ' Simple counter
     Dim x As Long
@@ -41,13 +42,16 @@ Sub DailyCCHPNewFormat()
         tmrow = CDate(datesRange(1))
     End If
 
+    Columns("A:A").Select
+    Selection.Replace What:="FL", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+
     ' Copy notes
     copyPaste fromColumns := "N:N", toColumns := "AM:AM", special := False
 
     ' delete only cancelled
     ' Delete rows out of date range
     For x = Cells(Cells.Rows.Count, PICKUP_DATE_COL_IDX).End(xlUp).Row To 2 Step -1
-        If UCase(Range(CANCELLED_COL & x).Value) = UCase("Cancelled") Or _
+        If UCase(Range(CANCELLED_COL & x).Value) = CANCELED Or _
            Cells(x, PICKUP_DATE_COL_IDX).Value < today Or _
            Cells(x, PICKUP_DATE_COL_IDX).Value > tmrow Then
             Cells(x, PICKUP_DATE_COL_IDX).EntireRow.Delete
@@ -168,8 +172,8 @@ Sub DailyCCHPNewFormat()
         .PatternTintAndShade = 0
     End With
     Columns("N:N").Select
-    Selection.Replace What:="Yes(Must)", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
-    Selection.Replace What:="Yes (Must)", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:="1", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:="0", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Selection.FormatConditions.Add Type:=xlTextString, String:="Must", TextOperator:=xlContains
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Font
@@ -327,7 +331,7 @@ Sub DailyCCHPNewFormat()
 
 TCEnd:
  
-    ' formatColumns
+    formatColumns
     Range("A1").Select
     MsgBox ("Completed OK" & vbNewLine & "Red time is calculated + 2 hrs from appointment time" & vbNewLine & vbNewLine & " Don't forget to Save As this file ")
 End Sub
