@@ -17,9 +17,6 @@ Sub DailyCCHPNewFormat()
     Dim LastR As Long
     Dim ActSh as String
     
-    ' Move all the columns around to make it compatible with old format
-    convertToOldFormat
-
     LastR = Range("A1:A" & Range("A1").End(xlDown).Row).Rows.Count
     ActSh = ActiveSheet.Name
 
@@ -42,8 +39,10 @@ Sub DailyCCHPNewFormat()
         tmrow = CDate(datesRange(1))
     End If
 
-    Columns("A:A").Select
-    Selection.Replace What:="FL", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    ' Move all the columns around to make it compatible with old format
+    convertToOldFormat
+    ' Adjust all columns values and remove not needed data from cells    
+    cleanUpColumnsData
 
     ' Copy notes
     copyPaste fromColumns := "N:N", toColumns := "AM:AM", special := False
@@ -90,10 +89,6 @@ Sub DailyCCHPNewFormat()
     
     ' Wheelchair YN column
     highlightWheelChairColumns columnLetter := "N"
-
-    Columns("F:G").Select
-    Selection.Replace What:="AM", Replacement:="AM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
-    Selection.Replace What:="PM", Replacement:="PM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
 
     Cells.Select
     
@@ -172,8 +167,6 @@ Sub DailyCCHPNewFormat()
         .PatternTintAndShade = 0
     End With
     Columns("N:N").Select
-    Selection.Replace What:="1", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
-    Selection.Replace What:="0", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Selection.FormatConditions.Add Type:=xlTextString, String:="Must", TextOperator:=xlContains
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Font
@@ -246,7 +239,6 @@ Sub DailyCCHPNewFormat()
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    unifyStreetNames rangeDef := "L:M"
 
     ' Delete column with original dates
     Columns("H:H").Select
@@ -597,3 +589,45 @@ private sub clearColumn(columnDef as String)
     Columns(columnDef).Select
     Selection.ClearContents
 end sub
+
+private sub cleanUpColumnsData
+    Dim timeValStr As String
+
+    ' Delete prefix from member ID 
+    Columns("A:A").Select
+    Selection.Replace What:="FL", Replacement:=" ", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    ' Ride cancel
+    Columns("B:B").Select
+    Selection.Replace What:="0", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    ' Dates
+    Columns("F:G").Select
+    Selection.NumberFormat = "m/d;@"
+    ' Time columns 
+    ' Remove W/C from time column
+    Columns("H:I").Select
+    Selection.Replace What:="W/C", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:=";", Replacement:=":", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:="AM", Replacement:="AM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:="PM", Replacement:="PM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    ' For some reason Excel cannot recognize text as time. Force convert it
+    rowsCnt = Cells(Cells.Rows.Count, 1).End(xlUp).Row
+    For i = 2 To rowsCnt
+        timeValStr = Range("H" & i).Value
+        if timeValStr <> "" then 
+            Range("H" & i).ClearContents
+            Range("H" & i).Value = TimeValue(timeValStr)
+        End If    
+        timeValStr = Range("I" & i).Value
+        if timeValStr <> "" then
+            Range("I" & i).ClearContents
+            Range("I" & i).Value = TimeValue(timeValStr)
+        End If    
+    Next i
+    Selection.NumberFormat = "h:mm;@"
+    ' Wheelchair 
+    Columns("L:L").Select
+    Selection.Replace What:="1", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:="0", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    ' Streets 
+    unifyStreetNames rangeDef := "J:K"
+End Sub
