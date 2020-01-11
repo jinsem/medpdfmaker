@@ -69,13 +69,11 @@ Sub DailyCCHPNewFormat()
     Range("R1").Select
     Selection.Insert Shift:=xlToRight
 
-    ' P contained coordinator + notes. Remove it since it was copied to B 
-    Columns("P:P").Select
-    Selection.Delete Shift:=xlToLeft
+    deleteColumn columnDef := "P:P" ' P contained coordinator + notes. Remove it since it was copied to B 
+    ' keep it alive 
+    deleteColumn columnDef := "E:E" ' Delete member ID
+    deleteColumn columnDef := "F:F" ' Delete DOB
 
-    ' Delete member ID and DOB
-    Columns("E:F").Select
-    Selection.Delete Shift:=xlToLeft
     ' H contains origin 
     Columns("H:H").Select
     ' Insert 4 empty columns 
@@ -83,9 +81,8 @@ Sub DailyCCHPNewFormat()
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    ' P has notes column
-    Columns("P:P").Select
-    Selection.Delete Shift:=xlToLeft
+
+    deleteColumn columnDef := "P:P" ' P has notes column
     
     ' Wheelchair YN column
     highlightWheelChairColumns columnLetter := "N"
@@ -93,9 +90,7 @@ Sub DailyCCHPNewFormat()
     Cells.Select
     
     ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
-        :=Range("A2:A649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
-        DataOption:=xlSortNormal
+    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key:=Range("A2:A649"), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
     With ActiveWorkbook.Worksheets(ActSh).Sort
         .SetRange Range("A1:W999")
         .Header = xlYes
@@ -112,218 +107,218 @@ Sub DailyCCHPNewFormat()
     Range("I3").Select
     Selection.AutoFill Destination:=Range("I3:I150"), Type:=xlFillDefault
 
-    copyPaste fromColumns := "I:I", toColumns := "H:H", special := True
-    clearColumn columnDef := "I:I"
+    ' copyPaste fromColumns := "I:I", toColumns := "H:H", special := True
+    ' clearColumn columnDef := "I:I"
 
-    Columns("H:H").Select
-    Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlLess, Formula1:="=1"
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Font
-        .Color = -16383844
-        .TintAndShade = 0
-    End With
-    With Selection.FormatConditions(1).Interior
-        .PatternColorIndex = xlAutomatic
-        .Color = 13551615
-        .TintAndShade = 0
-    End With
-    Selection.FormatConditions(1).StopIfTrue = False
+    ' Columns("H:H").Select
+    ' Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlLess, Formula1:="=1"
+    ' Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    ' With Selection.FormatConditions(1).Font
+    '     .Color = -16383844
+    '     .TintAndShade = 0
+    ' End With
+    ' With Selection.FormatConditions(1).Interior
+    '     .PatternColorIndex = xlAutomatic
+    '     .Color = 13551615
+    '     .TintAndShade = 0
+    ' End With
+    ' Selection.FormatConditions(1).StopIfTrue = False
 
-    Range("I2").Select
-    ActiveCell.FormulaR1C1 = "=IF(RC[-3]<>"""",TEXT(RC[-3],""HH:MM""),CONCATENATE(TEXT(RC[-1],""HH:MM""),""_""))"
-    Range("I2").Select
-    Selection.AutoFill Destination:=Range("I2:I150"), Type:=xlFillDefault
+    ' Range("I2").Select
+    ' ActiveCell.FormulaR1C1 = "=IF(RC[-3]<>"""",TEXT(RC[-3],""HH:MM""),CONCATENATE(TEXT(RC[-1],""HH:MM""),""_""))"
+    ' Range("I2").Select
+    ' Selection.AutoFill Destination:=Range("I2:I150"), Type:=xlFillDefault
     
-    copyPaste fromColumns := "F:F", toColumns := "K:K", special := False
-    copyPaste fromColumns := "I:I", toColumns := "J:J", special := True
-    copyPaste fromColumns := "J:J", toColumns := "F:F", special := False
+    ' copyPaste fromColumns := "F:F", toColumns := "K:K", special := False
+    ' copyPaste fromColumns := "I:I", toColumns := "J:J", special := True
+    ' copyPaste fromColumns := "J:J", toColumns := "F:F", special := False
 
-    clearColumn columnDef := "H:I"
-    clearColumn columnDef := "J:J"
+    ' clearColumn columnDef := "H:I"
+    ' clearColumn columnDef := "J:J"
 
-    Columns("F:F").Select
-    Selection.FormatConditions.Add Type:=xlTextString, String:="_", TextOperator:=xlContains
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Font
-        .TintAndShade = 0
-    End With
-    Selection.FormatConditions(1).StopIfTrue = False
-    Columns("H:H").Select
-    With Selection.Interior
-        .Pattern = xlNone
-        .TintAndShade = 0
-        .PatternTintAndShade = 0
-    End With
-    Selection.FormatConditions.Delete
+    ' Columns("F:F").Select
+    ' Selection.FormatConditions.Add Type:=xlTextString, String:="_", TextOperator:=xlContains
+    ' Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    ' With Selection.FormatConditions(1).Font
+    '     .TintAndShade = 0
+    ' End With
+    ' Selection.FormatConditions(1).StopIfTrue = False
+    ' Columns("H:H").Select
+    ' With Selection.Interior
+    '     .Pattern = xlNone
+    '     .TintAndShade = 0
+    '     .PatternTintAndShade = 0
+    ' End With
+    ' Selection.FormatConditions.Delete
 
-    copyPaste fromColumns := "K:K", toColumns := "H:H", special := False
-    clearColumn columnDef := "K:K"
+    ' copyPaste fromColumns := "K:K", toColumns := "H:H", special := False
+    ' clearColumn columnDef := "K:K"
     
-    Columns("H:H").Select
-    With Selection.Interior
-        .PatternColor = 12632256
-        .Color = 65535
-        .TintAndShade = 0
-        .PatternTintAndShade = 0
-    End With
-    Columns("N:N").Select
-    Selection.FormatConditions.Add Type:=xlTextString, String:="Must", TextOperator:=xlContains
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Font
-        .Color = -16383844
-        .TintAndShade = 0
-    End With
-    With Selection.FormatConditions(1).Interior
-        .PatternColorIndex = xlAutomatic
-        .Color = 13551615
-        .TintAndShade = 0
-    End With
-    Selection.FormatConditions(1).StopIfTrue = False
+    ' Columns("H:H").Select
+    ' With Selection.Interior
+    '     .PatternColor = 12632256
+    '     .Color = 65535
+    '     .TintAndShade = 0
+    '     .PatternTintAndShade = 0
+    ' End With
+    ' Columns("N:N").Select
+    ' Selection.FormatConditions.Add Type:=xlTextString, String:="Must", TextOperator:=xlContains
+    ' Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    ' With Selection.FormatConditions(1).Font
+    '     .Color = -16383844
+    '     .TintAndShade = 0
+    ' End With
+    ' With Selection.FormatConditions(1).Interior
+    '     .PatternColorIndex = xlAutomatic
+    '     .Color = 13551615
+    '     .TintAndShade = 0
+    ' End With
+    ' Selection.FormatConditions(1).StopIfTrue = False
     
-    Range("J2").Select
-    ActiveCell.FormulaR1C1 = "=IF(RC[9]<>"""",RC[9],TIMEVALUE(SUBSTITUTE(RC[-4],""_"","""")))"
-    Range("J2").Select
-    Selection.AutoFill Destination:=Range("J2:J139"), Type:=xlFillDefault
-    Cells.Select
-    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
-        :=Range("A1"), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
-    With ActiveWorkbook.Worksheets(ActSh).Sort
-        .SetRange Range("A1:U649")
-        .Header = xlYes
-        .MatchCase = False
-        .Orientation = xlTopToBottom
-        .SortMethod = xlPinYin
-        .Apply
-    End With
-    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
-        :=Range("B2:B649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
-        DataOption:=xlSortNormal
-    With ActiveWorkbook.Worksheets(ActSh).Sort
-        .SetRange Range("A1:U649")
-        .Header = xlYes
-        .MatchCase = False
-        .Orientation = xlTopToBottom
-        .SortMethod = xlPinYin
-        .Apply
-    End With
-    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
-        :=Range("E2:E649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
-        DataOption:=xlSortNormal
-    ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
-        :=Range("J2:J649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
-        DataOption:=xlSortNormal
-    With ActiveWorkbook.Worksheets(ActSh).Sort
-        .SetRange Range("A1:U649")
-        .Header = xlYes
-        .MatchCase = False
-        .Orientation = xlTopToBottom
-        .SortMethod = xlPinYin
-        .Apply
-    End With
-    clearColumn columnDef := "J:J"
-    clearColumn columnDef := "P:Q"
-    clearColumn columnDef := "S:S"
+    ' Range("J2").Select
+    ' ActiveCell.FormulaR1C1 = "=IF(RC[9]<>"""",RC[9],TIMEVALUE(SUBSTITUTE(RC[-4],""_"","""")))"
+    ' Range("J2").Select
+    ' Selection.AutoFill Destination:=Range("J2:J139"), Type:=xlFillDefault
+    ' Cells.Select
+    ' ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
+    ' ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
+    '     :=Range("A1"), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+    ' With ActiveWorkbook.Worksheets(ActSh).Sort
+    '     .SetRange Range("A1:U649")
+    '     .Header = xlYes
+    '     .MatchCase = False
+    '     .Orientation = xlTopToBottom
+    '     .SortMethod = xlPinYin
+    '     .Apply
+    ' End With
+    ' ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
+    ' ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
+    '     :=Range("B2:B649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
+    '     DataOption:=xlSortNormal
+    ' With ActiveWorkbook.Worksheets(ActSh).Sort
+    '     .SetRange Range("A1:U649")
+    '     .Header = xlYes
+    '     .MatchCase = False
+    '     .Orientation = xlTopToBottom
+    '     .SortMethod = xlPinYin
+    '     .Apply
+    ' End With
+    ' ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
+    ' ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
+    '     :=Range("E2:E649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
+    '     DataOption:=xlSortNormal
+    ' ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key _
+    '     :=Range("J2:J649"), SortOn:=xlSortOnValues, Order:=xlAscending, _
+    '     DataOption:=xlSortNormal
+    ' With ActiveWorkbook.Worksheets(ActSh).Sort
+    '     .SetRange Range("A1:U649")
+    '     .Header = xlYes
+    '     .MatchCase = False
+    '     .Orientation = xlTopToBottom
+    '     .SortMethod = xlPinYin
+    '     .Apply
+    ' End With
+    ' clearColumn columnDef := "J:J"
+    ' clearColumn columnDef := "P:Q"
+    ' clearColumn columnDef := "S:S"
     
-    ' clean all leftovers after last detail line
-    numofrows = Cells(Rows.Count, "a").End(xlUp).Row
-    Rows((numofrows + 1) & ":200").ClearContents
-    Columns("O:O").Select
-    Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, Formula1:="=2"
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Interior
-        .PatternColorIndex = xlAutomatic
-        .Color = 3381759
-        .TintAndShade = 0
-    End With
-    Selection.FormatConditions(1).StopIfTrue = False
+    ' ' clean all leftovers after last detail line
+    ' numofrows = Cells(Rows.Count, "a").End(xlUp).Row
+    ' Rows((numofrows + 1) & ":200").ClearContents
+    ' Columns("O:O").Select
+    ' Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, Formula1:="=2"
+    ' Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    ' With Selection.FormatConditions(1).Interior
+    '     .PatternColorIndex = xlAutomatic
+    '     .Color = 3381759
+    '     .TintAndShade = 0
+    ' End With
+    ' Selection.FormatConditions(1).StopIfTrue = False
 
-    ' Delete column with original dates
-    Columns("H:H").Select
-    Selection.Cut
-    Range("T1").Select
-    Selection.Insert Shift:=xlToRight
-    Columns("H:H").Select
-    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    ' ' Delete column with original dates
+    ' Columns("H:H").Select
+    ' Selection.Cut
+    ' Range("T1").Select
+    ' Selection.Insert Shift:=xlToRight
+    ' Columns("H:H").Select
+    ' Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
 
-    Application.ScreenUpdating = False
-    Worksheets(ActSh).Select
-    For Each r In Worksheets(ActSh).UsedRange.Rows
-        n = r.Row
-        If Worksheets(ActSh).Cells(n, 14) = "Must" Then
-            Range("H" & n & ":N" & n).Select
-            With Selection.Interior
-                .Pattern = xlSolid
-                .PatternColorIndex = xlAutomatic
-                .Color = 5287936
-                .TintAndShade = 0
-                .PatternTintAndShade = 0
-            End With
-        End If
-    Next r
-    Application.ScreenUpdating = True
+    ' Application.ScreenUpdating = False
+    ' Worksheets(ActSh).Select
+    ' For Each r In Worksheets(ActSh).UsedRange.Rows
+    '     n = r.Row
+    '     If Worksheets(ActSh).Cells(n, 14) = "Must" Then
+    '         Range("H" & n & ":N" & n).Select
+    '         With Selection.Interior
+    '             .Pattern = xlSolid
+    '             .PatternColorIndex = xlAutomatic
+    '             .Color = 5287936
+    '             .TintAndShade = 0
+    '             .PatternTintAndShade = 0
+    '         End With
+    '     End If
+    ' Next r
+    ' Application.ScreenUpdating = True
 
-    ' move phone to left
-    Range(Columns(16), Columns(17)).Select
-    Selection.Delete Shift:=xlToLeft
+    ' ' move phone to left
+    ' Range(Columns(16), Columns(17)).Select
+    ' Selection.Delete Shift:=xlToLeft
     
-    Columns("G:G").Select
-    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    Columns("R:R").Select
-    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    Columns("Q:Q").Select
-    Selection.Replace What:="(415) ", Replacement:="", LookAt:=xlPart, _
-        SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
-        ReplaceFormat:=False
+    ' Columns("G:G").Select
+    ' Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    ' Columns("R:R").Select
+    ' Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+    ' Columns("Q:Q").Select
+    ' Selection.Replace What:="(415) ", Replacement:="", LookAt:=xlPart, _
+    '     SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
+    '     ReplaceFormat:=False
 
-    ' format with _ in column F
-    ' Find all the cell F with "_" and format font
-    Application.ScreenUpdating = False
-    Worksheets(ActiveSheet.Name).Select
-    For Each r In Worksheets(ActiveSheet.Name).UsedRange.Rows
-        n = r.Row
-        If InStr(Cells(n, 6).Text, "_") Then
-            Range("F" & n & ":F" & n).Select
-            With Selection.Interior
-                Selection.Font.Size = 8
-                .Color = 49407
-                Selection.HorizontalAlignment = xlLeft
-            End With
-        Else
-            Range("F" & n & ":F" & n).Select
-            With Selection.Interior
-                Selection.Font.Bold = True
-                Selection.HorizontalAlignment = xlRight
-            End With
-        End If
-    Next r
+    ' ' format with _ in column F
+    ' ' Find all the cell F with "_" and format font
+    ' Application.ScreenUpdating = False
+    ' Worksheets(ActiveSheet.Name).Select
+    ' For Each r In Worksheets(ActiveSheet.Name).UsedRange.Rows
+    '     n = r.Row
+    '     If InStr(Cells(n, 6).Text, "_") Then
+    '         Range("F" & n & ":F" & n).Select
+    '         With Selection.Interior
+    '             Selection.Font.Size = 8
+    '             .Color = 49407
+    '             Selection.HorizontalAlignment = xlLeft
+    '         End With
+    '     Else
+    '         Range("F" & n & ":F" & n).Select
+    '         With Selection.Interior
+    '             Selection.Font.Bold = True
+    '             Selection.HorizontalAlignment = xlRight
+    '         End With
+    '     End If
+    ' Next r
 
-    Application.ScreenUpdating = True
+    ' Application.ScreenUpdating = True
 
-    ' Split coordinator and notes back and place them appropriate columns ...
-    splitCoordinatorAndNotes srcCol := "B", coordinatorCol := "B", notesCol := "R"    
+    ' ' Split coordinator and notes back and place them appropriate columns ...
+    ' splitCoordinatorAndNotes srcCol := "B", coordinatorCol := "B", notesCol := "R"    
     
-    ' Find last day cell and insert empty line between dates
-    r = Application.Match(CLng(tmrow), Range("E1:E100"), 0)
-    If Not IsError(r) Then
-        Rows(r & ":" & r).Select
-        Selection.Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
-        Rows(r & ":" & r).Select
-        With Selection.Interior
-            .PatternColorIndex = xlAutomatic
-            .ThemeColor = xlThemeColorDark1
-            .TintAndShade = -0.349986266670736
-            .PatternTintAndShade = 0
-       End With
-    Else
-       MsgBox "Can not find next date " & tmrow
-    End If
+    ' ' Find last day cell and insert empty line between dates
+    ' r = Application.Match(CLng(tmrow), Range("E1:E100"), 0)
+    ' If Not IsError(r) Then
+    '     Rows(r & ":" & r).Select
+    '     Selection.Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
+    '     Rows(r & ":" & r).Select
+    '     With Selection.Interior
+    '         .PatternColorIndex = xlAutomatic
+    '         .ThemeColor = xlThemeColorDark1
+    '         .TintAndShade = -0.349986266670736
+    '         .PatternTintAndShade = 0
+    '    End With
+    ' Else
+    '    MsgBox "Can not find next date " & tmrow
+    ' End If
 
 TCEnd:
  
-    formatColumns
+'    formatColumns
     Range("A1").Select
     MsgBox ("Completed OK" & vbNewLine & "Red time is calculated + 2 hrs from appointment time" & vbNewLine & vbNewLine & " Don't forget to Save As this file ")
 End Sub
@@ -590,11 +585,17 @@ private sub clearColumn(columnDef as String)
     Selection.ClearContents
 end sub
 
+private sub deleteColumn(columnDef as String)
+    Columns(columnDef).Select
+    Selection.Delete Shift:=xlToLeft
+end sub
+
 private sub cleanUpColumnsData
     Dim timeValStr As String
 
     ' Delete prefix from member ID 
     Columns("A:A").Select
+    ' This is important since there is a formula that substracts tracking numbers. They have to be numbers without prefix
     Selection.Replace What:="FL", Replacement:=" ", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     ' Ride cancel
     Columns("B:B").Select
@@ -612,15 +613,13 @@ private sub cleanUpColumnsData
     ' For some reason Excel cannot recognize text as time. Force convert it
     rowsCnt = Cells(Cells.Rows.Count, 1).End(xlUp).Row
     For i = 2 To rowsCnt
-        timeValStr = Range("H" & i).Value
-        if timeValStr <> "" then 
-            Range("H" & i).ClearContents
-            Range("H" & i).Value = TimeValue(timeValStr)
-        End If    
-        timeValStr = Range("I" & i).Value
-        if timeValStr <> "" then
-            Range("I" & i).ClearContents
-            Range("I" & i).Value = TimeValue(timeValStr)
+        pickUpTimesStr = Range("H" & i).Value
+        appTimeValStr = Range("I" & i).Value
+        Range("H" & i).ClearContents
+        Range("I" & i).ClearContents
+        if pickUpTimesStr <> "" AND appTimeValStr <> ""  then 
+            Range("H" & i).Value = TimeValue(pickUpTimesStr)
+            Range("I" & i).Value = TimeValue(appTimeValStr)
         End If    
     Next i
     Selection.NumberFormat = "h:mm;@"
