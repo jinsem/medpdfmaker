@@ -3,7 +3,7 @@ Sub DailyCCHPNewFormat()
     ' Constants
     Const CANCELLED_COL As String = "B"
     Const PICKUP_DATE_COL_IDX As Integer = 7
-    Const CANCELED as Integer = 1
+    Const CANCELED As Integer = 1
 
     ' Simple counter
     Dim x As Long
@@ -15,8 +15,8 @@ Sub DailyCCHPNewFormat()
     Dim inputResponse As Variant
     Dim defaultDates As String
     Dim LastR As Long
-    Dim ActSh as String
-    
+    Dim ActSh As String
+   
     LastR = Range("A1:A" & Range("A1").End(xlDown).Row).Rows.Count
     ActSh = ActiveSheet.Name
 
@@ -41,11 +41,11 @@ Sub DailyCCHPNewFormat()
 
     ' Move all the columns around to make it compatible with old format
     convertToOldFormat
-    ' Adjust all columns values and remove not needed data from cells    
+    ' Adjust all columns values and remove not needed data from cells
     cleanUpColumnsData
 
     ' Copy notes
-    copyPaste fromColumns := "N:N", toColumns := "AM:AM", special := False
+    copyPaste fromColumns:="N:N", toColumns:="AM:AM", special:=False
 
     ' delete only cancelled
     ' Delete rows out of date range
@@ -56,36 +56,36 @@ Sub DailyCCHPNewFormat()
             Cells(x, PICKUP_DATE_COL_IDX).EntireRow.Delete
         End If
     Next
-    
+   
     ' twick Notes Column later need to separate from cooridinaotr initials:
     ' Copy coordinator initials and notes
-    ' Modify column P in place 
-    concatCoordinatorAndNotes targetColumn := "B"
+    ' Modify column P in place
+    concatCoordinatorAndNotes targetColumn:="B"
 
-    ' Phone 
+    ' Phone
     Columns("O:O").Select
     Selection.Copy
-    ' Phone 
+    ' Phone
     Range("R1").Select
     Selection.Insert Shift:=xlToRight
 
-    deleteColumn columnDef := "P:P" ' P contained coordinator + notes. Remove it since it was copied to B 
-    ' keep member ID alive 
-    deleteColumn columnDef := "F:F" ' Delete DOB
+    deleteColumn columnDef:="P:P"   ' P contained coordinator + notes. Remove it since it was copied to B
+    ' keep member ID alive
+    deleteColumn columnDef:="F:F"   ' Delete DOB
     ' deleteColumn columnDef := "E:E" ' Delete DOB
 
-    ' I contains origin 
+    ' I contains origin
     Columns("I:I").Select
-    ' Insert 4 empty columns 
+    ' Insert 4 empty columns
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
 
-    deleteColumn columnDef := "Q:Q" ' Q has notes column
-    
+    deleteColumn columnDef:="Q:Q"   ' Q has notes column
+   
     Cells.Select
-    
+   
     ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Clear
     ActiveWorkbook.Worksheets(ActSh).Sort.SortFields.Add Key:=Range("A2:A649"), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
     With ActiveWorkbook.Worksheets(ActSh).Sort
@@ -97,15 +97,15 @@ Sub DailyCCHPNewFormat()
         .Apply
     End With
 
-    copyPaste fromColumns := "G:G", toColumns := "T:T", special := False
+    copyPaste fromColumns:="G:G", toColumns:="T:T", special:=False
 
     Range("J3").Select
-    ActiveCell.FormulaR1C1 = "=IF((AND(OR(RC[-9]-R[-1]C[-9]=1,RC[-4]=R[-1]C[-4]),RC[-3]="""",RC[-6]=R[-1]C[-6])),R[-1]C[-2]+TIME(2,0,0),"""")"
+    ActiveCell.FormulaR1C1 = "=IF((AND(OR(RC[-9]-R[-1]C[-9]=1,RC[-4]=R[-1]C[-4]),RC[-3]="""",RC[-6]=R[-1]C[-6])),R[-1]C[-2]+TIME(1,30,0),"""")"
     Range("J3").Select
     Selection.AutoFill Destination:=Range("J3:J150"), Type:=xlFillDefault
 
-    copyPaste fromColumns := "J:J", toColumns := "I:I", special := True
-    clearColumn columnDef := "J:J"
+    copyPaste fromColumns:="J:J", toColumns:="I:I", special:=True
+    clearColumn columnDef:="J:J"
 
     Columns("I:I").Select
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlLess, Formula1:="=1"
@@ -125,13 +125,13 @@ Sub DailyCCHPNewFormat()
     ActiveCell.FormulaR1C1 = "=IF(RC[-3]<>"""",TEXT(RC[-3],""HH:MM""),CONCATENATE(TEXT(RC[-1],""HH:MM""),""_""))"
     Range("J2").Select
     Selection.AutoFill Destination:=Range("J2:J150"), Type:=xlFillDefault
-    
-    copyPaste fromColumns := "G:G", toColumns := "L:L", special := False
-    copyPaste fromColumns := "J:J", toColumns := "K:K", special := True
-    copyPaste fromColumns := "K:K", toColumns := "G:G", special := False
+   
+    copyPaste fromColumns:="G:G", toColumns:="L:L", special:=False
+    copyPaste fromColumns:="J:J", toColumns:="K:K", special:=True
+    copyPaste fromColumns:="K:K", toColumns:="G:G", special:=False
 
-    clearColumn columnDef := "I:J"
-    clearColumn columnDef := "K:K"
+    clearColumn columnDef:="I:J"
+    clearColumn columnDef:="K:K"
 
     Columns("G:G").Select
     Selection.FormatConditions.Add Type:=xlTextString, String:="_", TextOperator:=xlContains
@@ -148,9 +148,9 @@ Sub DailyCCHPNewFormat()
     End With
     Selection.FormatConditions.Delete
 
-    copyPaste fromColumns := "L:L", toColumns := "I:I", special := False
-    clearColumn columnDef := "L:L"
-    
+    copyPaste fromColumns:="L:L", toColumns:="I:I", special:=False
+    clearColumn columnDef:="L:L"
+   
     Columns("I:I").Select
     With Selection.Interior
         .PatternColor = 12632256
@@ -171,7 +171,7 @@ Sub DailyCCHPNewFormat()
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    
+   
     Range("K2").Select
     ActiveCell.FormulaR1C1 = "=IF(RC[9]<>"""",RC[9],TIMEVALUE(SUBSTITUTE(RC[-4],""_"","""")))"
     Range("K2").Select
@@ -215,10 +215,10 @@ Sub DailyCCHPNewFormat()
         .SortMethod = xlPinYin
         .Apply
     End With
-    clearColumn columnDef := "K:K"
-    clearColumn columnDef := "Q:R"
-    clearColumn columnDef := "T:T"
-    
+    clearColumn columnDef:="K:K"
+    clearColumn columnDef:="Q:R"
+    clearColumn columnDef:="T:T"
+   
     ' clean all leftovers after last detail line
     numofrows = Cells(Rows.Count, "a").End(xlUp).Row
     Rows((numofrows + 1) & ":200").ClearContents
@@ -260,7 +260,7 @@ Sub DailyCCHPNewFormat()
     ' move phone to left
     Range(Columns(17), Columns(18)).Select
     Selection.Delete Shift:=xlToLeft
-    
+   
     Columns("H:H").Select
     Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
     Columns("S:S").Select
@@ -281,13 +281,13 @@ Sub DailyCCHPNewFormat()
             With Selection.Interior
                 Selection.Font.Size = 8
                 .Color = 49407
-                Selection.HorizontalAlignment = xlLeft
+                Selection.horizontalAlignment = xlLeft
             End With
         Else
             Range("G" & n & ":G" & n).Select
             With Selection.Interior
                 Selection.Font.Bold = True
-                Selection.HorizontalAlignment = xlRight
+                Selection.horizontalAlignment = xlRight
             End With
         End If
     Next r
@@ -295,8 +295,8 @@ Sub DailyCCHPNewFormat()
     Application.ScreenUpdating = True
 
     ' Split coordinator and notes back and place them appropriate columns ...
-    splitCoordinatorAndNotes srcCol := "B", coordinatorCol := "B", notesCol := "S"    
-    
+    splitCoordinatorAndNotes srcCol:="B", coordinatorCol:="B", notesCol:="S"
+   
     ' Find last day cell and insert empty line between dates
     r = Application.Match(CLng(tmrow), Range("F1:F100"), 0)
     If Not IsError(r) Then
@@ -320,7 +320,7 @@ TCEnd:
     MsgBox ("Completed OK" & vbNewLine & "Red time is calculated + 2 hrs from appointment time" & vbNewLine & vbNewLine & " Don't forget to Save As this file ")
 End Sub
 
-Private Sub convertToOldFormat
+Private Sub convertToOldFormat()
     '--- Names changes
     ' TrackingNumber <-> REF_ID
     ' MemberNumber <-> MemberID
@@ -339,29 +339,29 @@ Private Sub convertToOldFormat
     ' Primary Contact Number <-> Telephone
     ' Date of Birth <-> DOB
 
-    '--- Column changes 
+    '--- Column changes
     ' E <- B - MemberID
     ' B <- F - Cancelled
     ' F <- P - DOB
     ' P <- E - Coordinator_Initials
-    copyPaste fromColumns := "E:E", toColumns := "CE:CE", special := False
-    copyPaste fromColumns := "B:B", toColumns := "CB:CB", special := False
-    copyPaste fromColumns := "F:F", toColumns := "CF:CF", special := False
-    copyPaste fromColumns := "P:P", toColumns := "CP:CP", special := False
-    clearColumn columnDef := "E:E"
-    clearColumn columnDef := "B:B"
-    clearColumn columnDef := "F:F"
-    clearColumn columnDef := "P:P"
-    copyPaste fromColumns := "CB:CB", toColumns := "E:E", special := False
-    copyPaste fromColumns := "CF:CF", toColumns := "B:B", special := False
-    copyPaste fromColumns := "CP:CP", toColumns := "F:F", special := False
-    copyPaste fromColumns := "CE:CE", toColumns := "P:P", special := False
+    copyPaste fromColumns:="E:E", toColumns:="CE:CE", special:=False
+    copyPaste fromColumns:="B:B", toColumns:="CB:CB", special:=False
+    copyPaste fromColumns:="F:F", toColumns:="CF:CF", special:=False
+    copyPaste fromColumns:="P:P", toColumns:="CP:CP", special:=False
+    clearColumn columnDef:="E:E"
+    clearColumn columnDef:="B:B"
+    clearColumn columnDef:="F:F"
+    clearColumn columnDef:="P:P"
+    copyPaste fromColumns:="CB:CB", toColumns:="E:E", special:=False
+    copyPaste fromColumns:="CF:CF", toColumns:="B:B", special:=False
+    copyPaste fromColumns:="CP:CP", toColumns:="F:F", special:=False
+    copyPaste fromColumns:="CE:CE", toColumns:="P:P", special:=False
 End Sub
 
-private sub cleanUpColumnsData
+Private Sub cleanUpColumnsData()
     Dim timeValStr As String
 
-    ' Delete prefix from member ID 
+    ' Delete prefix from member ID
     Columns("A:A").Select
     ' This is important since there is a formula that substracts tracking numbers. They have to be numbers without prefix
     Selection.Replace What:="FL", Replacement:=" ", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
@@ -371,7 +371,7 @@ private sub cleanUpColumnsData
     ' Dates
     Columns("F:G").Select
     Selection.NumberFormat = "m/d;@"
-    ' Time columns 
+    ' Time columns
     ' Remove W/C from time column
     Columns("H:I").Select
     Selection.Replace What:="W/C", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
@@ -388,22 +388,24 @@ private sub cleanUpColumnsData
         appTimeValStr = Range("I" & i).Value
         Range("H" & i).ClearContents
         Range("I" & i).ClearContents
-        if pickUpTimesStr <> "" AND appTimeValStr <> ""  then 
+        If pickUpTimesStr <> "" Then
             Range("H" & i).Value = TimeValue(pickUpTimesStr)
+        End If
+        If appTimeValStr <> "" Then
             Range("I" & i).Value = TimeValue(appTimeValStr)
-        End If    
+        End If
     Next i
     Selection.NumberFormat = "h:mm;@"
-    ' Wheelchair 
+    ' Wheelchair
     Columns("L:L").Select
     Selection.Replace What:="1", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Selection.Replace What:="0", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
-    highlightWheelChairColumns columnLetter := "L"
-    ' Streets 
-    unifyStreetNames rangeDef := "J:K"
+    highlightWheelChairColumns columnLetter:="L"
+    ' Streets
+    unifyStreetNames rangeDef:="J:K"
 End Sub
 
-Private Sub unifyStreetNames(rangeDef as String)
+Private Sub unifyStreetNames(rangeDef As String)
     Columns(rangeDef).Select
     Selection.Replace What:="STREET", Replacement:="ST", LookAt:=xlPart, _
         SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, _
@@ -442,7 +444,7 @@ Private Sub setCalibriFont(fontSize As Integer, followTheme As Boolean)
     End If
 End Sub
 
-private Sub convertFormulasToValuesInSelection()
+Private Sub convertFormulasToValuesInSelection()
     Dim rng As Range
     For Each rng In Selection
         If rng.HasFormula Then
@@ -451,9 +453,9 @@ private Sub convertFormulasToValuesInSelection()
     Next rng
 End Sub
 
-private Sub concatCoordinatorAndNotes(targetColumn as String)
+Private Sub concatCoordinatorAndNotes(targetColumn As String)
     Dim i As Long
-    
+   
     Range(targetColumn & "1").ClearContents
     Range(targetColumn & "1").Formula = "Coordinator"
     ' 16 == P column
@@ -462,18 +464,18 @@ private Sub concatCoordinatorAndNotes(targetColumn as String)
     Next
 End Sub
 
-private Sub splitCoordinatorAndNotes(srcCol as String, coordinatorCol as String, notesCol as String)
+Private Sub splitCoordinatorAndNotes(srcCol As String, coordinatorCol As String, notesCol As String)
     Dim i As Long
     Dim rowsCnt As Long
-    Dim concatVal as String
-    Dim coordinator as String
-    Dim notes as String
+    Dim concatVal As String
+    Dim coordinator As String
+    Dim notes As String
 
     rowsCnt = Cells(Cells.Rows.Count, 1).End(xlUp).Row
     For i = 2 To rowsCnt
         concatVal = Range(srcCol & i).Value
-        coordinator = LEFT(concatVal, InStr(concatVal, "#")-1)
-        notes = RIGHT(concatVal, LEN(concatVal) - InStr(concatVal, "#"))
+        coordinator = Left(concatVal, InStr(concatVal, "#") - 1)
+        notes = Right(concatVal, Len(concatVal) - InStr(concatVal, "#"))
         Range(coordinatorCol & i).ClearContents
         Range(coordinatorCol & i).Value = coordinator
         Range(notesCol & i).ClearContents
@@ -481,7 +483,7 @@ private Sub splitCoordinatorAndNotes(srcCol as String, coordinatorCol as String,
     Next i
 End Sub
 
-private Sub highlightWheelChairColumns(columnLetter as String)
+Private Sub highlightWheelChairColumns(columnLetter As String)
     Columns(columnLetter & ":" & columnLetter).Select
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, Formula1:="=""No"""
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
@@ -497,10 +499,10 @@ private Sub highlightWheelChairColumns(columnLetter as String)
     Selection.FormatConditions(1).StopIfTrue = False
 End Sub
 
-Private Sub allightSelectionTo(horizontalAlignment as Integer, verticalAlignment as Integer)
+Private Sub allightSelectionTo(horizontalAlignment As Integer, verticalAlignment As Integer)
     With Selection
-        .HorizontalAlignment = horizontalAlignment
-        .VerticalAlignment = verticalAlignment
+        .horizontalAlignment = horizontalAlignment
+        .verticalAlignment = verticalAlignment
         .WrapText = False
         .Orientation = 0
         .AddIndent = False
@@ -511,92 +513,92 @@ Private Sub allightSelectionTo(horizontalAlignment as Integer, verticalAlignment
     End With
 End Sub
 
-Private Sub formatColumns
+Private Sub formatColumns()
     Range("A1").FormulaR1C1 = "REF_ID"
     Columns("A:A").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
-    
+    allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlCenter
+   
     Range("B1").FormulaR1C1 = "Coordinator"
     Columns("B:B").Select
     setCalibriFont fontSize:=6, followTheme:=True
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlBottom
+    allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlBottom
 
     Range("C1").FormulaR1C1 = "LNAME"
     Columns("C:C").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlCenter
 
     Range("D1").FormulaR1C1 = "FNAME"
     Columns("D:D").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlCenter
 
     Range("E1").FormulaR1C1 = "Member ID"
     Columns("E:E").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlCenter
 
     Range("F1").FormulaR1C1 = "PICKUP_DATE"
     Columns("F:F").Select
     setCalibriFont fontSize:=6, followTheme:=True
     Selection.NumberFormat = "m/d;@"
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlBottom
+    allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlBottom
 
     Range("G1").FormulaR1C1 = "PickupTime*"
     Columns("G:G").Select
-    allightSelectionTo horizontalAlignment := xlRight, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlRight, verticalAlignment:=xlCenter
     Selection.NumberFormat = "General"
 
-    ' --- Empty --- 
+    ' --- Empty ---
     ' Columns("H:H").Select
 
     Range("I1").FormulaR1C1 = "Appt_time"
     Columns("I:I").Select
-    allightSelectionTo horizontalAlignment := xlRight, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlRight, verticalAlignment:=xlCenter
     Selection.NumberFormat = "h:mm;@"
 
-    ' --- Empty --- 
+    ' --- Empty ---
     ' Columns("J:J").Select
-    ' --- Empty --- 
+    ' --- Empty ---
     ' Columns("K:K").Select
-    ' --- Empty --- 
+    ' --- Empty ---
     ' Columns("L:L").Select
-    ' --- Empty --- 
+    ' --- Empty ---
     ' Columns("M:M").Select
 
     Range("N1").FormulaR1C1 = "Origin"
     Columns("N:N").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlCenter
 
     Range("O1").FormulaR1C1 = "Destination"
     Columns("O:O").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlCenter
 
     Range("P1").FormulaR1C1 = "WheelChair_YesNo"
     Columns("P:P").Select
     setCalibriFont fontSize:=6, followTheme:=True
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlCenter
 
     Range("Q1").FormulaR1C1 = "TP"
     Columns("Q:Q").Select
     setCalibriFont fontSize:=6, followTheme:=True
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlCenter
 
     Range("R1").FormulaR1C1 = "Telephone"
     Columns("R:R").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlCenter
 
     Range("S1").FormulaR1C1 = "Notes"
     Columns("S:S").Select
-    allightSelectionTo horizontalAlignment := xlLeft, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlCenter
 
-    ' --- Empty --- 
+    ' --- Empty ---
     ' Columns("T:T").Select
 
     Range("U1").FormulaR1C1 = "Pickup_timeORIGINAL"
     Columns("U:U").Select
     Selection.NumberFormat = "h:mm;@"
-    allightSelectionTo horizontalAlignment := xlRight, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlRight, verticalAlignment:=xlCenter
 
     '-------------------------------------------------------------------------------
-    ' Bold header 
+    ' Bold header
     Rows("1:1").EntireRow.Select
     Selection.FormatConditions.Delete
     setCalibriFont fontSize:=10, followTheme:=False
@@ -608,30 +610,30 @@ Private Sub formatColumns
         .PatternTintAndShade = 0
     End With
     Selection.Font.Bold = True
-    allightSelectionTo horizontalAlignment := xlCenter, verticalAlignment := xlCenter
+    allightSelectionTo horizontalAlignment:=xlCenter, verticalAlignment:=xlCenter
     ' Adjust widths
     Cells.Select
     Cells.EntireColumn.AutoFit
-End Sub 
+End Sub
 
-Private Sub copyPaste(fromColumns as String, toColumns as String, special as Boolean)
+Private Sub copyPaste(fromColumns As String, toColumns As String, special As Boolean)
     Columns(fromColumns).Select
     Selection.Copy
     Columns(toColumns).Select
-    if special then 
+    If special Then
         Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
-    else 
+    Else
         ActiveSheet.Paste
-    end if 
+    End If
     Application.CutCopyMode = False
-End Sub 
+End Sub
 
-private sub clearColumn(columnDef as String)
+Private Sub clearColumn(columnDef As String)
     Columns(columnDef).Select
     Selection.ClearContents
-end sub
+End Sub
 
-private sub deleteColumn(columnDef as String)
+Private Sub deleteColumn(columnDef As String)
     Columns(columnDef).Select
     Selection.Delete Shift:=xlToLeft
-end sub
+End Sub
