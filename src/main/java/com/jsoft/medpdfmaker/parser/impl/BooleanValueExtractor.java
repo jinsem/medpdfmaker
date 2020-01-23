@@ -15,7 +15,7 @@ import java.util.Set;
 public class BooleanValueExtractor implements ValueExtractor<Boolean> {
 
     private final Set<String> possibleTrues = new HashSet<>(
-            Arrays.asList("YES", "CANCELLED", "YES(MUST)")
+            Arrays.asList("YES", "CANCELLED", "YES(MUST)", "1")
     );
 
     @Override

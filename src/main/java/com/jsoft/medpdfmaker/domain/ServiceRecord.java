@@ -128,7 +128,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.refId;
     }
 
-    @ExternalField(value = "REF_ID", required = true)
+    @ExternalField(value = "TRACKINGNUMBER", required = true)
     public void setRefId(String refId) {
         this.refId = refId;
     }
@@ -137,7 +137,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return cancelled;
     }
 
-    @ExternalField(value = "CANCELLED", fieldType = FieldType.BOOLEAN)
+    @ExternalField(value = "RIDE CANCELLATION", fieldType = FieldType.BOOLEAN)
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
@@ -146,7 +146,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.lName;
     }
 
-    @ExternalField(value = "LNAME", required = true)
+    @ExternalField(value = "LASTNAME", required = true)
     public void setLName(String lName) {
         this.lName = lName;
     }
@@ -155,7 +155,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.fName;
     }
 
-    @ExternalField(value = "FNAME", required = true)
+    @ExternalField(value = "FIRSTNAME", required = true)
     public void setFName(String fName) {
         this.fName = fName;
     }
@@ -177,7 +177,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.memberId;
     }
 
-    @ExternalField(value = "MEMBERID", required = true)
+    @ExternalField(value = "MEMBERNUMBER", required = true)
     public void setMemberId(String memberId) {
         this.memberId = memberId;
     }
@@ -186,7 +186,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.dayOfBirth;
     }
 
-    @ExternalField(value = "DOB", required = true, fieldType = FieldType.DATE)
+    @ExternalField(value = "DATE OF BIRTH", required = true, fieldType = FieldType.DATE)
     public void setDayOfBirth(LocalDate dayOfBirth) {
         this.dayOfBirth = dayOfBirth;
     }
@@ -195,7 +195,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.pickupDate;
     }
 
-    @ExternalField(value = "PICKUP_DATE", required = true, fieldType = FieldType.DATE)
+    @ExternalField(value = "DATE OF SERVICE", required = true, fieldType = FieldType.DATE)
     public void setPickupDate(LocalDate pickupDate) {
         this.pickupDate = pickupDate;
     }
@@ -204,7 +204,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.pickupTime;
     }
 
-    @ExternalField(value = "PICKUP_TIME", fieldType = FieldType.TIME)
+    @ExternalField(value = "APPOINTMENT PICK-UP TIME", fieldType = FieldType.TIME)
     public void setPickupTime(LocalTime pickupTime) {
         this.pickupTime = pickupTime;
     }
@@ -213,7 +213,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.apptTime;
     }
 
-    @ExternalField(value = "APPT_TIME", fieldType = FieldType.TIME)
+    @ExternalField(value = "APPOINTMENT SCHEDULED TIME", fieldType = FieldType.TIME)
     public void setApptTime(LocalTime apptTime) {
         this.apptTime = apptTime;
     }
@@ -222,7 +222,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.origin;
     }
 
-    @ExternalField("ORIGIN")
+    @ExternalField("PICK UP LOCATION")
     public void setOrigin(String origin) {
         this.origin = origin;
     }
@@ -240,7 +240,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return wheelChairYesNo;
     }
 
-    @ExternalField(value = "WHEELCHAIR_YESNO", fieldType = FieldType.BOOLEAN)
+    @ExternalField(value = "WHEELCHAIR", fieldType = FieldType.BOOLEAN)
     public void setWheelChairYesNo(boolean wheelChairYesNo) {
         this.wheelChairYesNo = wheelChairYesNo;
     }
@@ -249,7 +249,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.totalPassengers;
     }
 
-    @ExternalField(value = "TOTAL_PASSENGERS", fieldType = FieldType.INTEGER)
+    @ExternalField(value = "NUMBER OF PASSENGERS", fieldType = FieldType.INTEGER)
     public void setTotalPassengers(Integer totalPassengers) {
         this.totalPassengers = totalPassengers;
     }
@@ -267,7 +267,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.telephone;
     }
 
-    @ExternalField("TELEPHONE")
+    @ExternalField("PRIMARY CONTACT NUMBER")
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
@@ -276,7 +276,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.coordinatorInitials;
     }
 
-    @ExternalField("COORDINATOR_INITIALS")
+    @ExternalField("OPENEDBYNAME")
     public void setCoordinatorInitials(String coordinatorInitials) {
         this.coordinatorInitials = coordinatorInitials;
     }

@@ -12,8 +12,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import static org.apache.commons.lang3.StringUtils.strip;
 import static org.apache.commons.lang3.StringUtils.trim;
 import static org.apache.commons.lang3.StringUtils.upperCase;
 import static org.apache.poi.ss.usermodel.DateUtil.getJavaDate;
@@ -26,6 +29,10 @@ public class LocalTimeValueExtractor implements ValueExtractor<LocalTime> {
                     DateTimeFormatter.ofPattern("h:ma"),
                     DateTimeFormatter.ofPattern("H:m")
             );
+
+    private static final Set<Character> ALLOWED_CHARS_IN_TIME = new HashSet<>(Arrays.asList(
+            '1','2','3','4','5','6','7','8','9','0','A','P','M',':'
+    ));
 
     @Override
     public FieldType canParse() {
@@ -53,7 +60,7 @@ public class LocalTimeValueExtractor implements ValueExtractor<LocalTime> {
     }
 
     private LocalTime parseTimeFromString(Cell cell) {
-        final String strValue = StringUtils.remove(trim(upperCase(cell.getStringCellValue())), " ");
+        final String strValue = cleanTimeString(trim(upperCase(cell.getStringCellValue())));
         if (StringUtils.isBlank(strValue)) {
             return null;
         }
@@ -65,5 +72,23 @@ public class LocalTimeValueExtractor implements ValueExtractor<LocalTime> {
             }
         }
         throw new ValueExtractException("Cannot extract time value from the cell", cell);
+    }
+
+    private String cleanTimeString(String src) {
+        if (src == null) {
+            return null;
+        }
+        final StringBuilder result = new StringBuilder();
+        for (int i=0;i<src.length();i++) {
+            char c = src.charAt(i);
+            if (ALLOWED_CHARS_IN_TIME.contains(c)) {
+                result.append(c);
+            } else {
+                if (c == ';') {
+                    result.append(':');
+                }
+            }
+        }
+        return result.length() == 0 ? null : result.toString();
     }
 }

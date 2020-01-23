@@ -29,6 +29,7 @@ public class MemberPageGenerator implements PageGenerator {
 
 
     private static final int ROWS_COUNT = 6;
+    private static final String N_A = "n/a";
 
     private final AppProperties appProperties;
 
@@ -43,7 +44,6 @@ public class MemberPageGenerator implements PageGenerator {
 
     @Override
     public void generate(Path workFolder, List<ServiceRecord> memberServiceRecords, PageHandler pageHandler) throws IOException {
-        final List<Path> result = new LinkedList<>();
         final ServiceRecord headerRecord = memberServiceRecords.get(0);
         List<ServiceRecord> pageRecords = new LinkedList<>();
         final PageInfo pageInfo = new PageInfo(memberServiceRecords.size());
@@ -100,9 +100,15 @@ public class MemberPageGenerator implements PageGenerator {
             setField(pdDocument,"Text8", headerRecord.getPhone());
         }
         LocalDate dob = headerRecord.getDayOfBirth();
-        setField(pdDocument,"Text9", formatMonth.format(dob));
-        setField(pdDocument,"Text10", formatDay.format(dob));
-        setField(pdDocument,"Text11", formatYearCentury.format(dob));
+        if (dob == null) {
+            setField(pdDocument,"Text9", N_A);
+            setField(pdDocument,"Text10", N_A);
+            setField(pdDocument,"Text11", N_A);
+        } else {
+            setField(pdDocument,"Text9", formatMonth.format(dob));
+            setField(pdDocument,"Text10", formatDay.format(dob));
+            setField(pdDocument,"Text11", formatYearCentury.format(dob));
+        }
         setField(pdDocument,"Text54", appProperties.getFederalTaxID());
         setField(pdDocument,"Text57", appProperties.getProvider());
     }
