@@ -89,6 +89,13 @@ public class LocalTimeValueExtractor implements ValueExtractor<LocalTime> {
                 }
             }
         }
+        if (!timeStrIsValid(result)) {
+            result.setLength(0);
+        }
         return result.length() == 0 ? null : result.toString();
+    }
+
+    private boolean timeStrIsValid(StringBuilder result) {
+        return result.length() >= 5;
     }
 }

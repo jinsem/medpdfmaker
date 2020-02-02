@@ -29,7 +29,7 @@ public class MemberPageGenerator implements PageGenerator {
 
 
     private static final int ROWS_COUNT = 6;
-    private static final String N_A = "n/a";
+    private static final String N_A = "";
 
     private final AppProperties appProperties;
 
