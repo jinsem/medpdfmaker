@@ -43,7 +43,7 @@ public final class LoggerUtil {
                 message = String.format("Data parsing error: %s", description);
             } else {
                 message = String.format("Data parsing error on sheet: [%s], row: [%d], cell: [%d]: %s",
-                        cell.getSheet().getSheetName(), cell.getRowIndex(), cell.getColumnIndex(), description);
+                        cell.getSheet().getSheetName(), cell.getRowIndex()+1, cell.getColumnIndex()+1, description);
             }
             log.error(message);
         }

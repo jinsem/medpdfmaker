@@ -34,6 +34,10 @@ public class LocalTimeValueExtractor implements ValueExtractor<LocalTime> {
             '1','2','3','4','5','6','7','8','9','0','A','P','M',':'
     ));
 
+    private static final Set<String> EMPTY_VALUES = new HashSet<>(
+            Arrays.asList("W/C", "N/A")
+    );
+
     @Override
     public FieldType canParse() {
         return FieldType.TIME;
@@ -78,9 +82,10 @@ public class LocalTimeValueExtractor implements ValueExtractor<LocalTime> {
         if (src == null) {
             return null;
         }
+        String workSrc = deleteEmptyValues(src);
         final StringBuilder result = new StringBuilder();
-        for (int i=0;i<src.length();i++) {
-            char c = src.charAt(i);
+        for (int i=0;i<workSrc.length();i++) {
+            char c = workSrc.charAt(i);
             if (ALLOWED_CHARS_IN_TIME.contains(c)) {
                 result.append(c);
             } else {
@@ -89,13 +94,15 @@ public class LocalTimeValueExtractor implements ValueExtractor<LocalTime> {
                 }
             }
         }
-        if (!timeStrIsValid(result)) {
-            result.setLength(0);
-        }
         return result.length() == 0 ? null : result.toString();
     }
 
-    private boolean timeStrIsValid(StringBuilder result) {
-        return result.length() >= 5;
+    private String deleteEmptyValues(String src) {
+        String result = src;
+        for (String emptyValue : EMPTY_VALUES) {
+            result = result.replaceAll(emptyValue, "");
+        }
+        return result;
     }
+
 }
