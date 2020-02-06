@@ -339,6 +339,10 @@ Private Sub convertToOldFormat()
     ' Primary Contact Number <-> Telephone
     ' Date of Birth <-> DOB
 
+    ' Autofilter causes errors when data is copied and pasted
+    If ActiveSheet.AutoFilterMode Then
+        ActiveSheet.AutoFilterMode = False
+    End If
     '--- Column changes
     ' E <- B - MemberID
     ' B <- F - Cancelled
@@ -384,15 +388,15 @@ Private Sub cleanUpColumnsData()
     ' For some reason Excel cannot recognize text as time. Force convert it
     rowsCnt = Cells(Cells.Rows.Count, 1).End(xlUp).Row
     For i = 2 To rowsCnt
-        pickUpTimesStr = Range("H" & i).Value
-        appTimeValStr = Range("I" & i).Value
+        pickUpTimesVal = Range("H" & i).Text
+        appTimeValVal = Range("I" & i).Text
         Range("H" & i).ClearContents
         Range("I" & i).ClearContents
-        If pickUpTimesStr <> "" Then
-            Range("H" & i).Value = TimeValue(pickUpTimesStr)
+        If pickUpTimesVal <> "" Then
+            Range("H" & i).Value = TimeValue(pickUpTimesVal)
         End If
-        If appTimeValStr <> "" Then
-            Range("I" & i).Value = TimeValue(appTimeValStr)
+        If appTimeValVal <> "" Then
+            Range("I" & i).Value = TimeValue(appTimeValVal)
         End If
     Next i
     Selection.NumberFormat = "h:mm;@"
