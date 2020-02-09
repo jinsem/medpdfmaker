@@ -326,45 +326,41 @@ Private Sub cleanUpColumnsData()
     ' Delete prefix from tracking number
     Columns("A:A").Select
     ' This is important since there is a formula that substracts tracking numbers. They have to be numbers without prefix
-    replaceInSelection replWhat:="FL", replTo:=" "
+    Selection.Replace What:="FL", Replacement:=" ", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     ' Ride cancel
     Columns("F:F").Select
-    replaceInSelection replWhat:="0", replTo:=""
+    Selection.Replace What:="0", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     ' Time columns
     ' Remove W/C from time column
     Columns("H:I").Select
-    replaceInSelection replWhat = "W/C", replTo = ""
-    replaceInSelection replWhat = "NONE", replTo = ""
-    replaceInSelection replWhat = "N/A", replTo = ""
-    replaceInSelection replWhat = "NA", replTo = ""
-    replaceInSelection replWhat = ";", replTo = ":"
-    replaceInSelection replWhat = "AM", replTo = "AM"
-    replaceInSelection replWhat = "AN", replTo = "AM"
-    replaceInSelection replWhat = "PM", replTo = "PM"
+    Selection.Replace What:="W/C", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:="NONE", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:="N/A", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:="NA", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:=";", Replacement:=":", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:="AN", Replacement:="AM", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     ' For some reason Excel cannot recognize text as time. Force convert it
     rowsCnt = Cells(Cells.Rows.Count, 1).End(xlUp).Row
-    Dim convertResult As Boolean
-    convertResult = True
+    Dim convertH As Boolean
+    Dim convertI As Boolean
+    convertH = True
+    convertI = True
     For i = 2 To rowsCnt
-        convertResult = convertTime(Range("H" & i))
-        convertResult = convertResult And convertTime(Range("I" & i))
+        convertH = convertH And convertTime(Range("H" & i))
+        convertI = convertI And convertTime(Range("I" & i))
     Next i
-    If Not convertResult Then
+    If Not (convertH And convertI) Then
         Err.Raise vbObjectError + 1000, "DaylyCCHPNewFormat", _
         "One or more time values (Date of Service, Appointment Pick-up Time) contain invalid values. Please find cells marked by red color, fix values and run macros again", "", 0
     End If
     Selection.NumberFormat = "h:mm;@"
     ' Wheelchair
     Columns("L:L").Select
-    replaceInSelection replWhat:="1", replTo:="Must"
-    replaceInSelection replWhat:="0", replTo:=""
+    Selection.Replace What:="1", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:="0", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     highlightWheelChairColumns columnLetter:="L"
     ' Streets
     unifyStreetNames rangeDef:="J:K"
-End Sub
-
-Private Sub replaceInSelection(replWhat As String, replTo As String)
-    Selection.Replace What:=replWhat, Replacement:=replTo, LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
 End Sub
 
 Private Function convertTime(rng As Range) As Boolean
@@ -382,7 +378,7 @@ Private Function convertTime(rng As Range) As Boolean
 ErrorHandler:
         rng.Interior.Color = RGB(255, 0, 0)
         convertTime = False
-        Resume
+        Exit Function
 End Function
 
 Private Sub convertToOldFormat()
