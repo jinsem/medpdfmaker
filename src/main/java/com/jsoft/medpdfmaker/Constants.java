@@ -8,5 +8,5 @@ public final class Constants {
 
     public static final String PDF_EXT = ".pdf";
 
-    public static final String PDF_TEMPLATE_RESOURCE_PATH = "template/Form.pdf";
+    public static final String PDF_TEMPLATE_RESOURCE_PATH = "template/Form_red.pdf";
 }
