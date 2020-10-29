@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -43,6 +44,11 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
      * Patient's day of birth
      */
     private LocalDate dayOfBirth;
+
+    /**
+     * Patient's gender
+     */
+    private String gender;
 
     /**
      * Date when patient was picked up
@@ -189,6 +195,19 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
     @ExternalField(value = "DATE OF BIRTH", required = true, fieldType = FieldType.DATE)
     public void setDayOfBirth(LocalDate dayOfBirth) {
         this.dayOfBirth = dayOfBirth;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    @ExternalField(value = "GENDER", required = false, fieldType = FieldType.STRING)
+    public void setGender(String gender) {
+        if (gender == null) {
+            this.gender = gender;
+        } else {
+            this.gender = gender.toUpperCase(Locale.ROOT).trim();
+        }
     }
 
     public LocalDate getPickupDate() {

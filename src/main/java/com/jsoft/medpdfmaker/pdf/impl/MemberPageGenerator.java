@@ -8,12 +8,14 @@ import com.jsoft.medpdfmaker.pdf.PageHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.jsoft.medpdfmaker.Constants.*;
 import static com.jsoft.medpdfmaker.util.FileUtil.stripLastSlashIfNeeded;
 
 public class MemberPageGenerator implements PageGenerator {
@@ -36,6 +39,7 @@ public class MemberPageGenerator implements PageGenerator {
     private final DateTimeFormatter formatYearCentury = DateTimeFormatter.ofPattern("yy");
     private final DateTimeFormatter formatDay = DateTimeFormatter.ofPattern("dd");
     private final DateTimeFormatter formatMonth = DateTimeFormatter.ofPattern("MM");
+    private final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private final DecimalFormat formatMoney = new DecimalFormat("0.00");
 
     public MemberPageGenerator(final AppProperties appProperties) {
@@ -99,18 +103,52 @@ public class MemberPageGenerator implements PageGenerator {
         if (StringUtils.isNotEmpty(headerRecord.getPhone())) {
             setField(pdDocument,"Text8", headerRecord.getPhone());
         }
+        fillDob(pdDocument, headerRecord);
+        fillSex(pdDocument, headerRecord);
+        setField(pdDocument,"Text54", appProperties.getFederalTaxID());
+        setField(pdDocument,"Text57", appProperties.getProvider());
+        setField(pdDocument,"PATIENT_RELATIONSHIP_SELF", "X");
+        setField(pdDocument, INSURANCE_TYPE, "X");
+        setField(pdDocument, "PATIENT_SIGNATURE", SIGNATURE_ON_FILE);
+        setField(pdDocument, "PATIENT_SIGNATURE_13", SIGNATURE_ON_FILE);
+        setField(pdDocument, "PATIENT_SIGNATURE_DATE", formatDate.format(headerRecord.getPickupDate()));
+        setField(pdDocument,"EIN", "X");
+        setField(pdDocument,"ACCEPT_ASSIGNMENT_YES", "X");
+        LocalDate signatureDate = headerRecord.getPickupDate().withDayOfMonth(headerRecord.getPickupDate().lengthOfMonth());
+        setField(pdDocument,"SIGNATURE_DATE", " " + formatDate.format(signatureDate));
+        setField(pdDocument,"SERVICE_PICKUP_LOCATION", "FROM: " + headerRecord.getOrigin());
+        setField(pdDocument,"SERVICE_PICKUP_DEST", "TO: " + headerRecord.getDestination());
+        setField(pdDocument,"NPI_32A", RENDER_PROVIDER);
+        setField(pdDocument,"NPI_33A", RENDER_PROVIDER);
+    }
+
+    private void fillSex(PDDocument pdDocument, ServiceRecord headerRecord) throws IOException {
+        if ("M".equals(headerRecord.getGender())) {
+            setField(pdDocument,"SEX_M", "X");
+            setField(pdDocument,"SEX_M_2", "X");
+        } else if ("F".equals(headerRecord.getGender())) {
+            setField(pdDocument,"SEX_F", "X");
+            setField(pdDocument,"SEX_F_2", "X");
+        }
+    }
+
+    private void fillDob(PDDocument pdDocument, ServiceRecord headerRecord) throws IOException {
         LocalDate dob = headerRecord.getDayOfBirth();
         if (dob == null) {
             setField(pdDocument,"Text9", N_A);
             setField(pdDocument,"Text10", N_A);
             setField(pdDocument,"Text11", N_A);
+            setField(pdDocument,"DOB_3_MM", N_A);
+            setField(pdDocument,"DOB_3_DD", N_A);
+            setField(pdDocument,"DOB_3_YYYY", N_A);
         } else {
             setField(pdDocument,"Text9", formatMonth.format(dob));
             setField(pdDocument,"Text10", formatDay.format(dob));
             setField(pdDocument,"Text11", formatYearCentury.format(dob));
+            setField(pdDocument,"DOB_3_MM", formatMonth.format(dob));
+            setField(pdDocument,"DOB_3_DD", formatDay.format(dob));
+            setField(pdDocument,"DOB_3_YYYY", formatYearCentury.format(dob));
         }
-        setField(pdDocument,"Text54", appProperties.getFederalTaxID());
-        setField(pdDocument,"Text57", appProperties.getProvider());
     }
 
     private void fillPageTable(PDDocument pdDocument, List<ServiceRecord> pageRecords) throws IOException {
@@ -125,6 +163,8 @@ public class MemberPageGenerator implements PageGenerator {
             setField(pdDocument,"Text" + (16 + fieldIdxShift), appProperties.getProcedures());
             setField(pdDocument,"Text" + (17 + fieldIdxShift), formatMoney.format(pageRecord.getTripPrice()));
             setField(pdDocument,"Text" + (18 + fieldIdxShift), pageRecord.getRefId());
+            setField(pdDocument,"G_DAYS_" + (recNum + 1), "1");
+            setField(pdDocument,"RENDER_PROVIDER_" + (recNum + 1), RENDER_PROVIDER);
             recNum++;
         }
     }

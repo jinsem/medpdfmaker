@@ -26,7 +26,8 @@ public class LocalDateValueExtractor implements ValueExtractor<LocalDate> {
                     DateTimeFormatter.ofPattern("dd-MMM-yyyy"),
                     DateTimeFormatter.ofPattern("MM/dd/yy"),
                     DateTimeFormatter.ofPattern("MM/dd/yyyy"),
-                    DateTimeFormatter.ofPattern("M/d/yyyy")
+                    DateTimeFormatter.ofPattern("M/d/yyyy"),
+                    DateTimeFormatter.ofPattern("yyyy/MM/dd")
             );
 
     @Override
