@@ -83,7 +83,7 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
         short maxColIx = currentRow.getLastCellNum();
         for(short colIx=minColIx; colIx<maxColIx; colIx++) {
             final Cell cell = currentRow.getCell(colIx);
-            final String fieldName = (cell == null) ? "" : StringUtils.upperCase(formatter.formatCellValue(cell));
+            final String fieldName = (cell == null) ? "" : StringUtils.upperCase(formatter.formatCellValue(cell)).trim();
             if (!serviceRecordBuilder.attributeIsKnown(fieldName)) {
                 LoggerUtil.warn(LOG, String.format("Attribute %s is unknown. Value of this attribute will be ignored", fieldName));
                 result = WARNING;
