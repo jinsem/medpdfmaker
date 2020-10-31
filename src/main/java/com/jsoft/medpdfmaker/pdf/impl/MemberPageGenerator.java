@@ -111,10 +111,10 @@ public class MemberPageGenerator implements PageGenerator {
         setField(pdDocument, INSURANCE_TYPE, "X");
         setField(pdDocument, "PATIENT_SIGNATURE", SIGNATURE_ON_FILE);
         setField(pdDocument, "PATIENT_SIGNATURE_13", SIGNATURE_ON_FILE);
-        setField(pdDocument, "PATIENT_SIGNATURE_DATE", formatDate.format(headerRecord.getPickupDate()));
+        LocalDate signatureDate = headerRecord.getPickupDate().withDayOfMonth(headerRecord.getPickupDate().lengthOfMonth());
+        setField(pdDocument, "PATIENT_SIGNATURE_DATE", formatDate.format(signatureDate));
         setField(pdDocument,"EIN", "X");
         setField(pdDocument,"ACCEPT_ASSIGNMENT_YES", "X");
-        LocalDate signatureDate = headerRecord.getPickupDate().withDayOfMonth(headerRecord.getPickupDate().lengthOfMonth());
         setField(pdDocument,"SIGNATURE_DATE", " " + formatDate.format(signatureDate));
         setField(pdDocument,"SERVICE_PICKUP_LOCATION", "FROM: " + headerRecord.getOrigin());
         setField(pdDocument,"SERVICE_PICKUP_DEST", "TO: " + headerRecord.getDestination());
