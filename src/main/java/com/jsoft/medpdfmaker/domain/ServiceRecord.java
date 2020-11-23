@@ -134,7 +134,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return this.refId;
     }
 
-    @ExternalField(value = "TRACKINGNUMBER", required = true)
+    @ExternalField(value = "REF_ID", required = true)
     public void setRefId(String refId) {
         this.refId = refId;
     }
@@ -176,6 +176,19 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
             return fName;
         } else {
             return String.format("%s %s", fName, lName);
+        }
+    }
+
+    public String getFAndLNameReversed() {
+        if (fName == null && lName == null) {
+            return null;
+        }
+        if (fName == null) {
+            return lName;
+        } else if (lName == null) {
+            return fName;
+        } else {
+            return String.format("%s, %s", lName, fName);
         }
     }
 
@@ -360,14 +373,19 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
                StringUtils.isBlank(fName) &&
                StringUtils.isBlank(memberId) &&
                dayOfBirth == null &&
-               pickupDate == null &&
-               pickupTime == null;
+               pickupDate == null;
     }
 
     public boolean allFieldsAreEmpty() {
         // Boolean values are excluded because it is hard to understand, if empty cell value means
         // False or it means tha there is no value because whole row is empty
-        return requiredFieldsAreEmpty() &&
+        return  StringUtils.isBlank(refId) &&
+                StringUtils.isBlank(lName) &&
+                StringUtils.isBlank(fName) &&
+                StringUtils.isBlank(memberId) &&
+                dayOfBirth == null &&
+                pickupDate == null &&
+                pickupTime == null &&
                 apptTime == null &&
                 StringUtils.isBlank(origin) &&
                 StringUtils.isBlank(destination) &&

@@ -23,7 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.jsoft.medpdfmaker.parser.Result.*;
+import static com.jsoft.medpdfmaker.parser.Result.ERROR;
+import static com.jsoft.medpdfmaker.parser.Result.OK;
+import static com.jsoft.medpdfmaker.parser.Result.WARNING;
+import static com.jsoft.medpdfmaker.parser.Result.moreImportant;
 
 public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
 
@@ -97,21 +100,23 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
     private Result processRow(List<String> fieldNames, Row currentRow, Consumer<ServiceRecord> rowCallBack) {
         Result result = OK;
         short colIx = currentRow.getFirstCellNum();
-        final short maxColIx = currentRow.getLastCellNum();
-        for (String fieldName : fieldNames) {
-            if (colIx <= maxColIx) {
-                final Cell curCell = currentRow.getCell(colIx++);
-                if (curCell != null) {
-                    result = getDataFromCell(result, fieldName, curCell);
+        if (colIx >= 0) {
+            final short maxColIx = currentRow.getLastCellNum();
+            for (String fieldName : fieldNames) {
+                if (colIx <= maxColIx) {
+                    final Cell curCell = currentRow.getCell(colIx++);
+                    if (curCell != null) {
+                        result = getDataFromCell(result, fieldName, curCell);
+                    }
                 }
             }
-        }
-        if (result == OK && !serviceRecordBuilder.entityIsEmpty()) {
-            if (serviceRecordBuilder.entityKeyIsEmpty()) {
-                LoggerUtil.logRowParsingError(LOG, String.format("One or more required values %s are not set", serviceRecordBuilder.getRequiredAttributesNames()), currentRow);
-                result = ERROR;
-            } else {
-                rowCallBack.accept(serviceRecordBuilder.build());
+            if (result == OK && !serviceRecordBuilder.entityIsEmpty()) {
+                if (serviceRecordBuilder.entityKeyIsEmpty()) {
+                    LoggerUtil.logRowParsingError(LOG, String.format("One or more required values %s are not set", serviceRecordBuilder.getRequiredAttributesNames()), currentRow);
+                    result = ERROR;
+                } else {
+                    rowCallBack.accept(serviceRecordBuilder.build());
+                }
             }
         }
         return result;

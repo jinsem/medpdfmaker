@@ -8,14 +8,12 @@ import com.jsoft.medpdfmaker.pdf.PageHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +23,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.jsoft.medpdfmaker.Constants.*;
+import static com.jsoft.medpdfmaker.Constants.INSURANCE_TYPE;
+import static com.jsoft.medpdfmaker.Constants.RENDER_PROVIDER;
+import static com.jsoft.medpdfmaker.Constants.SIGNATURE_ON_FILE;
 import static com.jsoft.medpdfmaker.util.FileUtil.stripLastSlashIfNeeded;
 
 public class MemberPageGenerator implements PageGenerator {
@@ -80,9 +80,9 @@ public class MemberPageGenerator implements PageGenerator {
     private void fillPageHeader(PDDocument pdDocument, ServiceRecord headerRecord, PageInfo pageInfo) throws IOException {
         String memberIdPage = headerRecord.getMemberId() + (pageInfo.multiPaged ? pageInfo.pageNumWithPrefix() : "");
         setField(pdDocument, "Text1", memberIdPage);
-        setField(pdDocument, "Text2", headerRecord.getFAndLName());
+        setField(pdDocument, "Text2", headerRecord.getFAndLNameReversed());
         String origin = headerRecord.getOrigin();
-        int originSlashPos = origin.indexOf('/');
+        int originSlashPos = (origin == null) ? -1 : origin.indexOf('/');
         if (originSlashPos > -1) {
             setField(pdDocument,"Text3", origin.substring(0, originSlashPos));
         } else {
