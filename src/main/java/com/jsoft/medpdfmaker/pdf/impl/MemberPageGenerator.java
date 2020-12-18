@@ -57,7 +57,9 @@ public class MemberPageGenerator implements PageGenerator {
                 pageHandler.onPage(generatePage(pageInfo, headerRecord, pageRecords, workFolder));
                 pageRecords = new LinkedList<>();
                 pageInfo.incPageNum();
+                pageInfo.resetPageRecordsCount();
             }
+            pageInfo.incPageRecordsCount();
         }
         if (!pageRecords.isEmpty()) {
             pageHandler.onPage(generatePage(pageInfo, headerRecord, pageRecords, workFolder));
@@ -78,7 +80,7 @@ public class MemberPageGenerator implements PageGenerator {
     }
 
     private void fillPageHeader(PDDocument pdDocument, ServiceRecord headerRecord, PageInfo pageInfo) throws IOException {
-        String memberIdPage = headerRecord.getMemberId() + (pageInfo.multiPaged ? pageInfo.pageNumWithPrefix() : "");
+        String memberIdPage = headerRecord.getMemberId();
         setField(pdDocument, "Text1", memberIdPage);
         setField(pdDocument, "Text2", headerRecord.getFAndLNameReversed());
         String origin = headerRecord.getOrigin();
@@ -120,6 +122,8 @@ public class MemberPageGenerator implements PageGenerator {
         setField(pdDocument,"SERVICE_PICKUP_DEST", "TO: " + headerRecord.getDestination());
         setField(pdDocument,"NPI_32A", RENDER_PROVIDER);
         setField(pdDocument,"NPI_33A", RENDER_PROVIDER);
+        setField(pdDocument,"SIGNATURE_OF_SUPPLIER", SIGNATURE_ON_FILE);
+        setField(pdDocument,"INSURED_ADDRESS", "SAME");
     }
 
     private void fillSex(PDDocument pdDocument, ServiceRecord headerRecord) throws IOException {
@@ -170,12 +174,7 @@ public class MemberPageGenerator implements PageGenerator {
     }
 
     private void fillPageFooter(PDDocument pdDocument, PageInfo pageInfo, ServiceRecord headerRecord) throws IOException {
-        final BigDecimal charges = headerRecord.getTripPrice();
-        if (pageInfo.lastPage()) {
-            setField(pdDocument,"Text56", formatMoney.format(charges.multiply(BigDecimal.valueOf(pageInfo.recordsCount))));
-        } else {
-            setField(pdDocument,"Text56", "See page " + pageInfo.pageCount);
-        }
+        setField(pdDocument,"Text56", formatMoney.format(headerRecord.getTripPrice().multiply(BigDecimal.valueOf(pageInfo.pageRecordsCount))));
     }
 
     private String makePageFileName(ServiceRecord headerRecord, int pageNum, Path workFolder) {
@@ -209,29 +208,32 @@ public class MemberPageGenerator implements PageGenerator {
     private static class PageInfo {
 
         int pageNum;
-        final int recordsCount;
+        int pageRecordsCount;
+        final int totalRecordsCount;
         final int pageCount;
-        final boolean multiPaged;
 
         // memberServiceRecords
-        PageInfo(int recordsCount) {
-            this.recordsCount = recordsCount;
+        PageInfo(int totalRecordsCount) {
+            this.totalRecordsCount = totalRecordsCount;
             this.pageNum = 1;
-            this.pageCount = (int)Math.round(Math.ceil((double)recordsCount / ROWS_COUNT));
-            this.multiPaged = this.pageCount > 1;
-
+            resetPageRecordsCount();
+            this.pageCount = (int)Math.round(Math.ceil((double) totalRecordsCount / ROWS_COUNT));
         }
 
         void incPageNum() {
             pageNum++;
         }
 
-        boolean lastPage() {
-            return pageNum == pageCount;
+        void incPageRecordsCount() {
+            pageRecordsCount++;
         }
 
-        String pageNumWithPrefix() {
-            return "_" + pageNum;
+        void resetPageRecordsCount() {
+            pageRecordsCount = 1;
+        }
+
+        boolean lastPage() {
+            return pageNum == pageCount;
         }
     }
 }
