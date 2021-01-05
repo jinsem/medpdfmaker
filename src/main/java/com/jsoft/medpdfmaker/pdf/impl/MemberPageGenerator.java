@@ -52,6 +52,7 @@ public class MemberPageGenerator implements PageGenerator {
         List<ServiceRecord> pageRecords = new LinkedList<>();
         final PageInfo pageInfo = new PageInfo(memberServiceRecords.size());
         for (final ServiceRecord memberServiceRecord : memberServiceRecords) {
+            pageInfo.incPageRecordsCount();
             pageRecords.add(memberServiceRecord);
             if (pageRecords.size() == ROWS_COUNT) {
                 pageHandler.onPage(generatePage(pageInfo, headerRecord, pageRecords, workFolder));
@@ -59,7 +60,6 @@ public class MemberPageGenerator implements PageGenerator {
                 pageInfo.incPageNum();
                 pageInfo.resetPageRecordsCount();
             }
-            pageInfo.incPageRecordsCount();
         }
         if (!pageRecords.isEmpty()) {
             pageHandler.onPage(generatePage(pageInfo, headerRecord, pageRecords, workFolder));
@@ -229,7 +229,7 @@ public class MemberPageGenerator implements PageGenerator {
         }
 
         void resetPageRecordsCount() {
-            pageRecordsCount = 1;
+            pageRecordsCount = 0;
         }
 
         boolean lastPage() {
