@@ -370,6 +370,11 @@ Private Sub cleanUpColumnsData()
         ' Names uppercased
         Range("C" & i).Value = UCase(Range("C" & i).Text)
         Range("D" & i).Value = UCase(Range("D" & i).Text)
+        ' Address
+        Range("J" & i).Value = UCase(Range("J" & i).Text)
+        Range("K" & i).Value = UCase(Range("K" & i).Text)
+        
+        Range("O" & i).Value = cleanPhone(Range("O" & i).Text)
     Next i
 End Sub
 
@@ -686,4 +691,15 @@ Function firstCharacters(xName As String) As String
     firstCharacters = OutValue
 End Function
 
+Function cleanPhone(phone As String) As String
+    If IsNull(phone) Or Len(phone) < 3 Then
+        cleanPhone = phone
+    Else
+        If InStr(1, phone, "415") = 1 Then
+            cleanPhone = Replace(phone, "415", "", , 1)
+        Else
+            cleanPhone = phone
+        End If
+    End If
+End Function
 
