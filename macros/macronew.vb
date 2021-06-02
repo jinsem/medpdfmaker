@@ -24,7 +24,7 @@ Sub DailyCCHPNewFormat()
                  & "Default dates selected: " & today & " to  " & tmrow & vbNewLine _
                  & "Edit dates if needed and press OK " & vbNewLine & vbNewLine _
                  & "Or press Cancel to stop macros"
-    defaultDates = Format(today, "mm/dd/yyyy") & "-" & Format(tmrow, "mm/dd/yyyy")
+    defaultDates = Format(today, "mm/dd/yyyy") & "-" & Format(tmrow, "mm/dd/yyyy") ' "05/03/2021-05/04/2021"
     inputResponse = InputBox(prompt:=datesPromt, Title:="Enter dates", Default:=defaultDates)
     If inputResponse = False Then
         GoTo TCEnd
@@ -313,11 +313,12 @@ Sub DailyCCHPNewFormat()
        MsgBox "Can not find next date " & tmrow
     End If
 
-TCEnd:
- 
     formatColumns
     Range("A1").Select
     MsgBox ("Completed OK" & vbNewLine & "Red time is calculated + 1.5 hrs from appointment time" & vbNewLine & vbNewLine & " Don't forget to Save As this file ")
+
+TCEnd:
+
 End Sub
 
 Private Sub cleanUpColumnsData()
@@ -357,10 +358,16 @@ Private Sub cleanUpColumnsData()
     ' Wheelchair
     Columns("L:L").Select
     Selection.Replace What:="1", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:="yes", Replacement:="Must", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     Selection.Replace What:="0", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
+    Selection.Replace What:="no", Replacement:="", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False
     highlightWheelChairColumns columnLetter:="L"
     ' Streets
     unifyStreetNames rangeDef:="J:K"
+    ' Replace coordinator names by initials
+    For i = 2 To rowsCnt
+        Range("E" & i).Value = firstCharacters(Range("E" & i).Text)
+    Next i
 End Sub
 
 Private Function convertTime(rng As Range) As Boolean
@@ -658,3 +665,20 @@ Private Sub deleteColumn(columnDef As String)
     Columns(columnDef).Select
     Selection.Delete Shift:=xlToLeft
 End Sub
+
+Function firstCharacters(xName As String) As String
+    Dim arr As Variant
+    Dim OutValue As String
+    Dim cleanedName As String
+    Dim letter As String
+    cleanedName = Replace(xName, ",", "")
+    arr = VBA.Split(Trim(cleanedName))
+    For i = UBound(arr) To 0 Step -1
+        letter = VBA.Left(arr(i), 1)
+        If letter = "X" And i > 0 Then ' Xin is pronounced as Cindy, so replace X by C
+            letter = "C"
+        End If
+        OutValue = OutValue & letter & " "
+    Next
+    firstCharacters = OutValue
+End Function
