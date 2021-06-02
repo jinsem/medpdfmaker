@@ -364,9 +364,12 @@ Private Sub cleanUpColumnsData()
     highlightWheelChairColumns columnLetter:="L"
     ' Streets
     unifyStreetNames rangeDef:="J:K"
-    ' Replace coordinator names by initials
     For i = 2 To rowsCnt
+        ' Replace coordinator names by initials
         Range("E" & i).Value = firstCharacters(Range("E" & i).Text)
+        ' Names uppercased
+        Range("C" & i).Value = UCase(Range("C" & i).Text)
+        Range("D" & i).Value = UCase(Range("D" & i).Text)
     Next i
 End Sub
 
@@ -682,3 +685,5 @@ Function firstCharacters(xName As String) As String
     Next
     firstCharacters = OutValue
 End Function
+
+
