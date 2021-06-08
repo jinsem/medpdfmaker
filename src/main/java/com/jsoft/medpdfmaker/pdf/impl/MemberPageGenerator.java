@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Provider;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -31,7 +32,7 @@ import static com.jsoft.medpdfmaker.util.FileUtil.stripLastSlashIfNeeded;
 public class MemberPageGenerator implements PageGenerator {
 
 
-    private static final int ROWS_COUNT = 6;
+    private static final int ROWS_COUNT = 5;
     private static final String N_A = "";
 
     private final AppProperties appProperties;
@@ -71,7 +72,7 @@ public class MemberPageGenerator implements PageGenerator {
         final String pageFileName = makePageFileName(headerRecord, pageInfo.pageNum, workFolder);
         try (InputStream templateStream = getTemplateStream();
              PDDocument pdDocument = PDDocument.load(templateStream);) {
-            fillPageHeader(pdDocument, headerRecord, pageInfo);
+            fillPageHeader(pdDocument, headerRecord, pageRecords);
             fillPageTable(pdDocument, pageRecords);
             fillPageFooter(pdDocument, pageInfo, headerRecord);
             pdDocument.save(pageFileName);
@@ -79,7 +80,7 @@ public class MemberPageGenerator implements PageGenerator {
         return Paths.get(pageFileName);
     }
 
-    private void fillPageHeader(PDDocument pdDocument, ServiceRecord headerRecord, PageInfo pageInfo) throws IOException {
+    private void fillPageHeader(PDDocument pdDocument, ServiceRecord headerRecord, List<ServiceRecord> pageRecords) throws IOException {
         String memberIdPage = headerRecord.getMemberId();
         setField(pdDocument, "Text1", memberIdPage);
         setField(pdDocument, "Text2", headerRecord.getFAndLNameReversed());
@@ -118,8 +119,7 @@ public class MemberPageGenerator implements PageGenerator {
         setField(pdDocument,"EIN", "X");
         setField(pdDocument,"ACCEPT_ASSIGNMENT_YES", "X");
         setField(pdDocument,"SIGNATURE_DATE", " " + formatDate.format(signatureDate));
-        setField(pdDocument,"SERVICE_PICKUP_LOCATION", "FROM: " + headerRecord.getOrigin());
-        setField(pdDocument,"SERVICE_PICKUP_DEST", "TO: " + headerRecord.getDestination());
+        setField(pdDocument,"SERVICE_LOCATION", generateServiceLocation(pageRecords));
         setField(pdDocument,"NPI_32A", RENDER_PROVIDER);
         setField(pdDocument,"NPI_33A", RENDER_PROVIDER);
         setField(pdDocument,"SIGNATURE_OF_SUPPLIER", SIGNATURE_ON_FILE);
@@ -153,6 +153,20 @@ public class MemberPageGenerator implements PageGenerator {
             setField(pdDocument,"DOB_3_DD", formatDay.format(dob));
             setField(pdDocument,"DOB_3_YYYY", formatYearCentury.format(dob));
         }
+    }
+
+    private String generateServiceLocation(List<ServiceRecord> pageRecords) {
+        final StringBuilder result = new StringBuilder();
+        boolean needNewLine = false;
+        for (ServiceRecord pageRecord : pageRecords) {
+            if (needNewLine) {
+                result.append("\n");
+            } else {
+                needNewLine = true;
+            }
+            result.append(pageRecord.getOrigin()).append(" - ").append(pageRecord.getDestination());
+        }
+        return result.toString();
     }
 
     private void fillPageTable(PDDocument pdDocument, List<ServiceRecord> pageRecords) throws IOException {
