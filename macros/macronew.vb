@@ -561,10 +561,12 @@ Private Sub formatColumns()
 
     Range("C1").FormulaR1C1 = "LNAME"
     Columns("C:C").Select
+    setCalibriFont fontSize:=8, followTheme:=True
     allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlCenter
 
     Range("D1").FormulaR1C1 = "FNAME"
     Columns("D:D").Select
+    setCalibriFont fontSize:=8, followTheme:=True
     allightSelectionTo horizontalAlignment:=xlLeft, verticalAlignment:=xlCenter
 
     Range("E1").FormulaR1C1 = "Member ID"
