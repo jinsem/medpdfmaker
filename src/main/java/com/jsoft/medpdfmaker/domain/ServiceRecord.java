@@ -130,6 +130,11 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
      */
     private BigDecimal tripPrice;
 
+    /**
+     * Code of the procedure for the record. 
+     */
+    private String procedureCode;
+
     public String getRefId() {
         return this.refId;
     }
@@ -365,6 +370,15 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
     @ExternalField(value = "TRIP_PRICE", fieldType = FieldType.DECIMAL_MONEY)
     public void setTripPrice(BigDecimal tripPrice) {
         this.tripPrice = tripPrice;
+    }
+
+    public String getProcedureCode() {
+        return this.procedureCode;
+    }
+
+    @ExternalField(value = "PROCEDURE_CODE", fieldType = FieldType.STRING)
+    public void setProcedureCode(String procedureCode) {
+        this.procedureCode = procedureCode;
     }
 
     public boolean requiredFieldsAreEmpty() {

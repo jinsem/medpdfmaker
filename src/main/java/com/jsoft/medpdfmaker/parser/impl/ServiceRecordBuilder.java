@@ -8,6 +8,7 @@ import com.jsoft.medpdfmaker.exception.UnknownAttributeException;
 import com.jsoft.medpdfmaker.parser.ObjectBuilder;
 import com.jsoft.medpdfmaker.parser.ValueExtractor;
 import org.apache.commons.lang3.Validate;
+import org.apache.logging.log4j.util.Strings;
 import org.apache.poi.ss.usermodel.Cell;
 
 import java.lang.reflect.InvocationTargetException;
@@ -30,13 +31,17 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
 
     private final BigDecimal defaultTripPrice;
 
-    public ServiceRecordBuilder(List<ValueExtractor> extractors, BigDecimal defaultTripPrice) {
+    private final String defaultProcedureCode;
+
+    public ServiceRecordBuilder(List<ValueExtractor> extractors, BigDecimal defaultTripPrice,
+                                String defaultProcedureCode) {
         Validate.notNull(defaultTripPrice, "defaultTripPrice cannot be null");
         valueExtractors = new EnumMap<>(FieldType.class);
         for (ValueExtractor extractor : extractors) {
             valueExtractors.put(extractor.canParse(), extractor);
         }
         this.defaultTripPrice = defaultTripPrice;
+        this.defaultProcedureCode = defaultProcedureCode;
     }
 
     private static Map<String, FieldMetaData> buildMetaData() {
@@ -103,6 +108,9 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
         final ServiceRecord result = resultRecord;
         if (result.getTripPrice() == null) {
             result.setTripPrice(defaultTripPrice);
+        }
+        if (Strings.isBlank(result.getProcedureCode())) {
+            result.setProcedureCode(defaultProcedureCode);
         }
         resultRecord = new ServiceRecord();
         return result;

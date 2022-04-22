@@ -178,7 +178,7 @@ public class MemberPageGenerator implements PageGenerator {
             setField(pdDocument,"Text" + (13 + fieldIdxShift), formatDay.format(pickUpDate));
             setField(pdDocument,"Text" + (14 + fieldIdxShift), formatYearCentury.format(pickUpDate));
             setField(pdDocument,"Text" + (15 + fieldIdxShift), appProperties.getPlaceOfService());
-            setField(pdDocument,"Text" + (16 + fieldIdxShift), appProperties.getProcedures());
+            setField(pdDocument,"Text" + (16 + fieldIdxShift), pageRecord.getProcedureCode());
             setField(pdDocument,"Text" + (17 + fieldIdxShift), formatMoney.format(pageRecord.getTripPrice()));
             setField(pdDocument,"Text" + (18 + fieldIdxShift), pageRecord.getRefId());
             setField(pdDocument,"G_DAYS_" + (recNum + 1), "1");
