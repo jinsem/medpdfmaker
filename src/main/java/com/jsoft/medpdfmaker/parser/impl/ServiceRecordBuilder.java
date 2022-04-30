@@ -112,6 +112,9 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
         if (Strings.isBlank(result.getProcedureCode())) {
             result.setProcedureCode(defaultProcedureCode);
         }
+        if (Strings.isBlank(result.getDaysOrUnits())) {
+            result.setDaysOrUnits("1");
+        }
         resultRecord = new ServiceRecord();
         return result;
 	}

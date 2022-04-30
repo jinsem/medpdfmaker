@@ -135,6 +135,11 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
      */
     private String procedureCode;
 
+    /**
+     * Days or units 
+     */
+    private String daysOrUnits;
+    
     public String getRefId() {
         return this.refId;
     }
@@ -379,6 +384,15 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
     @ExternalField(value = "PROCEDURE_CODE", fieldType = FieldType.STRING)
     public void setProcedureCode(String procedureCode) {
         this.procedureCode = procedureCode;
+    }
+
+    public String getDaysOrUnits() {
+        return this.daysOrUnits;
+    }
+
+    @ExternalField(value = "DAYS_OR_UNITS", fieldType = FieldType.STRING)
+    public void setDaysOrUnits(String daysOrUnits) {
+        this.daysOrUnits = daysOrUnits;
     }
 
     public boolean requiredFieldsAreEmpty() {
