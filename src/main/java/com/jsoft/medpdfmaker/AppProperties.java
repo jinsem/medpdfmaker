@@ -5,6 +5,7 @@ import org.springframework.core.env.Environment;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalTime;
 
 public class AppProperties {
 
@@ -14,6 +15,8 @@ public class AppProperties {
     public static final String FEDERAL_TAX_ID_PROP = "FederalTaxID";
     public static final String PROVIDER_PROP = "Provider";
     public static final String MAX_PAGES_IN_PDF_FILE = "MaxPagesInPdfFile";
+    public static final String WORK_DAY_START = "WorkDayStart";
+    public static final String WORK_DAY_END = "WorkDayEnd";
 
     private final String placeOfService;
     private final String procedures;
@@ -21,6 +24,8 @@ public class AppProperties {
     private final String federalTaxID;
     private final String provider;
     private final int maxPagesInPdfFile;
+    private final LocalTime workDayStart;
+    private final LocalTime workDayEnd;
 
     public AppProperties(final Environment environment) {
         if (environment == null) {
@@ -34,6 +39,8 @@ public class AppProperties {
         provider = environment.getProperty(PROVIDER_PROP);
         final String strMaxPagesInPdfFile = environment.getProperty(MAX_PAGES_IN_PDF_FILE);
         maxPagesInPdfFile = fetchMaxPagesInPdfFile(strMaxPagesInPdfFile);
+        workDayStart = fetchTime(environment.getProperty(WORK_DAY_START), WORK_DAY_START);
+        workDayEnd = fetchTime(environment.getProperty(WORK_DAY_END), WORK_DAY_END);
     }
 
     private BigDecimal fetchCharges(String chargesStr) {
@@ -68,6 +75,14 @@ public class AppProperties {
         return result;
     }
 
+    private LocalTime fetchTime(String timeString, String propertyName) {
+        try {
+            return LocalTime.parse(timeString);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(propertyName + " property value is invalid, time string was expected: " + timeString);
+        }
+    }
+
     public String getPlaceOfService() {
         return placeOfService;
     }
@@ -94,6 +109,14 @@ public class AppProperties {
 
     public boolean isCompositePdfEnabled() {
         return maxPagesInPdfFile != 1;
+    }
+
+    public LocalTime getWorkDayStart() {
+        return workDayStart;
+    }
+
+    public LocalTime getWorkDayEnd() {
+        return workDayEnd;
     }
 }
 

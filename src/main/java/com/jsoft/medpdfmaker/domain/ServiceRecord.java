@@ -139,7 +139,26 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
      * Days or units 
      */
     private String daysOrUnits;
-    
+
+    /**
+     * Modifiers that should be displayed in the trips table.
+     * is set, they override any modifiers calculated by the application.
+     * Modifier should contain up to 4 not empty characters. If more characters
+     * are provided, they will be ignoored.
+     */
+    private String modifiers;
+
+    /**
+     * Flag to mark the trip as outside of working hours trip.
+     * This flag is calculated automatically if pick up time is outside of working
+     * hours. But in some cases it is complicated to calculate if trip was done
+     * on a holiday.
+     * If value of this flag is True, this value is used as is.
+     * If it is not provided in excel file, system calculates this flag
+     * automatically.
+     */
+    private Boolean outsideWorkingHours;
+
     public String getRefId() {
         return this.refId;
     }
@@ -393,6 +412,31 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
     @ExternalField(value = "DAYS_OR_UNITS", fieldType = FieldType.STRING)
     public void setDaysOrUnits(String daysOrUnits) {
         this.daysOrUnits = daysOrUnits;
+    }
+
+    public String getModifiers() {
+        return modifiers;
+    }
+
+    @ExternalField(value = "MODIFIERS", fieldType = FieldType.STRING)
+    public void setModifiers(String modifiers) {
+        if (modifiers == null) {
+            this.modifiers = modifiers;
+            return;
+        }
+        int maxModifierLen = 4;
+        this.modifiers = modifiers.replaceAll(" ", "");
+        if (this.modifiers.length() > maxModifierLen) {
+            this.modifiers = this.modifiers.substring(0, maxModifierLen);
+        }
+    }
+
+    public Boolean getOutsideWorkingHours() {
+        return outsideWorkingHours;
+    }
+
+    public void setOutsideWorkingHours(Boolean outsideWorkingHours) {
+        this.outsideWorkingHours = outsideWorkingHours;
     }
 
     public boolean requiredFieldsAreEmpty() {
