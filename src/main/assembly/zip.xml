@@ -19,10 +19,6 @@
             <outputDirectory/>
         </file>
         <file>
-            <source>${project.basedir}/src/main/resources/hospitals.txt</source>
-            <outputDirectory/>
-        </file>
-        <file>
             <source>${project.basedir}/executable/med-pdf-maker.cmd</source>
             <outputDirectory/>
         </file>
