@@ -15,6 +15,8 @@ import java.util.Objects;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
 
+    public static final int MAX_MODIFIER_LEN = 4;
+
     /**
      * Service record reference ID
      */
@@ -59,6 +61,11 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
      * Time when patient was picked up
      */
     private LocalTime pickupTime;
+
+    /**
+     * Time when patient was picked up
+     */
+    private LocalTime dropOffTime;
 
     /**
      * Time of the patient's appointment
@@ -270,6 +277,15 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         this.pickupTime = pickupTime;
     }
 
+    public LocalTime getDropOffTime() {
+        return dropOffTime;
+    }
+
+    @ExternalField(value = "APPOINTMENT DROP-OFF TIME", fieldType = FieldType.TIME)
+    public void setDropOffTime(LocalTime dropOffTime) {
+        this.dropOffTime = dropOffTime;
+    }
+
     public LocalTime getApptTime() {
         return this.apptTime;
     }
@@ -421,13 +437,12 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
     @ExternalField(value = "MODIFIERS", fieldType = FieldType.STRING)
     public void setModifiers(String modifiers) {
         if (modifiers == null) {
-            this.modifiers = modifiers;
+            this.modifiers = null;
             return;
         }
-        int maxModifierLen = 4;
         this.modifiers = modifiers.replaceAll(" ", "");
-        if (this.modifiers.length() > maxModifierLen) {
-            this.modifiers = this.modifiers.substring(0, maxModifierLen);
+        if (this.modifiers.length() > MAX_MODIFIER_LEN) {
+            this.modifiers = this.modifiers.substring(0, MAX_MODIFIER_LEN);
         }
     }
 
@@ -435,6 +450,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
         return outsideWorkingHours;
     }
 
+    @ExternalField(value = "OUTSIDE WORKING HOURS", fieldType = FieldType.BOOLEAN)
     public void setOutsideWorkingHours(Boolean outsideWorkingHours) {
         this.outsideWorkingHours = outsideWorkingHours;
     }
@@ -458,6 +474,7 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
                 dayOfBirth == null &&
                 pickupDate == null &&
                 pickupTime == null &&
+                dropOffTime == null &&
                 apptTime == null &&
                 StringUtils.isBlank(origin) &&
                 StringUtils.isBlank(destination) &&

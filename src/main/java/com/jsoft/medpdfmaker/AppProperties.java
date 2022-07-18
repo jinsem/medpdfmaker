@@ -6,6 +6,10 @@ import org.springframework.core.env.Environment;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AppProperties {
 
@@ -17,6 +21,7 @@ public class AppProperties {
     public static final String MAX_PAGES_IN_PDF_FILE = "MaxPagesInPdfFile";
     public static final String WORK_DAY_START = "WorkDayStart";
     public static final String WORK_DAY_END = "WorkDayEnd";
+    public static final String HOSPITAL_ADDRESSES = "HospitalAddresses";
 
     private final String placeOfService;
     private final String procedures;
@@ -26,6 +31,7 @@ public class AppProperties {
     private final int maxPagesInPdfFile;
     private final LocalTime workDayStart;
     private final LocalTime workDayEnd;
+    private final Set<String> hospitalAddresses = new HashSet<>();
 
     public AppProperties(final Environment environment) {
         if (environment == null) {
@@ -41,6 +47,10 @@ public class AppProperties {
         maxPagesInPdfFile = fetchMaxPagesInPdfFile(strMaxPagesInPdfFile);
         workDayStart = fetchTime(environment.getProperty(WORK_DAY_START), WORK_DAY_START);
         workDayEnd = fetchTime(environment.getProperty(WORK_DAY_END), WORK_DAY_END);
+        String hospitalAddressesStr = environment.getProperty(HOSPITAL_ADDRESSES, "");
+        hospitalAddresses.addAll(
+                Arrays.asList(hospitalAddressesStr.split("\n"))
+        );
     }
 
     private BigDecimal fetchCharges(String chargesStr) {
@@ -77,7 +87,7 @@ public class AppProperties {
 
     private LocalTime fetchTime(String timeString, String propertyName) {
         try {
-            return LocalTime.parse(timeString);
+            return LocalTime.parse(timeString, DateTimeFormatter.ISO_LOCAL_TIME);
         } catch (Exception e) {
             throw new IllegalArgumentException(propertyName + " property value is invalid, time string was expected: " + timeString);
         }
@@ -117,6 +127,10 @@ public class AppProperties {
 
     public LocalTime getWorkDayEnd() {
         return workDayEnd;
+    }
+
+    public Set<String> getHospitalAddresses() {
+        return hospitalAddresses;
     }
 }
 

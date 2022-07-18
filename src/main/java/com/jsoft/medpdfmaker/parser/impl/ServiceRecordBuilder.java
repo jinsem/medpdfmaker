@@ -1,5 +1,6 @@
 package com.jsoft.medpdfmaker.parser.impl;
 
+import com.jsoft.medpdfmaker.AppProperties;
 import com.jsoft.medpdfmaker.domain.ExternalField;
 import com.jsoft.medpdfmaker.domain.FieldType;
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
@@ -14,12 +15,17 @@ import org.apache.poi.ss.usermodel.Cell;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.*;
 
 /**
  * Builder implementation for ServiceRecord.
  */
+@SuppressWarnings("rawtypes")
 public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
+
+    private static final String PHYSICIANS_OFFICE_MODIFIER = "P";
+    private static final String RESIDENCE_MODIFIER = "R";
 
     private static final Set<String> REQUIRED_FIELDS = new TreeSet<>();
 
@@ -33,15 +39,22 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
 
     private final String defaultProcedureCode;
 
-    public ServiceRecordBuilder(List<ValueExtractor> extractors, BigDecimal defaultTripPrice,
-                                String defaultProcedureCode) {
-        Validate.notNull(defaultTripPrice, "defaultTripPrice cannot be null");
+    private final LocalTime workDayStart;
+    private final LocalTime workDayEnd;
+    private final Set<String> hospitalAddresses = new HashSet<>();
+
+    public ServiceRecordBuilder(List<ValueExtractor> extractors,
+                                AppProperties appProperties) {
+        Validate.notNull(appProperties.getCharges(), "defaultTripPrice cannot be null");
         valueExtractors = new EnumMap<>(FieldType.class);
         for (ValueExtractor extractor : extractors) {
             valueExtractors.put(extractor.canParse(), extractor);
         }
-        this.defaultTripPrice = defaultTripPrice;
-        this.defaultProcedureCode = defaultProcedureCode;
+        this.defaultTripPrice = appProperties.getCharges();
+        this.defaultProcedureCode = appProperties.getProcedures();
+        this.workDayStart = appProperties.getWorkDayStart();
+        this.workDayEnd = appProperties.getWorkDayEnd();
+        this.hospitalAddresses.addAll(appProperties.getHospitalAddresses());
     }
 
     private static Map<String, FieldMetaData> buildMetaData() {
@@ -115,9 +128,35 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
         if (Strings.isBlank(result.getDaysOrUnits())) {
             result.setDaysOrUnits("1");
         }
+        if (Strings.isBlank(result.getModifiers())) {
+            fillModifiers(result);
+        }
+        if (!Boolean.TRUE.equals(result.getOutsideWorkingHours())) {
+            fillOutsideWorkingHours(result);
+        }
         resultRecord = new ServiceRecord();
         return result;
 	}
+
+    private void fillModifiers(ServiceRecord result) {
+        if (!Strings.isBlank(result.getModifiers()) || result.getDestination() == null) {
+            return;
+        }
+        String destNormalized = result.getDestination().trim().toUpperCase();
+        if (hospitalAddresses.contains(destNormalized)) {
+            result.setModifiers(PHYSICIANS_OFFICE_MODIFIER);
+        } else {
+            result.setModifiers(RESIDENCE_MODIFIER);
+        }
+    }
+
+    private void fillOutsideWorkingHours(ServiceRecord result) {
+        if (result.getPickupTime() == null) {
+            return;
+        }
+        result.setOutsideWorkingHours(workDayEnd.isBefore(result.getPickupTime()) ||
+                result.getPickupTime().isBefore(workDayStart));
+    }
 
     private static class FieldMetaData {
         private final Method method;

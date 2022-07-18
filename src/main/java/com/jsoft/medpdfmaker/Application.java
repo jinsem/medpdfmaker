@@ -84,8 +84,7 @@ public class Application implements CommandLineRunner {
     }
 
     private void generatePdf(AppParameters appParameters) throws IOException {
-        final TableFileParser<ServiceRecord> parser = new ServiceRecordXlsParser(new ServiceRecordBuilder(extractors, 
-            appProperties.getCharges(), appProperties.getProcedures()));
+        final TableFileParser<ServiceRecord> parser = new ServiceRecordXlsParser(new ServiceRecordBuilder(extractors, appProperties));
         final ServiceRecordRepository repository = new ServiceRecordRepository();
         final MemberPageGenerator memberPageGenerator = new MemberPageGenerator(appProperties);
         final MembersBookGenerator membersBookGenerator = new MembersBookGenerator(appProperties, memberPageGenerator);

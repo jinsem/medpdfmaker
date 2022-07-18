@@ -36,9 +36,6 @@ public class BooleanValueExtractor implements ValueExtractor<Boolean> {
     public Boolean extractValue(Cell cell) {
         boolean result;
         switch (cell.getCellType()) {
-            case BLANK:
-                result = false;
-                break;
             case BOOLEAN:
                 result = cell.getBooleanCellValue();
                 break;
@@ -50,6 +47,7 @@ public class BooleanValueExtractor implements ValueExtractor<Boolean> {
                 result = StringUtils.isNotEmpty(strVal) && valueIsTrue(strVal.trim().toUpperCase());
                 break;
             default:
+                // cell type is BLANK and all other cases
                 result = false;
         }
         return result;

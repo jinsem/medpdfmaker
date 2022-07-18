@@ -6,6 +6,7 @@ import com.jsoft.medpdfmaker.domain.ServiceRecord;
 import com.jsoft.medpdfmaker.pdf.PageGenerator;
 import com.jsoft.medpdfmaker.pdf.PageHandler;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
@@ -27,6 +28,7 @@ import java.util.List;
 import static com.jsoft.medpdfmaker.Constants.INSURANCE_TYPE;
 import static com.jsoft.medpdfmaker.Constants.RENDER_PROVIDER;
 import static com.jsoft.medpdfmaker.Constants.SIGNATURE_ON_FILE;
+import static com.jsoft.medpdfmaker.domain.ServiceRecord.MAX_MODIFIER_LEN;
 import static com.jsoft.medpdfmaker.util.FileUtil.stripLastSlashIfNeeded;
 
 public class MemberPageGenerator implements PageGenerator {
@@ -42,6 +44,7 @@ public class MemberPageGenerator implements PageGenerator {
     private final DateTimeFormatter formatMonth = DateTimeFormatter.ofPattern("MM");
     private final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private final DecimalFormat formatMoney = new DecimalFormat("0.00");
+    private final DateTimeFormatter amPmFormatter = DateTimeFormatter.ofPattern("hh:mm a");
 
     public MemberPageGenerator(final AppProperties appProperties) {
         this.appProperties = appProperties;
@@ -124,6 +127,7 @@ public class MemberPageGenerator implements PageGenerator {
         setField(pdDocument,"NPI_33A", RENDER_PROVIDER);
         setField(pdDocument,"SIGNATURE_OF_SUPPLIER", SIGNATURE_ON_FILE);
         setField(pdDocument,"INSURED_ADDRESS", "SAME");
+        fillAdditionalClaimInfo(pdDocument, pageRecords);
     }
 
     private void fillSex(PDDocument pdDocument, ServiceRecord headerRecord) throws IOException {
@@ -134,6 +138,23 @@ public class MemberPageGenerator implements PageGenerator {
             setField(pdDocument,"SEX_F", "X");
             setField(pdDocument,"SEX_F_2", "X");
         }
+    }
+
+    private void fillAdditionalClaimInfo(PDDocument pdDocument, List<ServiceRecord> pageRecords) throws IOException {
+        StringBuilder fieldVal = new StringBuilder();
+        for (ServiceRecord rec : pageRecords) {
+            if (Boolean.TRUE.equals(rec.getOutsideWorkingHours())) {
+                if (fieldVal.length() != 0)
+                    fieldVal.append("; ");
+                if (rec.getPickupTime() != null)
+                    fieldVal.append(amPmFormatter.format(rec.getPickupTime()))
+                            .append("--");
+                if (rec.getDropOffTime() != null)
+                    fieldVal.append(amPmFormatter.format(rec.getDropOffTime()));
+             }
+        }
+        if (fieldVal.length() > 0)
+            setField(pdDocument,"additional_claim_info", fieldVal.toString());
     }
 
     private void fillDob(PDDocument pdDocument, ServiceRecord headerRecord) throws IOException {
@@ -183,6 +204,13 @@ public class MemberPageGenerator implements PageGenerator {
             setField(pdDocument,"Text" + (18 + fieldIdxShift), pageRecord.getRefId());
             setField(pdDocument,"G_DAYS_" + (recNum + 1), pageRecord.getDaysOrUnits());
             setField(pdDocument,"RENDER_PROVIDER_" + (recNum + 1), RENDER_PROVIDER);
+            if (!Strings.isBlank(pageRecord.getModifiers())) {
+                char[] modifierChars = pageRecord.getModifiers().toCharArray();
+                String modifierFieldPrefix = "Modif_" + (recNum + 1) + "_";
+                for (int i=0;i<modifierChars.length && i < MAX_MODIFIER_LEN;i++) {
+                    setField(pdDocument,modifierFieldPrefix + (i + 1), Character.toString(modifierChars[i]));
+                }
+            }
             recNum++;
         }
     }
