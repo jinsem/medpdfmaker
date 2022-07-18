@@ -142,12 +142,18 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
         if (!Strings.isBlank(result.getModifiers()) || result.getDestination() == null) {
             return;
         }
-        String destNormalized = result.getDestination().trim().toUpperCase();
-        if (hospitalAddresses.contains(destNormalized)) {
-            result.setModifiers(PHYSICIANS_OFFICE_MODIFIER);
-        } else {
-            result.setModifiers(RESIDENCE_MODIFIER);
-        }
+        final String originNormalized = result.getOrigin().trim().toUpperCase();
+        final String destNormalized = result.getDestination().trim().toUpperCase();
+        StringBuilder modifiers = new StringBuilder();
+        if (hospitalAddresses.contains(originNormalized))
+            modifiers.append(PHYSICIANS_OFFICE_MODIFIER);
+        else
+            modifiers.append(RESIDENCE_MODIFIER);
+        if (hospitalAddresses.contains(destNormalized))
+            modifiers.append(PHYSICIANS_OFFICE_MODIFIER);
+        else
+            modifiers.append(RESIDENCE_MODIFIER);
+        result.setModifiers(modifiers.toString());
     }
 
     private void fillOutsideWorkingHours(ServiceRecord result) {
