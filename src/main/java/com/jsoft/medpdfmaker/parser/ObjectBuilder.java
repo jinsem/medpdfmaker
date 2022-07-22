@@ -3,6 +3,8 @@ package com.jsoft.medpdfmaker.parser;
 import com.jsoft.medpdfmaker.domain.DomainEntity;
 import org.apache.poi.ss.usermodel.Cell;
 
+import java.util.List;
+
 /**
  * Implementations of this interface are responsible for building objects of type T using the data loaded from excel
  * tables.

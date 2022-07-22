@@ -7,6 +7,7 @@ import com.jsoft.medpdfmaker.parser.Result;
 import com.jsoft.medpdfmaker.parser.TableFileParser;
 import com.jsoft.medpdfmaker.util.LoggerUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
@@ -27,6 +28,7 @@ import static com.jsoft.medpdfmaker.parser.Result.ERROR;
 import static com.jsoft.medpdfmaker.parser.Result.OK;
 import static com.jsoft.medpdfmaker.parser.Result.WARNING;
 import static com.jsoft.medpdfmaker.parser.Result.moreImportant;
+import static com.jsoft.medpdfmaker.parser.impl.ServiceRecordBuilder.RESIDENCE_TO_RESIDENCE_MODIFIER;
 
 public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
 
@@ -88,8 +90,10 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
             final Cell cell = currentRow.getCell(colIx);
             final String fieldName = (cell == null) ? "" : StringUtils.upperCase(formatter.formatCellValue(cell)).trim();
             if (!serviceRecordBuilder.attributeIsKnown(fieldName)) {
-                LoggerUtil.warn(LOG, String.format("Attribute %s is unknown. Value of this attribute will be ignored", fieldName));
-                result = WARNING;
+                if (!Strings.isBlank(fieldName)) {
+                    LoggerUtil.warn(LOG, String.format("Attribute %s is unknown. Value of this attribute will be ignored", fieldName));
+                    result = WARNING;
+                }
             }
             // We have to store both known and unknown attributes to simplify synchronizing header and actual values
             fieldNames.add(fieldName);
@@ -115,11 +119,26 @@ public class ServiceRecordXlsParser implements TableFileParser<ServiceRecord> {
                     LoggerUtil.logRowParsingError(LOG, String.format("One or more required values %s are not set", serviceRecordBuilder.getRequiredAttributesNames()), currentRow);
                     result = ERROR;
                 } else {
-                    rowCallBack.accept(serviceRecordBuilder.build());
+                    ServiceRecord record = serviceRecordBuilder.build();
+                    final String validationResult = validate(record);
+                    if (!validationResult.isEmpty()) {
+                        LoggerUtil.logRowParsingError(LOG, String.format("Service records looks suspicious: %s", validationResult), currentRow);
+                        result = WARNING;
+                    }
+                    rowCallBack.accept(record);
                 }
             }
         }
         return result;
+    }
+
+    private String validate(ServiceRecord resultRecord) {
+        if (!Strings.isBlank(resultRecord.getModifiers())) {
+            if (resultRecord.getModifiers().startsWith(RESIDENCE_TO_RESIDENCE_MODIFIER)) {
+                return "Incorrect modifiers: " + resultRecord.getModifiers();
+            }
+        }
+        return "";
     }
 
     private Result getDataFromCell(Result result, String fieldName, Cell curCell) {

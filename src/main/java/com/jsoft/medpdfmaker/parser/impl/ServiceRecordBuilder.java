@@ -18,14 +18,18 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.*;
 
+import static java.util.Collections.singletonList;
+
 /**
  * Builder implementation for ServiceRecord.
  */
 @SuppressWarnings("rawtypes")
 public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
 
+    public static final String RESIDENCE_TO_RESIDENCE_MODIFIER = "RR";
     private static final String PHYSICIANS_OFFICE_MODIFIER = "P";
     private static final String RESIDENCE_MODIFIER = "R";
+    private static final String AFTER_HOURS_MODIFIER = "UJ";
 
     private static final Set<String> REQUIRED_FIELDS = new TreeSet<>();
 
@@ -128,11 +132,11 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
         if (Strings.isBlank(result.getDaysOrUnits())) {
             result.setDaysOrUnits("1");
         }
-        if (Strings.isBlank(result.getModifiers())) {
-            fillModifiers(result);
-        }
         if (!Boolean.TRUE.equals(result.getOutsideWorkingHours())) {
             fillOutsideWorkingHours(result);
+        }
+        if (Strings.isBlank(result.getModifiers())) {
+            fillModifiers(result);
         }
         resultRecord = new ServiceRecord();
         return result;
@@ -153,6 +157,9 @@ public class ServiceRecordBuilder implements ObjectBuilder<ServiceRecord> {
             modifiers.append(PHYSICIANS_OFFICE_MODIFIER);
         else
             modifiers.append(RESIDENCE_MODIFIER);
+        if (Boolean.TRUE.equals(result.getOutsideWorkingHours())) {
+            modifiers.append(AFTER_HOURS_MODIFIER);
+        }
         result.setModifiers(modifiers.toString());
     }
 
