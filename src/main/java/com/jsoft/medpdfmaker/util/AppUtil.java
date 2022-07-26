@@ -20,4 +20,14 @@ public final class AppUtil {
     public static String curDateTimeAsString() {
         return FORMAT.format(LocalDateTime.now());
     }
+
+    /**
+     * Split string into equal chunks by count of chars.
+     * @param str String to split
+     * @param charCount number of chars in one chunk
+     * @return array with string parts
+     */
+    public static String[] splitByCharCount(String str, int charCount) {
+        return (charCount<1 || str==null) ? null : str.split("(?<=\\G.{" + charCount + "})");
+    }    
 }

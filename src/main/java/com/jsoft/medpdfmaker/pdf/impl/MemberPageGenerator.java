@@ -5,6 +5,8 @@ import com.jsoft.medpdfmaker.Constants;
 import com.jsoft.medpdfmaker.domain.ServiceRecord;
 import com.jsoft.medpdfmaker.pdf.PageGenerator;
 import com.jsoft.medpdfmaker.pdf.PageHandler;
+import com.jsoft.medpdfmaker.util.AppUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -18,7 +20,6 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.Provider;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -205,10 +206,10 @@ public class MemberPageGenerator implements PageGenerator {
             setField(pdDocument,"G_DAYS_" + (recNum + 1), pageRecord.getDaysOrUnits());
             setField(pdDocument,"RENDER_PROVIDER_" + (recNum + 1), RENDER_PROVIDER);
             if (!Strings.isBlank(pageRecord.getModifiers())) {
-                char[] modifierChars = pageRecord.getModifiers().toCharArray();
+                String[] modifiers = AppUtil.splitByCharCount(pageRecord.getModifiers(), 2);
                 String modifierFieldPrefix = "Modif_" + (recNum + 1) + "_";
-                for (int i=0;i<modifierChars.length && i < MAX_MODIFIER_LEN;i++) {
-                    setField(pdDocument,modifierFieldPrefix + (i + 1), Character.toString(modifierChars[i]));
+                for (int i=0;i<modifiers.length && i < MAX_MODIFIER_LEN;i++) {
+                    setField(pdDocument,modifierFieldPrefix + (i + 1), modifiers[i]);
                 }
             }
             recNum++;
