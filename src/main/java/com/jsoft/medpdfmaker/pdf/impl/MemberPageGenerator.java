@@ -23,8 +23,7 @@ import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static com.jsoft.medpdfmaker.Constants.INSURANCE_TYPE;
 import static com.jsoft.medpdfmaker.Constants.RENDER_PROVIDER;
@@ -53,7 +52,7 @@ public class MemberPageGenerator implements PageGenerator {
 
     @Override
     public void generate(Path workFolder, List<ServiceRecord> memberServiceRecords, PageHandler pageHandler) throws IOException {
-        final ServiceRecord headerRecord = memberServiceRecords.get(0);
+        final ServiceRecord headerRecord = getHeaderRecord(memberServiceRecords);
         List<ServiceRecord> pageRecords = new LinkedList<>();
         final PageInfo pageInfo = new PageInfo(memberServiceRecords.size());
         for (final ServiceRecord memberServiceRecord : memberServiceRecords) {
@@ -69,6 +68,24 @@ public class MemberPageGenerator implements PageGenerator {
         if (!pageRecords.isEmpty()) {
             pageHandler.onPage(generatePage(pageInfo, headerRecord, pageRecords, workFolder));
         }
+    }
+
+    private ServiceRecord getHeaderRecord(List<ServiceRecord> memberServiceRecords) {
+        final ServiceRecord result = memberServiceRecords.get(0);
+        final Set<String> homeOptions = new LinkedHashSet<>();
+        final Set<String> hospitals = this.appProperties.getHospitalAddresses();
+        memberServiceRecords.forEach(
+                curRecord -> {
+                    if (!hospitals.contains(curRecord.getOrigin())) {
+                        homeOptions.add(curRecord.getOrigin());
+                    }
+                    if (!hospitals.contains(curRecord.getDestination())) {
+                        homeOptions.add(curRecord.getDestination());
+                    }
+                }
+        );
+        result.setHomeAddress(homeOptions.stream().findFirst().orElse(result.getOrigin()));
+        return result;
     }
 
     private Path generatePage(PageInfo pageInfo, ServiceRecord headerRecord,
@@ -88,56 +105,56 @@ public class MemberPageGenerator implements PageGenerator {
         String memberIdPage = headerRecord.getMemberId();
         setField(pdDocument, "Text1", memberIdPage);
         setField(pdDocument, "Text2", headerRecord.getFAndLNameReversed());
-        String origin = headerRecord.getOrigin();
-        int originSlashPos = (origin == null) ? -1 : origin.indexOf('/');
+        String homeAddress = headerRecord.getHomeAddress();
+        int originSlashPos = (homeAddress == null) ? -1 : homeAddress.indexOf('/');
         if (originSlashPos > -1) {
-            setField(pdDocument,"Text3", origin.substring(0, originSlashPos));
+            setField(pdDocument, "Text3", homeAddress.substring(0, originSlashPos));
         } else {
-            setField(pdDocument,"Text3", origin);
+            setField(pdDocument, "Text3", homeAddress);
         }
         if (StringUtils.isNotEmpty(headerRecord.getCity())) {
-            setField(pdDocument,"Text4", headerRecord.getCity());
+            setField(pdDocument, "Text4", headerRecord.getCity());
         }
         if (StringUtils.isNotEmpty(headerRecord.getState())) {
-            setField(pdDocument,"Text5", headerRecord.getState());
+            setField(pdDocument, "Text5", headerRecord.getState());
         }
         if (StringUtils.isNotEmpty(headerRecord.getZipCode())) {
-            setField(pdDocument,"Text6", headerRecord.getZipCode());
+            setField(pdDocument, "Text6", headerRecord.getZipCode());
         }
         if (StringUtils.isNotEmpty(headerRecord.getAreaCode())) {
-            setField(pdDocument,"Text7", headerRecord.getAreaCode());
+            setField(pdDocument, "Text7", headerRecord.getAreaCode());
         }
         if (StringUtils.isNotEmpty(headerRecord.getPhone())) {
-            setField(pdDocument,"Text8", headerRecord.getPhone());
+            setField(pdDocument, "Text8", headerRecord.getPhone());
         }
         fillDob(pdDocument, headerRecord);
         fillSex(pdDocument, headerRecord);
-        setField(pdDocument,"Text54", appProperties.getFederalTaxID());
-        setField(pdDocument,"Text57", appProperties.getProvider());
-        setField(pdDocument,"PATIENT_RELATIONSHIP_SELF", "X");
+        setField(pdDocument, "Text54", appProperties.getFederalTaxID());
+        setField(pdDocument, "Text57", appProperties.getProvider());
+        setField(pdDocument, "PATIENT_RELATIONSHIP_SELF", "X");
         setField(pdDocument, INSURANCE_TYPE, "X");
         setField(pdDocument, "PATIENT_SIGNATURE", SIGNATURE_ON_FILE);
         setField(pdDocument, "PATIENT_SIGNATURE_13", SIGNATURE_ON_FILE);
         LocalDate signatureDate = headerRecord.getPickupDate().withDayOfMonth(headerRecord.getPickupDate().lengthOfMonth());
         setField(pdDocument, "PATIENT_SIGNATURE_DATE", formatDate.format(signatureDate));
-        setField(pdDocument,"EIN", "X");
-        setField(pdDocument,"ACCEPT_ASSIGNMENT_YES", "X");
-        setField(pdDocument,"SIGNATURE_DATE", " " + formatDate.format(signatureDate));
-        setField(pdDocument,"SERVICE_LOCATION", generateServiceLocation(pageRecords));
-        setField(pdDocument,"NPI_32A", RENDER_PROVIDER);
-        setField(pdDocument,"NPI_33A", RENDER_PROVIDER);
-        setField(pdDocument,"SIGNATURE_OF_SUPPLIER", SIGNATURE_ON_FILE);
-        setField(pdDocument,"INSURED_ADDRESS", "SAME");
+        setField(pdDocument, "EIN", "X");
+        setField(pdDocument, "ACCEPT_ASSIGNMENT_YES", "X");
+        setField(pdDocument, "SIGNATURE_DATE", " " + formatDate.format(signatureDate));
+        setField(pdDocument, "SERVICE_LOCATION", generateServiceLocation(pageRecords));
+        setField(pdDocument, "NPI_32A", RENDER_PROVIDER);
+        setField(pdDocument, "NPI_33A", RENDER_PROVIDER);
+        setField(pdDocument, "SIGNATURE_OF_SUPPLIER", SIGNATURE_ON_FILE);
+        setField(pdDocument, "INSURED_ADDRESS", "SAME");
         fillAdditionalClaimInfo(pdDocument, pageRecords);
     }
 
     private void fillSex(PDDocument pdDocument, ServiceRecord headerRecord) throws IOException {
         if ("M".equals(headerRecord.getGender())) {
-            setField(pdDocument,"SEX_M", "X");
-            setField(pdDocument,"SEX_M_2", "X");
+            setField(pdDocument, "SEX_M", "X");
+            setField(pdDocument, "SEX_M_2", "X");
         } else if ("F".equals(headerRecord.getGender())) {
-            setField(pdDocument,"SEX_F", "X");
-            setField(pdDocument,"SEX_F_2", "X");
+            setField(pdDocument, "SEX_F", "X");
+            setField(pdDocument, "SEX_F_2", "X");
         }
     }
 
@@ -152,28 +169,28 @@ public class MemberPageGenerator implements PageGenerator {
                             .append("--");
                 if (rec.getDropOffTime() != null)
                     fieldVal.append(amPmFormatter.format(rec.getDropOffTime()));
-             }
+            }
         }
         if (fieldVal.length() > 0)
-            setField(pdDocument,"additional_claim_info", fieldVal.toString());
+            setField(pdDocument, "additional_claim_info", fieldVal.toString());
     }
 
     private void fillDob(PDDocument pdDocument, ServiceRecord headerRecord) throws IOException {
         LocalDate dob = headerRecord.getDayOfBirth();
         if (dob == null) {
-            setField(pdDocument,"Text9", N_A);
-            setField(pdDocument,"Text10", N_A);
-            setField(pdDocument,"Text11", N_A);
-            setField(pdDocument,"DOB_3_MM", N_A);
-            setField(pdDocument,"DOB_3_DD", N_A);
-            setField(pdDocument,"DOB_3_YYYY", N_A);
+            setField(pdDocument, "Text9", N_A);
+            setField(pdDocument, "Text10", N_A);
+            setField(pdDocument, "Text11", N_A);
+            setField(pdDocument, "DOB_3_MM", N_A);
+            setField(pdDocument, "DOB_3_DD", N_A);
+            setField(pdDocument, "DOB_3_YYYY", N_A);
         } else {
-            setField(pdDocument,"Text9", formatMonth.format(dob));
-            setField(pdDocument,"Text10", formatDay.format(dob));
-            setField(pdDocument,"Text11", formatYearCentury.format(dob));
-            setField(pdDocument,"DOB_3_MM", formatMonth.format(dob));
-            setField(pdDocument,"DOB_3_DD", formatDay.format(dob));
-            setField(pdDocument,"DOB_3_YYYY", formatYearCentury.format(dob));
+            setField(pdDocument, "Text9", formatMonth.format(dob));
+            setField(pdDocument, "Text10", formatDay.format(dob));
+            setField(pdDocument, "Text11", formatYearCentury.format(dob));
+            setField(pdDocument, "DOB_3_MM", formatMonth.format(dob));
+            setField(pdDocument, "DOB_3_DD", formatDay.format(dob));
+            setField(pdDocument, "DOB_3_YYYY", formatYearCentury.format(dob));
         }
     }
 
@@ -196,20 +213,20 @@ public class MemberPageGenerator implements PageGenerator {
         for (final ServiceRecord pageRecord : pageRecords) {
             int fieldIdxShift = recNum * 7;
             LocalDate pickUpDate = pageRecord.getPickupDate();
-            setField(pdDocument,"Text" + (12 + fieldIdxShift), formatMonth.format(pickUpDate));
-            setField(pdDocument,"Text" + (13 + fieldIdxShift), formatDay.format(pickUpDate));
-            setField(pdDocument,"Text" + (14 + fieldIdxShift), formatYearCentury.format(pickUpDate));
-            setField(pdDocument,"Text" + (15 + fieldIdxShift), appProperties.getPlaceOfService());
-            setField(pdDocument,"Text" + (16 + fieldIdxShift), pageRecord.getProcedureCode());
-            setField(pdDocument,"Text" + (17 + fieldIdxShift), formatMoney.format(pageRecord.getTripPrice()));
-            setField(pdDocument,"Text" + (18 + fieldIdxShift), pageRecord.getRefId());
-            setField(pdDocument,"G_DAYS_" + (recNum + 1), pageRecord.getDaysOrUnits());
-            setField(pdDocument,"RENDER_PROVIDER_" + (recNum + 1), RENDER_PROVIDER);
+            setField(pdDocument, "Text" + (12 + fieldIdxShift), formatMonth.format(pickUpDate));
+            setField(pdDocument, "Text" + (13 + fieldIdxShift), formatDay.format(pickUpDate));
+            setField(pdDocument, "Text" + (14 + fieldIdxShift), formatYearCentury.format(pickUpDate));
+            setField(pdDocument, "Text" + (15 + fieldIdxShift), appProperties.getPlaceOfService());
+            setField(pdDocument, "Text" + (16 + fieldIdxShift), pageRecord.getProcedureCode());
+            setField(pdDocument, "Text" + (17 + fieldIdxShift), formatMoney.format(pageRecord.getTripPrice()));
+            setField(pdDocument, "Text" + (18 + fieldIdxShift), pageRecord.getRefId());
+            setField(pdDocument, "G_DAYS_" + (recNum + 1), pageRecord.getDaysOrUnits());
+            setField(pdDocument, "RENDER_PROVIDER_" + (recNum + 1), RENDER_PROVIDER);
             if (!Strings.isBlank(pageRecord.getModifiers())) {
                 String[] modifiers = AppUtil.splitByCharCount(pageRecord.getModifiers(), 2);
                 String modifierFieldPrefix = "Modif_" + (recNum + 1) + "_";
-                for (int i=0;i<modifiers.length && i < MAX_MODIFIER_LEN;i++) {
-                    setField(pdDocument,modifierFieldPrefix + (i + 1), modifiers[i]);
+                for (int i = 0; i < modifiers.length && i < MAX_MODIFIER_LEN; i++) {
+                    setField(pdDocument, modifierFieldPrefix + (i + 1), modifiers[i]);
                 }
             }
             recNum++;
@@ -217,7 +234,7 @@ public class MemberPageGenerator implements PageGenerator {
     }
 
     private void fillPageFooter(PDDocument pdDocument, PageInfo pageInfo, ServiceRecord headerRecord) throws IOException {
-        setField(pdDocument,"Text56", formatMoney.format(headerRecord.getTripPrice().multiply(BigDecimal.valueOf(pageInfo.pageRecordsCount))));
+        setField(pdDocument, "Text56", formatMoney.format(headerRecord.getTripPrice().multiply(BigDecimal.valueOf(pageInfo.pageRecordsCount))));
     }
 
     private String makePageFileName(ServiceRecord headerRecord, int pageNum, Path workFolder) {
@@ -260,7 +277,7 @@ public class MemberPageGenerator implements PageGenerator {
             this.totalRecordsCount = totalRecordsCount;
             this.pageNum = 1;
             resetPageRecordsCount();
-            this.pageCount = (int)Math.round(Math.ceil((double) totalRecordsCount / ROWS_COUNT));
+            this.pageCount = (int) Math.round(Math.ceil((double) totalRecordsCount / ROWS_COUNT));
         }
 
         void incPageNum() {

@@ -73,6 +73,11 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
     private LocalTime apptTime;
 
     /**
+     * Patient's home address
+     */
+    private String homeAddress;
+
+    /**
      * Patient's trip origin
      */
     private String origin;
@@ -293,6 +298,14 @@ public class ServiceRecord implements Comparable<ServiceRecord>, DomainEntity {
     @ExternalField(value = "APPOINTMENT SCHEDULED TIME", fieldType = FieldType.TIME)
     public void setApptTime(LocalTime apptTime) {
         this.apptTime = apptTime;
+    }
+
+    public String getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(String homeAddress) {
+        this.homeAddress = homeAddress;
     }
 
     public String getOrigin() {
