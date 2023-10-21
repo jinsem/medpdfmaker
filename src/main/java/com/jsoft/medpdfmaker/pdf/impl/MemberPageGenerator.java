@@ -92,7 +92,7 @@ public class MemberPageGenerator implements PageGenerator {
                               List<ServiceRecord> pageRecords, Path workFolder) throws IOException {
         final String pageFileName = makePageFileName(headerRecord, pageInfo.pageNum, workFolder);
         try (InputStream templateStream = getTemplateStream();
-             PDDocument pdDocument = PDDocument.load(templateStream);) {
+             PDDocument pdDocument = PDDocument.load(templateStream)) {
             fillPageHeader(pdDocument, headerRecord, pageRecords);
             fillPageTable(pdDocument, pageRecords);
             fillPageFooter(pdDocument, pageInfo, headerRecord);
