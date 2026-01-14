@@ -13,5 +13,5 @@ public final class Constants {
     public static final String PDF_TEMPLATE_RESOURCE_PATH = "template/Form_red_signed.pdf";
 
     public static final String INSURANCE_TYPE = "INS_GROUPHEALTHPLAN";
-    public static final String RENDER_PROVIDER = "4000000001";
+    public static final String RENDER_PROVIDER = "1912723370";
 }
